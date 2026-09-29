@@ -1,0 +1,31 @@
+# WaifuClaw/Features/Runs/RunDetailView.swift
+
+- RunDetailViewModel · class · L28-L141 — @Observable @MainActor final class RunDetailViewModel
+- RollbackPhase · enum · L32-L37 — enum RollbackPhase: Equatable
+- RunDetailViewModel · method · L56-L59 — nonisolated init(run: RunSummary, data: RunsData)
+- load · method · L79-L83 — func load() async
+- retryLoad · method · L86-L90 — func retryLoad()
+- fetchDetail · method · L92-L109 — private func fetchDetail() async
+- startRollback · method · L114-L118 — func startRollback()
+- retryRollback · method · L121-L124 — func retryRollback()
+- performRollback · method · L126-L140 — private func performRollback() async
+- RunDetailView · struct · L147-L618 — struct RunDetailView: View
+- RunDetailView · method · L150-L152 — init(run: RunSummary, data: RunsData)
+- header · method · L226-L237 — private func header(summary: RunSummary) -> some View
+- progressCard · method · L241-L271 — private func progressCard(_ detail: RunDetail) -> some View
+- frozenCard · method · L275-L292 — private func frozenCard(_ frozen: FrozenCandidate) -> some View
+- evidenceCard · method · L296-L319 — private func evidenceCard(_ items: [VerificationEvidence]) -> some View
+- riskCard · method · L323-L347 — private func riskCard(_ detail: RunDetail) -> some View
+- reviewersCard · method · L351-L376 — private func reviewersCard(_ reviewers: [ReviewerResult]) -> some View
+- detailRow · method · L504-L518 — private func detailRow(label: String, value: String, mono: Bool = false) -> some View
+- tone · method · L522-L530 — private func tone(for status: RunStatus) -> BadgeTone
+- timelineState · method · L532-L539 — private func timelineState(for state: RunStep.State) -> TimelineState
+- stepStateName · method · L541-L549 — private func stepStateName(_ state: RunStep.State) -> String
+- evidenceIcon · method · L551-L558 — private func evidenceIcon(for result: VerificationEvidence.Result) -> String
+- evidenceColor · method · L560-L567 — private func evidenceColor(for result: VerificationEvidence.Result) -> Color
+- riskTone · method · L569-L576 — private func riskTone(for tier: RiskTier) -> BadgeTone
+- reviewerTone · method · L578-L583 — private func reviewerTone(for state: String) -> BadgeTone
+- stepHeadline · method · L587-L601 — private func stepHeadline(for detail: RunDetail) -> String
+- progressValue · method · L604-L610 — private func progressValue(for detail: RunDetail) -> Double
+- RunDetailErrorCard · struct · L625-L658 — private struct RunDetailErrorCard: View
+- RunDetailSkeleton · struct · L662-L685 — private struct RunDetailSkeleton: View

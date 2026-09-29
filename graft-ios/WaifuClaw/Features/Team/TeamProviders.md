@@ -1,0 +1,40 @@
+# WaifuClaw/Features/Team/TeamProviders.swift
+
+- TeamError · enum · L29-L92 — enum TeamError: LocalizedError, Equatable
+- describe · method · L61-L91 — static func describe(_ error: Error) -> TeamError
+- TeamData · interface · L104-L120 — protocol TeamData
+- members · method · L106-L106 — func members() async throws -> [TeamMember]
+- conversations · method · L108-L108 — func conversations(limit: Int) async throws -> [TeamConversation]
+- messages · method · L110-L110 — func messages(threadID: String, limit: Int) async throws -> [TeamMessage]
+- inboxItems · method · L112-L112 — func inboxItems(limit: Int) async throws -> [InboxItem]
+- board · method · L115-L115 — func board() async throws -> TeamBoard
+- taskDetail · method · L117-L117 — func taskDetail(id: String) async throws -> TeamTaskDetail
+- milestones · method · L119-L119 — func milestones() async throws -> [Milestone]
+- AgentsListDTO · struct · L125-L127 — private struct AgentsListDTO: Decodable
+- AgentDTO · struct · L131-L140 — private struct AgentDTO: Decodable
+- CodingKeys · enum · L137-L139 — enum CodingKeys: String, CodingKey
+- ThreadDTO · struct · L144-L165 — private struct ThreadDTO: Decodable
+- CodingKeys · enum · L151-L153 — enum CodingKeys: String, CodingKey
+- ThreadDTO · method · L155-L164 — init(from decoder: Decoder) throws
+- AnyKey · struct · L168-L186 — private struct AnyKey: CodingKey
+- AnyKey · method · L172-L175 — init(_ string: String)
+- AnyKey · method · L177-L180 — init?(stringValue: String)
+- AnyKey · method · L182-L185 — init?(intValue: Int)
+- MessageDTO · struct · L191-L225 — private struct MessageDTO: Decodable
+- CodingKeys · enum · L200-L209 — enum CodingKeys: String, CodingKey
+- MessageDTO · method · L211-L224 — init(from decoder: Decoder) throws
+- ContentDTO · struct · L228-L250 — private struct ContentDTO: Decodable
+- ContentDTO · method · L232-L249 — init(from decoder: Decoder) throws
+- string · function · L240-L242 — func string(_ key: String) -> String?
+- teamISOFormatter · variable · L252-L252 — private let teamISOFormatter = ISO8601DateFormatter()
+- LiveTeamData · struct · L257-L386 — struct LiveTeamData: TeamData
+- members · method · L265-L276 — func members() async throws -> [TeamMember]
+- conversations · method · L281-L288 — func conversations(limit: Int) async throws -> [TeamConversation]
+- messages · method · L292-L299 — func messages(threadID: String, limit: Int) async throws -> [TeamMessage]
+- inboxItems · method · L304-L324 — func inboxItems(limit: Int) async throws -> [InboxItem]
+- board · method · L330-L332 — func board() async throws -> TeamBoard
+- taskDetail · method · L335-L337 — func taskDetail(id: String) async throws -> TeamTaskDetail
+- milestones · method · L340-L342 — func milestones() async throws -> [Milestone]
+- member · method · L346-L356 — private static func member(from dto: AgentDTO) -> TeamMember
+- conversation · method · L358-L367 — private static func conversation(from dto: ThreadDTO) -> TeamConversation
+- message · method · L369-L385 — private static func message(from dto: MessageDTO, threadID: String, index: Int) -> TeamMessage

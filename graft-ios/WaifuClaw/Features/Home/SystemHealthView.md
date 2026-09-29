@@ -1,0 +1,31 @@
+# WaifuClaw/Features/Home/SystemHealthView.swift
+
+- SystemHealthView · struct · L17-L74 — struct SystemHealthView: View
+- SystemHealthView · method · L24-L27 — init(data: any SystemHealthData, onPairTapped: (() -> Void)? = nil)
+- SystemHealthRow · struct · L80-L96 — struct SystemHealthRow: Identifiable, Equatable
+- Kind · enum · L81-L85 — enum Kind: String, CaseIterable
+- SystemHealthData · interface · L105-L107 — protocol SystemHealthData
+- fetchRows · method · L106-L106 — func fetchRows() async -> [SystemHealthRow]
+- LiveSystemHealthData · struct · L113-L245 — @MainActor struct LiveSystemHealthData: SystemHealthData
+- LiveSystemHealthData · method · L120-L123 — init(api: APIClient?, pairedComputer: PairedComputer?)
+- fetchRows · method · L146-L154 — func fetchRows() async -> [SystemHealthRow]
+- backendRow · method · L156-L184 — private func backendRow(api: APIClient) async -> SystemHealthRow
+- pairingRow · method · L186-L199 — private func pairingRow() -> SystemHealthRow
+- licenseRow · method · L201-L225 — private func licenseRow(api: APIClient) async -> SystemHealthRow
+- proDetail · method · L227-L232 — private func proDetail(_ license: LicenseStatus) -> String
+- unknownRow · method · L234-L240 — private func unknownRow(kind: SystemHealthRow.Kind, title: String, iconName: String) -> SystemHealthRow
+- plainWords · method · L242-L244 — private func plainWords(_ error: Error) -> String
+- AgentStatusDTO · struct · L252-L275 — private struct AgentStatusDTO: Decodable
+- CodingKeys · enum · L258-L263 — private enum CodingKeys: String, CodingKey
+- AgentStatusDTO · method · L265-L274 — init(from decoder: Decoder) throws
+- MockSystemHealthData · struct · L279-L346 — struct MockSystemHealthData: SystemHealthData
+- Mode · enum · L280-L285 — enum Mode
+- MockSystemHealthData · method · L289-L291 — init(mode: Mode = .loaded)
+- fetchRows · method · L293-L305 — func fetchRows() async -> [SystemHealthRow]
+- SystemHealthViewModel · class · L353-L400 — @Observable @MainActor final class SystemHealthViewModel
+- Phase · enum · L356-L359 — enum Phase: Equatable
+- SystemHealthViewModel · method · L368-L370 — nonisolated init(data: any SystemHealthData)
+- refresh · method · L375-L382 — func refresh() async
+- HealthRowView · struct · L406-L433 — private struct HealthRowView: View
+- HealthSkeletonRow · struct · L437-L459 — private struct HealthSkeletonRow: View
+- HealthErrorCard · struct · L463-L496 — private struct HealthErrorCard: View

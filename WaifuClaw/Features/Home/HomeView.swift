@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Home dashboard (leaf 1.2.2)
 //
-// Phone translation of mockup 1 (the "Good morning, Willie" dashboard) per
+// Phone translation of the mockup-1 Home dashboard per
 // REDESIGN-CONTRACT.md §3. Every section renders its own LoadState from
 // HomeViewModel, so sections load and fail independently: skeletons while
 // loading, loud error cards with Retry on failure, honest empty states.
