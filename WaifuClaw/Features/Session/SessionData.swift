@@ -138,7 +138,7 @@ private let sessionISOFormatter = ISO8601DateFormatter()
 // MARK: - SessionEvent construction
 
 extension SessionEvent {
-    init(stored dto: StoredEventDTO, index: Int) {
+    fileprivate init(stored dto: StoredEventDTO, index: Int) {
         let kind = dto.event_type ?? "event"
         let occurredAt = dto.created_at.flatMap { sessionISOFormatter.date(from: $0) }
         let (summary, isError) = Self.summarizeStored(kind: kind, dto: dto)
