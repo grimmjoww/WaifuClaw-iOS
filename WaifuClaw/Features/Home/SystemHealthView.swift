@@ -313,7 +313,7 @@ struct MockSystemHealthData: SystemHealthData {
             ),
             SystemHealthRow(
                 kind: .pairing, title: "Pairing",
-                detail: "Willie's ROG · 192.168.1.20",
+                detail: "Desktop · 192.168.1.20",
                 badgeText: "Connected", tone: .success, iconName: "link"
             ),
             SystemHealthRow(
@@ -333,7 +333,7 @@ struct MockSystemHealthData: SystemHealthData {
             ),
             SystemHealthRow(
                 kind: .pairing, title: "Pairing",
-                detail: "Willie's ROG · 192.168.1.20",
+                detail: "Desktop · 192.168.1.20",
                 badgeText: "Connected", tone: .success, iconName: "link"
             ),
             SystemHealthRow(

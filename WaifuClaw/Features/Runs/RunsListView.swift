@@ -78,7 +78,11 @@ final class RunsListViewModel {
     /// provably safe: both conformances are Sendable structs (MockRunsData
     /// holds a plain enum; LiveRunsData holds only the @MainActor-isolated
     /// APIClient, and global-actor-isolated types are Sendable).
-    private let data: any RunsData & Sendable
+    ///
+    /// Exposed (not private) so the detail screen can be built with the
+    /// same provider: the detail view's API is `RunDetailView(run:data:)`
+    /// (leaf 1.3.3 owns that file and its signature).
+    let dataSource: any RunsData & Sendable
     /// Monotonic generation: a cancelled or superseded load can never
     /// overwrite newer state, even if cancellation lands between its
     /// last await and its assignment.
@@ -88,7 +92,7 @@ final class RunsListViewModel {
     /// (nonisolated) initializers; the init only stores the data source.
     /// (Same fix as the BYOK leaf's Swift 6 init-isolation diagnostic.)
     nonisolated init(data: any RunsData & Sendable) {
-        self.data = data
+        self.dataSource = data
     }
 
     /// (Re)loads the list. Safe to call from .task, .refreshable, and
@@ -101,7 +105,7 @@ final class RunsListViewModel {
         }
         refreshNotice = nil
         do {
-            let fetched = try await data.recentRuns(limit: 50)
+            let fetched = try await dataSource.recentRuns(limit: 50)
             guard isCurrent(current) else { return }
             runs = fetched
             phase = .ready
@@ -257,10 +261,13 @@ struct RunsListView: View {
     private var runCards: some View {
         LazyVStack(spacing: 12) {
             ForEach(filteredRuns) { run in
-                // Leaf 1.3.3 owns RunDetailView — it takes the run as a
-                // param. This reference compiles once 1.3.3 lands.
+                // Leaf 1.3.3 owns RunDetailView and its `init(run:data:)`
+                // signature — the list passes the same provider through so
+                // the detail screen loads from the identical source.
+                // (Task brief said `RunDetailView(run:)`; the on-disk 1.3.3
+                // API takes run + data, so this matches the tree as it is.)
                 NavigationLink {
-                    RunDetailView(run: run)
+                    RunDetailView(run: run, data: viewModel.dataSource)
                 } label: {
                     RunRow(run: run)
                 }

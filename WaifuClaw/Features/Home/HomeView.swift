@@ -36,14 +36,31 @@ struct HomeView: View {
     /// (1.6.1). Nil hides the action — no dead buttons.
     let onViewAllThreads: (() -> Void)?
 
+    /// Health-signal provider for the System Health section (leaf 1.2.3's
+    /// SystemHealthView, composed here per the contract's §3 ordering).
+    /// Nil omits the section — 1.6.1 injects live data; never a fake,
+    /// never an empty box.
+    let systemHealthData: (any SystemHealthData)?
+
+    /// Invoked by System Health's "Pair this phone" button. Nil hides the
+    /// button — never a dead control.
+    let onPairPhone: (() -> Void)?
+
     /// - Parameter viewModel: owned via @State (the @Observable pattern).
     ///   Deliberately no mock default: 1.6.1 must inject live/unpaired/mock
     ///   explicitly, so a forgotten injection can never show fake data.
     ///   The @MainActor view-model init is only ever *called* by the
     ///   integrator/previews — never here — so this init stays nonisolated.
-    init(viewModel: HomeViewModel, onViewAllThreads: (() -> Void)? = nil) {
+    init(
+        viewModel: HomeViewModel,
+        systemHealthData: (any SystemHealthData)? = nil,
+        onViewAllThreads: (() -> Void)? = nil,
+        onPairPhone: (() -> Void)? = nil
+    ) {
         _viewModel = State(initialValue: viewModel)
+        self.systemHealthData = systemHealthData
         self.onViewAllThreads = onViewAllThreads
+        self.onPairPhone = onPairPhone
     }
 
     private var userName: String {
@@ -68,6 +85,9 @@ struct HomeView: View {
                     onViewAll: onViewAllThreads,
                     onRetry: retryAll
                 )
+                if let systemHealthData {
+                    SystemHealthView(data: systemHealthData, onPairTapped: onPairPhone)
+                }
                 HomeMemorySection(state: viewModel.memory, onRetry: retryAll)
             }
             .padding(.horizontal, Theme.spacingL)
@@ -189,16 +209,20 @@ private struct HomeStatsSection: View {
                 columns: [GridItem(.flexible()), GridItem(.flexible())],
                 spacing: Theme.spacingM
             ) {
-                modelTile
-                threadsTile
-                memoryTile
+                HomeModelTile(state: agent, onRetry: onRetry)
+                HomeThreadsTile(state: threads, onRetry: onRetry)
+                HomeMemoryTile(state: memory, onRetry: onRetry)
             }
         }
     }
+}
 
-    @ViewBuilder
-    private var modelTile: some View {
-        switch agent {
+private struct HomeModelTile: View {
+    let state: LoadState<ActiveAgentInfo>
+    let onRetry: @MainActor () -> Void
+
+    var body: some View {
+        switch state {
         case .idle, .loading:
             HomeSkeleton(height: 104)
         case .failed:
@@ -211,10 +235,14 @@ private struct HomeStatsSection: View {
             )
         }
     }
+}
 
-    @ViewBuilder
-    private var threadsTile: some View {
-        switch threads {
+private struct HomeThreadsTile: View {
+    let state: LoadState<[ThreadSummary]>
+    let onRetry: @MainActor () -> Void
+
+    var body: some View {
+        switch state {
         case .idle, .loading:
             HomeSkeleton(height: 104)
         case .failed:
@@ -227,10 +255,14 @@ private struct HomeStatsSection: View {
             )
         }
     }
+}
 
-    @ViewBuilder
-    private var memoryTile: some View {
-        switch memory {
+private struct HomeMemoryTile: View {
+    let state: LoadState<MemorySummary>
+    let onRetry: @MainActor () -> Void
+
+    var body: some View {
+        switch state {
         case .idle, .loading:
             HomeSkeleton(height: 104)
         case .failed:
@@ -481,8 +513,11 @@ private struct HomeErrorCard: View {
             Text(message)
                 .font(.body)
                 .foregroundStyle(Theme.textSecondary)
+            // NOTE: no .accessibilityElement(children: .combine) here — the
+            // Retry button must stay a separately activatable element.
             Button("Retry", action: onRetry)
                 .themePrimaryButton()
+                .accessibilityHint("Retries loading this section.")
         }
         .themeCard()
         .overlay(alignment: .leading) {
@@ -490,16 +525,42 @@ private struct HomeErrorCard: View {
                 .frame(width: 4)
                 .padding(.vertical, Theme.spacingM)
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(title). \(message). Activate Retry to try again.")
     }
 }
 
 // MARK: - Previews (every loud-failure state, via the real view model)
 
+/// Preview-only data source whose loads never resolve, pinning the view in
+/// its loading-skeleton state. Cancellation-aware: a cancelled sleep throws
+/// instead of hanging the preview host.
+private struct HangingDashboardData: DashboardData {
+    func greeting() -> DashboardGreeting { .current(userName: "Alex") }
+
+    func activeAgent() async throws -> ActiveAgentInfo {
+        try await Task.sleep(for: .seconds(3_600))
+        throw CancellationError()
+    }
+
+    func todaysThreads() async throws -> [ThreadSummary] {
+        try await Task.sleep(for: .seconds(3_600))
+        throw CancellationError()
+    }
+
+    func memorySummary() async throws -> MemorySummary {
+        try await Task.sleep(for: .seconds(3_600))
+        throw CancellationError()
+    }
+}
+
+#Preview("Home — loading") {
+    HomeView(viewModel: HomeViewModel(data: HangingDashboardData()))
+        .preferredColorScheme(.dark)
+}
+
 #Preview("Home — loaded") {
     HomeView(
         viewModel: HomeViewModel(data: MockDashboardData(mode: .loaded, userName: "Alex")),
+        systemHealthData: MockSystemHealthData(mode: .loaded),
         onViewAllThreads: {}
     )
     .preferredColorScheme(.dark)
@@ -508,6 +569,7 @@ private struct HomeErrorCard: View {
 #Preview("Home — empty") {
     HomeView(
         viewModel: HomeViewModel(data: MockDashboardData(mode: .empty, userName: "Alex")),
+        systemHealthData: MockSystemHealthData(mode: .loaded),
         onViewAllThreads: {}
     )
     .preferredColorScheme(.dark)
@@ -516,6 +578,7 @@ private struct HomeErrorCard: View {
 #Preview("Home — error") {
     HomeView(
         viewModel: HomeViewModel(data: MockDashboardData(mode: .error, userName: "Alex")),
+        systemHealthData: MockSystemHealthData(mode: .allDown),
         onViewAllThreads: {}
     )
     .preferredColorScheme(.dark)
@@ -524,6 +587,7 @@ private struct HomeErrorCard: View {
 #Preview("Home — offline") {
     HomeView(
         viewModel: HomeViewModel(data: MockDashboardData(mode: .offline, userName: "Alex")),
+        systemHealthData: MockSystemHealthData(mode: .allDown),
         onViewAllThreads: {}
     )
     .preferredColorScheme(.dark)
@@ -532,7 +596,9 @@ private struct HomeErrorCard: View {
 #Preview("Home — unpaired") {
     HomeView(
         viewModel: HomeViewModel(data: UnpairedDashboardData(userName: "Alex")),
-        onViewAllThreads: {}
+        systemHealthData: MockSystemHealthData(mode: .unpaired),
+        onViewAllThreads: {},
+        onPairPhone: {}
     )
     .preferredColorScheme(.dark)
 }
