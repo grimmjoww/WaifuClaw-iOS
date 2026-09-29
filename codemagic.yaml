@@ -1,0 +1,67 @@
+# codemagic.yaml — WaifuClaw iOS CI (Mac cloud builds, no Mac required)
+#
+# One workflow:
+#   ios-compile-check : FREE. Unsigned xcodebuild on every push/PR.
+#                       Proves the SwiftUI code actually compiles on a
+#                       real Mac. Uses Codemagic's free tier (500 M2 min/mo).
+#
+# TestFlight signing was removed for now: it kept tripping Codemagic's
+# validator and it can't run until the $99 Apple Developer membership +
+# App Store Connect API key exist. Re-add it (unsigned -> signed IPA ->
+# TestFlight) once those are set up. Sketch of what it needs:
+#   environment:
+#     xcode: latest
+#     ios_signing:
+#       distribution_type: app_store
+#       bundle_ids:
+#         - studio.phantomhorizons.waifuclaw.ios
+#   scripts:
+#     - xcodegen generate && xcode-project use-profiles
+#     - xcode-project build-ipa --project WaifuClaw.xcodeproj --scheme WaifuClaw
+#   artifacts: [*.ipa]
+#   publishing:
+#     app_store_connect: { auth: integration, submit_to_testflight: true }
+#
+# Setup (Willie, one time, ~2 min):
+#   1. Sign in at https://codemagic.io with GitHub.
+#   2. Add application -> pick grimmjoww/WaifuClaw-iOS -> iOS.
+#   3. Codemagic finds this file automatically. Done.
+
+workflows:
+  ios-compile-check:
+    name: iOS compile check (unsigned)
+    max_build_duration: 30
+    instance_type: mac_mini_m2
+    environment:
+      xcode: latest
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: 'main'
+        - pattern: 'feat/*'
+        - pattern: 'fix/*'
+      # NOTE: Codemagic has no path filters (no watch_files). If the noise
+      # gets annoying, narrow the branch_patterns above instead.
+    scripts:
+      - name: Generate Xcode project (XcodeGen)
+        script: |
+          #!/bin/sh
+          set -e
+          if ! command -v xcodegen >/dev/null 2>&1; then
+            brew install xcodegen
+          fi
+          xcodegen generate
+      - name: Build WaifuClaw (unsigned compile check)
+        script: |
+          #!/bin/sh
+          set -e
+          xcodebuild build \
+            -project WaifuClaw.xcodeproj \
+            -scheme WaifuClaw \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+    # No artifacts: this is a compile check only, nothing to ship.

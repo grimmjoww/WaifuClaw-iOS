@@ -1,0 +1,38 @@
+# iOS compile check — runs on GitHub's own Mac machines.
+# No extra accounts, no extra apps to install: it just runs on this repo.
+# Unsigned build proves the SwiftUI compiles; signing/TestFlight still
+# needs the $99 Apple Developer membership (separate step, later).
+name: iOS compile check
+
+on:
+  push:
+    branches: ['main', 'feat/*', 'fix/*']
+    paths: ['WaifuClaw/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
+  pull_request:
+    paths: ['WaifuClaw/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
+  workflow_dispatch:
+
+jobs:
+  compile:
+    name: Compile SwiftUI (unsigned)
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build WaifuClaw (unsigned compile check)
+        run: |
+          xcodebuild build \
+            -project WaifuClaw.xcodeproj \
+            -scheme WaifuClaw \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
