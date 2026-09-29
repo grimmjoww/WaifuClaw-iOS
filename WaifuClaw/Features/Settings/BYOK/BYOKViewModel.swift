@@ -47,7 +47,9 @@ final class BYOKViewModel {
     private let client: BYOKClient
     private var saveTask: Task<Void, Never>?
 
-    init(client: BYOKClient = BYOKClient()) {
+    /// Nonisolated so SwiftUI views can construct it in their own (nonisolated)
+    /// initializers; the init only stores the Sendable client.
+    nonisolated init(client: BYOKClient = BYOKClient()) {
         self.client = client
     }
 
