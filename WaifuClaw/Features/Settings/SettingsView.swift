@@ -7,12 +7,15 @@ struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @State private var confirmingUnpair = false
     @State private var reconnecting = false
+    @State private var editingName = false
+    @State private var replayingIntro = false
 
     var body: some View {
         ZStack {
             Theme.background.ignoresSafeArea()
             ScrollView {
                 VStack(spacing: 16) {
+                    profileCard
                     computerCard
                     connectionCard
                     apiKeyCard
@@ -32,6 +35,74 @@ struct SettingsView: View {
         } message: {
             Text("Your phone will forget this computer. You'll need to scan a new QR code to pair again.")
         }
+        .sheet(isPresented: $editingName) {
+            NavigationStack {
+                DisplayNameView(onContinue: { editingName = false })
+                    .navigationTitle("Display name")
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+        }
+        .sheet(isPresented: $replayingIntro) {
+            ReplayIntroView(onDone: { replayingIntro = false })
+        }
+    }
+
+    // MARK: - Profile
+
+    /// Display name, the intro guide replay, and the Memory/Pro destinations
+    /// (they live here now instead of as tabs).
+    private var profileCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Profile")
+                .font(.headline)
+                .foregroundStyle(Theme.textPrimary)
+            Button {
+                editingName = true
+            } label: {
+                HStack {
+                    Label("Change display name", systemImage: "person.fill")
+                        .foregroundStyle(Theme.textPrimary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(Theme.textSecondary)
+                }
+            }
+            .accessibilityHint("Change the name WaifuClaw calls you")
+            Button {
+                replayingIntro = true
+            } label: {
+                HStack {
+                    Label("Replay intro guide", systemImage: "play.circle.fill")
+                        .foregroundStyle(Theme.textPrimary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(Theme.textSecondary)
+                }
+            }
+            NavigationLink {
+                MemoryBrowserView()
+            } label: {
+                HStack {
+                    Label("Memory", systemImage: "brain.head.profile")
+                        .foregroundStyle(Theme.textPrimary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(Theme.textSecondary)
+                }
+            }
+            NavigationLink {
+                LicenseView()
+            } label: {
+                HStack {
+                    Label("Pro", systemImage: "sparkles")
+                        .foregroundStyle(Theme.textPrimary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(Theme.textSecondary)
+                }
+            }
+        }
+        .themeCard()
     }
 
     // MARK: - Paired computer

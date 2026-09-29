@@ -48,9 +48,10 @@ final class AppState: ObservableObject {
     @Published var license: LicenseStatus?
     @Published var securityAlert: FingerprintAlert?
     @Published var showRevokedNotice = false
-    /// TabView selection — features can route the user to the Pro tab (e.g.
-    /// the 402 upsell in Memory).
-    @Published var tabSelection = 0
+    /// TabView selection — a WCITab enum (not Int) so routing can't silently
+    /// drift when tabs are reordered. Features route with `.home`, `.runs`,
+    /// etc. (e.g. the 402 upsell in Memory routes to Settings, where Pro lives).
+    @Published var tabSelection: WCITab = .home
 
     private(set) var api: APIClient?
 

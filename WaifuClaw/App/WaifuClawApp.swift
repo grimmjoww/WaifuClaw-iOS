@@ -27,18 +27,26 @@ struct WaifuClawApp: App {
     }
 }
 
-/// Routes to pairing or the main tabs based on pairing state.
+/// First launch → onboarding; then pairing → the main tabs.
+/// (The onboarding flow: intro pages → display name → iOS permission prompts,
+/// like every app in history. OnboardingView writes hasCompletedOnboarding
+/// itself when it finishes, which re-renders this gate.)
 struct RootView: View {
     @EnvironmentObject var appState: AppState
+    @AppStorage(OnboardingKeys.hasCompletedOnboarding) private var hasCompletedOnboarding = false
 
     var body: some View {
         ZStack {
             Theme.background.ignoresSafeArea()
-            switch appState.pairing {
-            case .unpaired:
-                PairingFlowView()
-            case .paired:
-                MainTabView()
+            if !hasCompletedOnboarding {
+                OnboardingView()
+            } else {
+                switch appState.pairing {
+                case .unpaired:
+                    PairingFlowView()
+                case .paired:
+                    MainTabView()
+                }
             }
         }
         .tint(Theme.magenta)
@@ -51,28 +59,34 @@ struct MainTabView: View {
     var body: some View {
         TabView(selection: $appState.tabSelection) {
             NavigationStack {
+                HomeTabView()
+            }
+            .tabItem { Label("Home", systemImage: "house.fill") }
+            .tag(WCITab.home)
+
+            NavigationStack {
+                RunsTabView()
+            }
+            .tabItem { Label("Runs", systemImage: "play.circle.fill") }
+            .tag(WCITab.runs)
+
+            NavigationStack {
+                TeamTabView()
+            }
+            .tabItem { Label("Team", systemImage: "person.2.fill") }
+            .tag(WCITab.team)
+
+            NavigationStack {
                 ThreadListView()
             }
             .tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right.fill") }
-            .tag(0)
-
-            NavigationStack {
-                MemoryBrowserView()
-            }
-            .tabItem { Label("Memory", systemImage: "brain.head.profile") }
-            .tag(1)
-
-            NavigationStack {
-                LicenseView()
-            }
-            .tabItem { Label("Pro", systemImage: "sparkles") }
-            .tag(2)
+            .tag(WCITab.chat)
 
             NavigationStack {
                 SettingsView()
             }
             .tabItem { Label("Settings", systemImage: "gearshape.fill") }
-            .tag(3)
+            .tag(WCITab.settings)
         }
         .safeAreaInset(edge: .top) {
             ConnectionStatusBanner()

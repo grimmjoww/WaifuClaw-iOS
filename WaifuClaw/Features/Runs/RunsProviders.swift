@@ -66,7 +66,7 @@ enum RunsError: LocalizedError, Equatable {
                 .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
             }
         case .paymentRequired:
-            .server(message: "This needs a Pro license — see the License tab.")
+            .server(message: "This needs a Pro license — see Settings → Pro.")
         case .pairingCodeExpired, .decoding:
             .server(message: api.errorDescription ?? "Something went wrong loading the run.")
         }
@@ -181,7 +181,7 @@ struct LiveRunsData: RunsData {
 
     /// GET /api/threads/{thread_id}/runs (thread_runs.py:571).
     func runs(forThread threadID: String) async throws -> [RunSummary] {
-        let dtos: [RunResponseDTO] = try await api.get("/api/threads/\(threadID)/runs")
+        let dtos: [RunResponseDTO] = try await api.get(Endpoints.Threads.runs(threadID))
         return dtos.map(Self.summary(from:)).sorted {
             ($0.updatedAt ?? .distantPast) > ($1.updatedAt ?? .distantPast)
         }
@@ -217,7 +217,7 @@ struct LiveRunsData: RunsData {
     /// reviewers have no backend source — always empty/nil from live data
     /// (mock-only types, see RunModels.swift).
     func runDetail(threadID: String, runID: String) async throws -> RunDetail {
-        let dto: RunResponseDTO = try await api.get("/api/threads/\(threadID)/runs/\(runID)")
+        let dto: RunResponseDTO = try await api.get(Endpoints.Threads.run(threadID, runID))
         let summary = Self.summary(from: dto)
         let steps = try await runSteps(threadID: threadID, runID: runID)
         return RunDetail(
@@ -236,7 +236,7 @@ struct LiveRunsData: RunsData {
     /// rather than rendering nothing.
     func runSteps(threadID: String, runID: String) async throws -> [RunStep] {
         let events: [RunEventDTO] = try await api.get(
-            "/api/threads/\(threadID)/runs/\(runID)/events?limit=500"
+            Endpoints.Threads.runEvents(threadID, runID) + "?limit=500"
         )
         let stepEvents = events.enumerated().compactMap { index, event -> RunStep? in
             let label = event.step ?? event.name
@@ -263,7 +263,7 @@ struct LiveRunsData: RunsData {
         }
         if !stepEvents.isEmpty { return stepEvents }
         // Fallback: one synthetic step reflecting the run's status.
-        let dto: RunResponseDTO = try await api.get("/api/threads/\(threadID)/runs/\(runID)")
+        let dto: RunResponseDTO = try await api.get(Endpoints.Threads.run(threadID, runID))
         let status = RunStatus(raw: dto.status)
         let state: RunStep.State
         switch status {

@@ -42,7 +42,10 @@ final class HomeViewModel {
         loadTask = Task { await loadSections(generation: current) }
     }
 
-    deinit {
+    // isolated deinit (Swift 6.2): deinit on a @MainActor class is nonisolated
+    // by default, so touching loadTask here was a compile error. Marked
+    // isolated per swift-concurrency-pro references/new-features.md.
+    isolated deinit {
         loadTask?.cancel()
     }
 

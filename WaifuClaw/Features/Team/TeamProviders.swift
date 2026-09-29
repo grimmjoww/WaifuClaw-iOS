@@ -82,7 +82,7 @@ enum TeamError: LocalizedError, Equatable {
                 .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
             }
         case .paymentRequired:
-            .server(message: "This needs a Pro license — see the License tab.")
+            .server(message: "This needs a Pro license — see Settings → Pro.")
         case .pairingCodeExpired, .decoding:
             .server(message: api.errorDescription ?? "Something went wrong loading the team.")
         case .byokKeyInvalid:

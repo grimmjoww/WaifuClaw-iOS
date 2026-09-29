@@ -140,7 +140,11 @@ enum DashboardError: LocalizedError, Equatable {
                 .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
             }
         case .paymentRequired:
-            .server(message: "This needs a Pro license — see the License tab.")
+            .server(message: "This needs a Pro license — see Settings → Pro.")
+        case .byokKeyInvalid(let provider):
+            // Added 2026-09-29 (leaf 1.6.1): APIError gained this case for the
+            // BYOK feature and this switch wasn't updated — non-exhaustive.
+            .server(message: "Your \(provider) API key was rejected — check it in Settings → API Key.")
         case .pairingCodeExpired, .decoding:
             .server(message: api.errorDescription ?? "Something went wrong loading the dashboard.")
         }
@@ -176,7 +180,7 @@ struct MockDashboardData: DashboardData {
     let mode: Mode
     let userName: String
 
-    init(mode: Mode = .loaded, userName: String = "Willie") {
+    init(mode: Mode = .loaded, userName: String = "there") {
         self.mode = mode
         self.userName = userName
     }
@@ -250,7 +254,7 @@ struct MockDashboardData: DashboardData {
                     MemoryCategoryCount(category: "preference", count: 31),
                     MemoryCategoryCount(category: "person", count: 18),
                 ],
-                latestFact: "Willie prefers magenta accents over generic black."
+                latestFact: "Prefers magenta accents over generic black."
             )
         case .empty:
             .empty
