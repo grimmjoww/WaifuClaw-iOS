@@ -2,6 +2,8 @@ import Foundation
 
 /// Every route the app calls, from ARCHITECTURE.md §1.3 + the verified
 /// backend routers (memory.py, thread_runs.py, threads.py).
+/// Runs routes verified 2026-09-29 against
+/// backend/app/gateway/routers/thread_runs.py.
 enum Endpoints {
     // MARK: Remote namespace (new in B2/B3)
 
@@ -29,6 +31,22 @@ enum Endpoints {
     enum Threads {
         static let create = "/api/threads" // POST {thread_id?, metadata?}
         static let search = "/api/threads/search" // POST {metadata, limit, offset, status?}
+        // MARK: Runs — verified against thread_runs.py (2026-09-29)
+        static func runs(_ threadID: String) -> String { // GET, thread_runs.py:571
+            "/api/threads/\(threadID)/runs"
+        }
+        static func run(_ threadID: String, _ runID: String) -> String { // GET, thread_runs.py:581
+            "/api/threads/\(threadID)/runs/\(runID)"
+        }
+        static func runEvents(_ threadID: String, _ runID: String) -> String { // GET, thread_runs.py:867
+            "/api/threads/\(threadID)/runs/\(runID)/events"
+        }
+        static func runJoin(_ threadID: String, _ runID: String) -> String { // GET SSE, thread_runs.py:677
+            "/api/threads/\(threadID)/runs/\(runID)/join"
+        }
+        static func skillReceipts(_ threadID: String, _ runID: String) -> String { // GET, thread_runs.py:883
+            "/api/threads/\(threadID)/runs/\(runID)/skill-receipts"
+        }
         static func runsStream(_ threadID: String) -> String {
             "/api/threads/\(threadID)/runs/stream"
         }
