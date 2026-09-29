@@ -64,29 +64,29 @@ enum TeamError: LocalizedError, Equatable {
         }
         switch api {
         case .notPaired:
-            .notPaired
+            return .notPaired
         case .deviceRevoked:
-            .sessionExpired
+            return .sessionExpired
         case .unreachable, .desktopNotResponding, .network:
-            .offline
+            return .offline
         case .tlsMismatch:
-            .server(message: "Security warning: your computer's identity changed.")
+            return .server(message: "Security warning: your computer's identity changed.")
         case .http(let status, let message):
             if status == 401 {
-                .sessionExpired
+                return .sessionExpired
             } else if status == 403 {
-                .agentsDisabled
+                return .agentsDisabled
             } else if status == 404 {
-                .server(message: "That thread no longer exists on your computer.")
+                return .server(message: "That thread no longer exists on your computer.")
             } else {
-                .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
+                return .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
             }
         case .paymentRequired:
-            .server(message: "This needs a Pro license — see Settings → Pro.")
+            return .server(message: "This needs a Pro license — see Settings → Pro.")
         case .pairingCodeExpired, .decoding:
-            .server(message: api.errorDescription ?? "Something went wrong loading the team.")
+            return .server(message: api.errorDescription ?? "Something went wrong loading the team.")
         case .byokKeyInvalid:
-            .server(message: api.errorDescription ?? "Something went wrong loading the team.")
+            return .server(message: api.errorDescription ?? "Something went wrong loading the team.")
         }
     }
 }
@@ -309,7 +309,7 @@ struct LiveTeamData: TeamData {
             do {
                 snippet = try await messages(threadID: convo.id, limit: 1).first?.displayText
             } catch is CancellationError {
-                throw // A cancelled load is a lifecycle event, not a failure.
+                throw CancellationError() // A cancelled load is a lifecycle event, not a failure.
             } catch {
                 snippet = nil
             }
