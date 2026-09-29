@@ -34,5 +34,8 @@
     <array>
         <string>_waifuclaw._tcp</string>
     </array>
+    <!-- Face ID: app lock -->
+    <key>NSFaceIDUsageDescription</key>
+    <string>WaifuClaw uses Face ID to lock the app and keep your agent access private.</string>
 </dict>
 </plist>

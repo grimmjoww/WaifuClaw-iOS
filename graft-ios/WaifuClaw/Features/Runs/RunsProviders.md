@@ -1,0 +1,26 @@
+# WaifuClaw/Features/Runs/RunsProviders.swift
+
+- RunsError · enum · L25-L74 — enum RunsError: LocalizedError, Equatable
+- describe · method · L47-L73 — static func describe(_ error: Error) -> RunsError
+- RunsData · interface · L80-L94 — protocol RunsData
+- runs · method · L82-L82 — func runs(forThread threadID: String) async throws -> [RunSummary]
+- recentRuns · method · L84-L84 — func recentRuns(limit: Int) async throws -> [RunSummary]
+- runDetail · method · L86-L86 — func runDetail(threadID: String, runID: String) async throws -> RunDetail
+- runSteps · method · L88-L88 — func runSteps(threadID: String, runID: String) async throws -> [RunStep]
+- cancelRun · method · L93-L93 — func cancelRun(threadID: String, runID: String, rollback: Bool) async throws
+- RunResponseDTO · struct · L102-L141 — private struct RunResponseDTO: Decodable
+- CodingKeys · enum · L112-L115 — enum CodingKeys: String, CodingKey
+- MetaKeys · enum · L117-L119 — enum MetaKeys: String, CodingKey
+- RunResponseDTO · method · L121-L140 — init(from decoder: Decoder) throws
+- RunEventDTO · struct · L146-L166 — private struct RunEventDTO: Decodable
+- CodingKeys · enum · L152-L155 — enum CodingKeys: String, CodingKey
+- RunEventDTO · method · L157-L165 — init(from decoder: Decoder) throws
+- ThreadLiteDTO · struct · L169-L172 — private struct ThreadLiteDTO: Decodable
+- runsISOFormatter · variable · L174-L174 — private let runsISOFormatter = ISO8601DateFormatter()
+- LiveRunsData · struct · L177-L323 — struct LiveRunsData: RunsData
+- runs · method · L183-L188 — func runs(forThread threadID: String) async throws -> [RunSummary]
+- recentRuns · method · L194-L211 — func recentRuns(limit: Int) async throws -> [RunSummary]
+- runDetail · method · L219-L231 — func runDetail(threadID: String, runID: String) async throws -> RunDetail
+- runSteps · method · L237-L283 — func runSteps(threadID: String, runID: String) async throws -> [RunStep]
+- cancelRun · method · L296-L300 — func cancelRun(threadID: String, runID: String, rollback: Bool) async throws
+- summary · method · L304-L322 — private static func summary(from dto: RunResponseDTO) -> RunSummary
