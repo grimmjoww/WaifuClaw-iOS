@@ -1,17 +1,25 @@
 # WaifuClaw/Features/Home/HomeView.swift
 
-- HomeView · struct · L31-L86 — struct HomeView: View
-- HomeView · method · L44-L47 — init(viewModel: HomeViewModel, onViewAllThreads: (() -> Void)? = nil)
-- retryAll · method · L82-L85 — @MainActor private func retryAll()
-- HomeGreeting · struct · L93-L116 — private struct HomeGreeting: View
-- HomeAgentSection · struct · L120-L138 — private struct HomeAgentSection: View
-- HomeAgentCard · struct · L140-L175 — private struct HomeAgentCard: View
-- HomeStatsSection · struct · L179-L246 — private struct HomeStatsSection: View
-- StatErrorTile · struct · L249-L269 — private struct StatErrorTile: View
-- HomeThreadsSection · struct · L273-L313 — private struct HomeThreadsSection: View
-- HomeThreadRow · struct · L315-L356 — private struct HomeThreadRow: View
-- HomeMemorySection · struct · L360-L388 — private struct HomeMemorySection: View
-- HomeMemoryCard · struct · L390-L423 — private struct HomeMemoryCard: View
-- HomeSkeleton · struct · L429-L438 — private struct HomeSkeleton: View
-- HomeEmptyState · struct · L442-L461 — private struct HomeEmptyState: View
-- HomeErrorCard · struct · L465-L496 — private struct HomeErrorCard: View
+- HomeView · struct · L31-L106 — struct HomeView: View
+- HomeView · method · L54-L64 — init( viewModel: HomeViewModel, systemHealthData: (any SystemHealthData)? = nil, onViewAllThreads: (() -> Void)? = nil, onPairPhone: (() -> Void)? = nil )
+- retryAll · method · L102-L105 — @MainActor private func retryAll()
+- HomeGreeting · struct · L113-L136 — private struct HomeGreeting: View
+- HomeAgentSection · struct · L140-L158 — private struct HomeAgentSection: View
+- HomeAgentCard · struct · L160-L195 — private struct HomeAgentCard: View
+- HomeStatsSection · struct · L199-L218 — private struct HomeStatsSection: View
+- HomeModelTile · struct · L220-L238 — private struct HomeModelTile: View
+- HomeThreadsTile · struct · L240-L258 — private struct HomeThreadsTile: View
+- HomeMemoryTile · struct · L260-L278 — private struct HomeMemoryTile: View
+- StatErrorTile · struct · L281-L301 — private struct StatErrorTile: View
+- HomeThreadsSection · struct · L305-L345 — private struct HomeThreadsSection: View
+- HomeThreadRow · struct · L347-L388 — private struct HomeThreadRow: View
+- HomeMemorySection · struct · L392-L420 — private struct HomeMemorySection: View
+- HomeMemoryCard · struct · L422-L455 — private struct HomeMemoryCard: View
+- HomeSkeleton · struct · L461-L470 — private struct HomeSkeleton: View
+- HomeEmptyState · struct · L474-L493 — private struct HomeEmptyState: View
+- HomeErrorCard · struct · L497-L529 — private struct HomeErrorCard: View
+- HangingDashboardData · struct · L536-L553 — private struct HangingDashboardData: DashboardData
+- greeting · method · L537-L537 — func greeting() -> DashboardGreeting
+- activeAgent · method · L539-L542 — func activeAgent() async throws -> ActiveAgentInfo
+- todaysThreads · method · L544-L547 — func todaysThreads() async throws -> [ThreadSummary]
+- memorySummary · method · L549-L552 — func memorySummary() async throws -> MemorySummary

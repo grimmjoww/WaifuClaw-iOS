@@ -1,0 +1,32 @@
+# WaifuClaw/Features/Session/SessionData.swift
+
+- SessionData · interface · L8-L21 — protocol SessionData
+- sessionEvents · method · L11-L11 — func sessionEvents(threadID: String, runID: String) async throws -> [SessionEvent]
+- skillReceipts · method · L14-L14 — func skillReceipts(threadID: String, runID: String) async throws -> SkillReceiptList
+- sessionEventStream · method · L20-L20 — func sessionEventStream(threadID: String, runID: String) -> AsyncThrowingStream<SessionEvent, Error>
+- SessionStreamError · enum · L24-L27 — enum SessionStreamError: Error, Equatable
+- SessionJSON · enum · L33-L102 — private enum SessionJSON: Decodable
+- SessionJSON · method · L41-L74 — init(from decoder: Decoder) throws
+- StoredEventDTO · struct · L109-L114 — private struct StoredEventDTO: Decodable
+- SkillReceiptEventDTO · struct · L116-L118 — private struct SkillReceiptEventDTO: Decodable
+- SkillReceiptDTO · struct · L120-L128 — private struct SkillReceiptDTO: Decodable
+- SkillReceiptEnvelopeDTO · struct · L130-L134 — private struct SkillReceiptEnvelopeDTO: Decodable
+- sessionISOFormatter · variable · L136-L136 — private let sessionISOFormatter = ISO8601DateFormatter()
+- SessionEvent · module · L140-L200 — extension SessionEvent
+- SessionEvent · method · L141-L152 — init(stored dto: StoredEventDTO, index: Int)
+- SessionEvent · method · L154-L164 — init(liveEvent name: String, data: String, index: Int)
+- summarizeStored · method · L166-L194 — private static func summarizeStored(kind: String, dto: StoredEventDTO) -> (String, Bool)
+- truncate · method · L196-L199 — private static func truncate(_ value: String, _ limit: Int) -> String
+- LiveSessionData · struct · L210-L387 — struct LiveSessionData: SessionData
+- LiveSessionData · method · L217-L221 — @MainActor init(api: APIClient)
+- sessionEvents · method · L223-L228 — func sessionEvents(threadID: String, runID: String) async throws -> [SessionEvent]
+- skillReceipts · method · L230-L248 — func skillReceipts(threadID: String, runID: String) async throws -> SkillReceiptList
+- sessionEventStream · method · L250-L267 — func sessionEventStream(threadID: String, runID: String) -> AsyncThrowingStream<SessionEvent, Error>
+- pumpJoinStream · method · L276-L362 — private static func pumpJoinStream( threadID: String, runID: String, baseURL: URL, connectionKind: ConnectionKind, continuation: AsyncThrowingStream<SessionEvent, Error>.Continuation ) async
+- mapStreamError · method · L367-L386 — private static func mapStreamError( _ error: Error, pinningDelegate: TLSPinningDelegate, connectionKind: ConnectionKind ) -> Error
+- MockSessionData · struct · L393-L444 — struct MockSessionData: SessionData
+- Mode · enum · L394-L398 — enum Mode
+- MockSessionData · method · L402-L404 — init(mode: Mode = .loaded)
+- sessionEvents · method · L406-L419 — func sessionEvents(threadID: String, runID: String) async throws -> [SessionEvent]
+- skillReceipts · method · L421-L437 — func skillReceipts(threadID: String, runID: String) async throws -> SkillReceiptList
+- sessionEventStream · method · L439-L443 — func sessionEventStream(threadID: String, runID: String) -> AsyncThrowingStream<SessionEvent, Error>

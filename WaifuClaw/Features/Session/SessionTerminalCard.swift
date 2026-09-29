@@ -95,6 +95,7 @@ struct SessionTerminalCard: View {
             .font(Theme.caption)
             .foregroundStyle(Theme.textSecondary)
             .toggleStyle(.switch)
+            .frame(minHeight: 44)
             .accessibilityHint("When on, the terminal follows new output. Saved for this session.")
         }
     }

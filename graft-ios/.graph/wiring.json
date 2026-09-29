@@ -1,8 +1,8 @@
 {
   "meta": {
     "version": 1,
-    "nodeCount": 591,
-    "edgeCount": 1296,
+    "nodeCount": 678,
+    "edgeCount": 1493,
     "languages": [
       "swift"
     ],
@@ -3392,22 +3392,100 @@
       "name": "HomeView.swift",
       "kind": "file",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L1-L539",
+      "span": "L1-L605",
       "signature": null,
       "exported": true,
       "origin": "ast",
-      "body_hash": "75aa5693332131cebe7fd7b4e3b5c34f7e2015b96409c9d74656c4bb40ac4b25",
-      "chars": 18026,
+      "body_hash": "d3eff281aba0a359e6c3fe026c8d0f0ed0754ba3774bb2f56aeb5fb219b7b7ab",
+      "chars": 20548,
       "summary_state": "pending",
       "summary": null,
       "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData",
+      "name": "HangingDashboardData",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Home/HomeView.swift",
+      "span": "L536-L553",
+      "signature": "private struct HangingDashboardData: DashboardData",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "90749aaf54544120f850bdb980e272c44bfdeb03823192188f1192f2cab68506",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData.activeAgent",
+      "name": "activeAgent",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Home/HomeView.swift",
+      "span": "L539-L542",
+      "signature": "func activeAgent() async throws -> ActiveAgentInfo",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "fa1bd2abd8e591b7624e015cfd964d991ebf54124a4f3acfcf7f70c31cf51897",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "HangingDashboardData",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData.greeting",
+      "name": "greeting",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Home/HomeView.swift",
+      "span": "L537-L537",
+      "signature": "func greeting() -> DashboardGreeting",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "f2be9218e6c5844f509d495cfb5f0e52f0a4ac7ce3fbb4816f66cb5d02fa658f",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "HangingDashboardData",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData.memorySummary",
+      "name": "memorySummary",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Home/HomeView.swift",
+      "span": "L549-L552",
+      "signature": "func memorySummary() async throws -> MemorySummary",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "0b9bae4422358e665cbd7cf4ce8a0c2ee5e539a40fbe2955d2a19bd1fff6ff7e",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "HangingDashboardData",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData.todaysThreads",
+      "name": "todaysThreads",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Home/HomeView.swift",
+      "span": "L544-L547",
+      "signature": "func todaysThreads() async throws -> [ThreadSummary]",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "52e964ec8bc4fec07c56094e830c13eaae3404fcf10cfa623aba06787cb85f3c",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "HangingDashboardData",
+      "arity": 0
     },
     {
       "id": "WaifuClaw/Features/Home/HomeView.swift#HomeAgentCard",
       "name": "HomeAgentCard",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L140-L175",
+      "span": "L160-L195",
       "signature": "private struct HomeAgentCard: View",
       "exported": false,
       "origin": "ast",
@@ -3421,7 +3499,7 @@
       "name": "HomeAgentSection",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L120-L138",
+      "span": "L140-L158",
       "signature": "private struct HomeAgentSection: View",
       "exported": false,
       "origin": "ast",
@@ -3435,7 +3513,7 @@
       "name": "HomeEmptyState",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L442-L461",
+      "span": "L474-L493",
       "signature": "private struct HomeEmptyState: View",
       "exported": false,
       "origin": "ast",
@@ -3449,11 +3527,11 @@
       "name": "HomeErrorCard",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L465-L496",
+      "span": "L497-L529",
       "signature": "private struct HomeErrorCard: View",
       "exported": false,
       "origin": "ast",
-      "body_hash": "9bb66cb514e87481adc762872256e08b1b063572703bd1c1ece4665004b93937",
+      "body_hash": "c50e878e14de7a632fb5061bdcfa4ca15e920f2c2d4e541a57b640c9bd5c6433",
       "summary_state": "pending",
       "summary": null,
       "crux": null
@@ -3463,7 +3541,7 @@
       "name": "HomeGreeting",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L93-L116",
+      "span": "L113-L136",
       "signature": "private struct HomeGreeting: View",
       "exported": false,
       "origin": "ast",
@@ -3477,7 +3555,7 @@
       "name": "HomeMemoryCard",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L390-L423",
+      "span": "L422-L455",
       "signature": "private struct HomeMemoryCard: View",
       "exported": false,
       "origin": "ast",
@@ -3491,7 +3569,7 @@
       "name": "HomeMemorySection",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L360-L388",
+      "span": "L392-L420",
       "signature": "private struct HomeMemorySection: View",
       "exported": false,
       "origin": "ast",
@@ -3501,11 +3579,39 @@
       "crux": null
     },
     {
+      "id": "WaifuClaw/Features/Home/HomeView.swift#HomeMemoryTile",
+      "name": "HomeMemoryTile",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Home/HomeView.swift",
+      "span": "L260-L278",
+      "signature": "private struct HomeMemoryTile: View",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "913b345af7e900f8088afcbe05ea50dfb4360a268baea301c9a784fd797ad473",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Home/HomeView.swift#HomeModelTile",
+      "name": "HomeModelTile",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Home/HomeView.swift",
+      "span": "L220-L238",
+      "signature": "private struct HomeModelTile: View",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "43b949f30ec7eef635c8c89e239bf4926bbe60146adc72a31903cf4050ba7655",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
       "id": "WaifuClaw/Features/Home/HomeView.swift#HomeSkeleton",
       "name": "HomeSkeleton",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L429-L438",
+      "span": "L461-L470",
       "signature": "private struct HomeSkeleton: View",
       "exported": false,
       "origin": "ast",
@@ -3519,11 +3625,11 @@
       "name": "HomeStatsSection",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L179-L246",
+      "span": "L199-L218",
       "signature": "private struct HomeStatsSection: View",
       "exported": false,
       "origin": "ast",
-      "body_hash": "0a247b63f2e0a5a140bbd66545039d7c4bdbe44d1d8f36973d0f21aa4055945a",
+      "body_hash": "6075ef546d4b5f0521480c0385e01248e788e0ab92b75f6b1b81774277872cc4",
       "summary_state": "pending",
       "summary": null,
       "crux": null
@@ -3533,7 +3639,7 @@
       "name": "HomeThreadRow",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L315-L356",
+      "span": "L347-L388",
       "signature": "private struct HomeThreadRow: View",
       "exported": false,
       "origin": "ast",
@@ -3547,7 +3653,7 @@
       "name": "HomeThreadsSection",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L273-L313",
+      "span": "L305-L345",
       "signature": "private struct HomeThreadsSection: View",
       "exported": false,
       "origin": "ast",
@@ -3557,15 +3663,29 @@
       "crux": null
     },
     {
+      "id": "WaifuClaw/Features/Home/HomeView.swift#HomeThreadsTile",
+      "name": "HomeThreadsTile",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Home/HomeView.swift",
+      "span": "L240-L258",
+      "signature": "private struct HomeThreadsTile: View",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "4e674806d2e43ac2d67286b337daadbfff27e7d445927879727c7e8e74ee19f7",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
       "id": "WaifuClaw/Features/Home/HomeView.swift#HomeView",
       "name": "HomeView",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L31-L86",
+      "span": "L31-L106",
       "signature": "struct HomeView: View",
       "exported": true,
       "origin": "ast",
-      "body_hash": "cddde4b1ee1e369ac0ed71ac33a71f9bc361a01e0c84f9fdda6f571cf0e17f12",
+      "body_hash": "2885b7b05864ce7a78ab38ecb72e70f5ee4335431ecb7ed4f506361fc2db08b5",
       "summary_state": "pending",
       "summary": null,
       "crux": null
@@ -3575,11 +3695,11 @@
       "name": "HomeView",
       "kind": "method",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L44-L47",
-      "signature": "init(viewModel: HomeViewModel, onViewAllThreads: (() -> Void)? = nil)",
+      "span": "L54-L64",
+      "signature": "init( viewModel: HomeViewModel, systemHealthData: (any SystemHealthData)? = nil, onViewAllThreads: (() -> Void)? = nil, onPairPhone: (() -> Void)? = nil )",
       "exported": true,
       "origin": "ast",
-      "body_hash": "535a8b33192b419a6501e9a391c5074803221008313009c5ccadfc4b0744cec7",
+      "body_hash": "4f820111d8bd35838d835ffa1d969e2fe9c93593f555b397b88e6bbe8df9be1d",
       "summary_state": "pending",
       "summary": null,
       "crux": null,
@@ -3592,7 +3712,7 @@
       "name": "retryAll",
       "kind": "method",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L82-L85",
+      "span": "L102-L105",
       "signature": "@MainActor private func retryAll()",
       "exported": false,
       "origin": "ast",
@@ -3608,7 +3728,7 @@
       "name": "StatErrorTile",
       "kind": "struct",
       "path": "WaifuClaw/Features/Home/HomeView.swift",
-      "span": "L249-L269",
+      "span": "L281-L301",
       "signature": "private struct StatErrorTile: View",
       "exported": false,
       "origin": "ast",
@@ -3797,8 +3917,8 @@
       "signature": null,
       "exported": true,
       "origin": "ast",
-      "body_hash": "d64caf578c494b37b195ce3356d18cd0ee94e687a2baed6382e48a21a8110ecf",
-      "chars": 19646,
+      "body_hash": "1974680467a48b4c7c4d08009364891920fcc1a14aa646b6cfd0d90a02043d83",
+      "chars": 19636,
       "summary_state": "pending",
       "summary": null,
       "crux": null
@@ -4040,7 +4160,7 @@
       "signature": "struct MockSystemHealthData: SystemHealthData",
       "exported": true,
       "origin": "ast",
-      "body_hash": "4638a60cf771dae4f4828a08636b435f01731fc977aace2428f2ee7d67b626e3",
+      "body_hash": "11c825d7215f3eb8a92aaeeabb9213cd3a22cb9f4b493670de3ab12638fd6b51",
       "summary_state": "pending",
       "summary": null,
       "crux": null
@@ -7199,6 +7319,1204 @@
       "summary_state": "pending",
       "summary": null,
       "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift",
+      "name": "SessionData.swift",
+      "kind": "file",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L1-L445",
+      "signature": null,
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "984b26fe660a923006190f5ca8489778cd14b090736cb69db682d49210552af8",
+      "chars": 17269,
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData",
+      "name": "LiveSessionData",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L210-L387",
+      "signature": "struct LiveSessionData: SessionData",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "5c9b625e3a247b022245f68df6e094ee6ee32b6b635c38239f3bd654a6ee1f54",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.LiveSessionData",
+      "name": "LiveSessionData",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L217-L221",
+      "signature": "@MainActor init(api: APIClient)",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "57a00f92ff94cd3721eed36f9b67bac3a09e1e81231507e1a0037e33e0d66e20",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "LiveSessionData",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.mapStreamError",
+      "name": "mapStreamError",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L367-L386",
+      "signature": "private static func mapStreamError( _ error: Error, pinningDelegate: TLSPinningDelegate, connectionKind: ConnectionKind ) -> Error",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "4386f28312eb319945d51ae4d47642f45513e4e55546c0a3e48f95dd727e3cd3",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "LiveSessionData",
+      "arity": 3
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.pumpJoinStream",
+      "name": "pumpJoinStream",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L276-L362",
+      "signature": "private static func pumpJoinStream( threadID: String, runID: String, baseURL: URL, connectionKind: ConnectionKind, continuation: AsyncThrowingStream<SessionEvent, Error>.Continuation ) async",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "fd525b7117d1a8af37ec530debe2d1a28f231b86dd0be5c9bc92c68e9e33a3f0",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "LiveSessionData",
+      "arity": 5
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.sessionEvents",
+      "name": "sessionEvents",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L223-L228",
+      "signature": "func sessionEvents(threadID: String, runID: String) async throws -> [SessionEvent]",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "124895dc81a9fd0862987689814deaf8a897b8cb6937440cd91216c6316338c6",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "LiveSessionData",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.sessionEventStream",
+      "name": "sessionEventStream",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L250-L267",
+      "signature": "func sessionEventStream(threadID: String, runID: String) -> AsyncThrowingStream<SessionEvent, Error>",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "0f80db317a47a9c5dc864c95d19dc19c37e1c10b76920c69e60364985e957153",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "LiveSessionData",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.skillReceipts",
+      "name": "skillReceipts",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L230-L248",
+      "signature": "func skillReceipts(threadID: String, runID: String) async throws -> SkillReceiptList",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "7953b297e6200a4c919a795fe6a9198a39092054e18e76f8066a0287725c1039",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "LiveSessionData",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "name": "MockSessionData",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L393-L444",
+      "signature": "struct MockSessionData: SessionData",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "0261cf9d95b0aaf2e8323e76e659dc559b10dc7b562c63aea746136916dd5051",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.MockSessionData",
+      "name": "MockSessionData",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L402-L404",
+      "signature": "init(mode: Mode = .loaded)",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "3a1c2baf18b7503b03c8bde3f3f98414acb972d0c9d2d9f7cf20e80491f3d001",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "MockSessionData",
+      "arity": 0,
+      "variadic": true
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.Mode",
+      "name": "Mode",
+      "kind": "enum",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L394-L398",
+      "signature": "enum Mode",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "018a6098fdd03659cebea9e2bec0c297358c0c85add7c6ab056a81f210aed39b",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.sessionEvents",
+      "name": "sessionEvents",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L406-L419",
+      "signature": "func sessionEvents(threadID: String, runID: String) async throws -> [SessionEvent]",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "a92553e33c847b811dbdb7318fc70a5459661330b6efec058ec31e4f8a6658c0",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "MockSessionData",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.sessionEventStream",
+      "name": "sessionEventStream",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L439-L443",
+      "signature": "func sessionEventStream(threadID: String, runID: String) -> AsyncThrowingStream<SessionEvent, Error>",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "ae79e627f8fb2f42cd0de1865c9eb631a7cc0ad50999263edba5b57055d2d0d1",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "MockSessionData",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.skillReceipts",
+      "name": "skillReceipts",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L421-L437",
+      "signature": "func skillReceipts(threadID: String, runID: String) async throws -> SkillReceiptList",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "4ad8d946d79296280025ecbeefce9c464effbc997fb39b5e8655b3a16ab9e926",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "MockSessionData",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionData",
+      "name": "SessionData",
+      "kind": "interface",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L8-L21",
+      "signature": "protocol SessionData",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "b12195d5422d6c2395749ba24dba36f7606ab21dfefdc518de9fd3b41646193b",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionData.sessionEvents",
+      "name": "sessionEvents",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L11-L11",
+      "signature": "func sessionEvents(threadID: String, runID: String) async throws -> [SessionEvent]",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "4a9462c63db26a529cbc9269b85724c38e4ad1ff8edbe5859a6da758634e682d",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionData",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionData.sessionEventStream",
+      "name": "sessionEventStream",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L20-L20",
+      "signature": "func sessionEventStream(threadID: String, runID: String) -> AsyncThrowingStream<SessionEvent, Error>",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "21b15d463fa7800ffb6ec0104e9c42957942c84d0ef1b6a82462b020b9bc78d4",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionData",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionData.skillReceipts",
+      "name": "skillReceipts",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L14-L14",
+      "signature": "func skillReceipts(threadID: String, runID: String) async throws -> SkillReceiptList",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "4c86d37c4c14240b084627c03d505839ae8ed7a61411a4f9000a0104a8dd64a7",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionData",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent",
+      "name": "SessionEvent",
+      "kind": "module",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L140-L200",
+      "signature": "extension SessionEvent",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "a9e846e9b060347947b076f4827b74ef594944d59b2fdff01b39fa181405f317",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent.SessionEvent",
+      "name": "SessionEvent",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L141-L152",
+      "signature": "init(stored dto: StoredEventDTO, index: Int)",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "c9a37eac0b95f942d5680746c22030657face426f9df031fecfe0202618fae3e",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionEvent",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent.SessionEvent~2",
+      "name": "SessionEvent",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L154-L164",
+      "signature": "init(liveEvent name: String, data: String, index: Int)",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "e9a336dbb4a626c5e70da2126164f26198b72baac50d4a2e1a302d3843510790",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionEvent",
+      "arity": 3
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent.summarizeStored",
+      "name": "summarizeStored",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L166-L194",
+      "signature": "private static func summarizeStored(kind: String, dto: StoredEventDTO) -> (String, Bool)",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "39e5841d32f2c9577f45a290271e6c1cc4f64484a68a00c7ee592d241385fd16",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionEvent",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent.truncate",
+      "name": "truncate",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L196-L199",
+      "signature": "private static func truncate(_ value: String, _ limit: Int) -> String",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "f60250050fae9510cbba39b5d1fed9303db0a36f53f7f101b266c0ecc8592101",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionEvent",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#sessionISOFormatter",
+      "name": "sessionISOFormatter",
+      "kind": "variable",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L136-L136",
+      "signature": "private let sessionISOFormatter = ISO8601DateFormatter()",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "eaaf68e9e9149a9bb3dd3b9063e3c10d012b27dad722e580f1b7e39b88f4d738",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionJSON",
+      "name": "SessionJSON",
+      "kind": "enum",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L33-L102",
+      "signature": "private enum SessionJSON: Decodable",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "2016c608fb2e9ca63053095814ca715c1598aa2a9f27eae48886ba78a587a2c4",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionJSON.SessionJSON",
+      "name": "SessionJSON",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L41-L74",
+      "signature": "init(from decoder: Decoder) throws",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "a02181580cf0b9ced27c1e35a7ba0651934749ff292b2c9dc9f2c5425f69561f",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionJSON",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SessionStreamError",
+      "name": "SessionStreamError",
+      "kind": "enum",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L24-L27",
+      "signature": "enum SessionStreamError: Error, Equatable",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "3dac9e1799fa6540dd313d8c6b5f6495503b358b1a86036923f2b939e95f743a",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SkillReceiptDTO",
+      "name": "SkillReceiptDTO",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L120-L128",
+      "signature": "private struct SkillReceiptDTO: Decodable",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "fc6173700e7a2a83444258101be017c58ae35a0490d83e075103e144853a878f",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SkillReceiptEnvelopeDTO",
+      "name": "SkillReceiptEnvelopeDTO",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L130-L134",
+      "signature": "private struct SkillReceiptEnvelopeDTO: Decodable",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "b4e88d7919f5a3db3db8e0e5440b71c3dd5740ddf4d710e0558663186407bb34",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#SkillReceiptEventDTO",
+      "name": "SkillReceiptEventDTO",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L116-L118",
+      "signature": "private struct SkillReceiptEventDTO: Decodable",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "d1c13974ff41051b1795a320b7d265c9300ba65b9582c8fcd41c05fb38debe91",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionData.swift#StoredEventDTO",
+      "name": "StoredEventDTO",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionData.swift",
+      "span": "L109-L114",
+      "signature": "private struct StoredEventDTO: Decodable",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "29456ead96f5aa953c940ff3d1cc6dd0136d2ac13bad90148bf539868b85e2ba",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionDetailView.swift",
+      "name": "SessionDetailView.swift",
+      "kind": "file",
+      "path": "WaifuClaw/Features/Session/SessionDetailView.swift",
+      "span": "L1-L149",
+      "signature": null,
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "0c5113d04d265edf0990e7fb6c7fd88010c3442606f85c974cb641a6ace0a640",
+      "chars": 5313,
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "name": "SessionDetailView",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionDetailView.swift",
+      "span": "L8-L134",
+      "signature": "struct SessionDetailView: View",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "52600fd1b7cabc6d696379e78ca065a50138c6d7c50e0f4a31596ef1c16f641d",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView.SessionDetailView",
+      "name": "SessionDetailView",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionDetailView.swift",
+      "span": "L17-L20",
+      "signature": "init(summary: RunSummary, data: any SessionData & Sendable)",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "9e95193cb7c1726e85a818e9ade7082dc6312d3e43882ad60aaf4ed90abbaa94",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailView",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionListView.swift",
+      "name": "SessionListView.swift",
+      "kind": "file",
+      "path": "WaifuClaw/Features/Session/SessionListView.swift",
+      "span": "L1-L292",
+      "signature": null,
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "fd2e1f0ff0e1d648dcda837fd90d82ae678ffcdad51bd5f5b2e1d8b4ae2cad05",
+      "chars": 9887,
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionListView.swift#SessionEmptyState",
+      "name": "SessionEmptyState",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionListView.swift",
+      "span": "L219-L237",
+      "signature": "struct SessionEmptyState: View",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "5a59d7e0c508df39959203976adf7e397ceeb966026fe0002ea609173a2ca4f3",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionListView.swift#SessionErrorCard",
+      "name": "SessionErrorCard",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionListView.swift",
+      "span": "L241-L270",
+      "signature": "struct SessionErrorCard: View",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "6fe4bd533cced51b7ee1806abc68bf62cdba11e5ee1a6ed17185f6c168cd2712",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionListView.swift#SessionFilter",
+      "name": "SessionFilter",
+      "kind": "enum",
+      "path": "WaifuClaw/Features/Session/SessionListView.swift",
+      "span": "L6-L23",
+      "signature": "private enum SessionFilter: String, CaseIterable, Identifiable",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "16b077030e252ae76ee031b3cffaf1ffaccbaf5e5b392108262fabd1da5e250b",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionListView.swift#SessionFilter.matches",
+      "name": "matches",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionListView.swift",
+      "span": "L13-L22",
+      "signature": "func matches(_ status: RunStatus) -> Bool",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "d5ed20ce3e866ab8ac510cfff98204047ed55cb966704e9abe505e0749aec591",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionFilter",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "name": "SessionListView",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionListView.swift",
+      "span": "L30-L214",
+      "signature": "struct SessionListView: View",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "f9d805621ddec8a804571cc8befde4e4ecbd247f110f8ef7d713f943017f4428",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.SessionListView",
+      "name": "SessionListView",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionListView.swift",
+      "span": "L41-L44",
+      "signature": "init(runsData: any RunsData & Sendable, sessionData: any SessionData & Sendable)",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "d206dd2951d727ba0342207ba00d38d48ed9d9672e117d533a4a12ed9175989b",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionListView",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.sessionRow",
+      "name": "sessionRow",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionListView.swift",
+      "span": "L154-L180",
+      "signature": "private func sessionRow(_ session: RunSummary) -> some View",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "e4a5ba83edcf4470961dcf0cde6bbbf9a94b92a4c477034a571a9a7de0719f51",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionListView",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.tone",
+      "name": "tone",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionListView.swift",
+      "span": "L184-L197",
+      "signature": "static func tone(for status: RunStatus) -> BadgeTone",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "4e3b9dcc1bc4a7afdb6555f6d3df3cd410bb030a56863e40719af186ecc20004",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionListView",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionModels.swift",
+      "name": "SessionModels.swift",
+      "kind": "file",
+      "path": "WaifuClaw/Features/Session/SessionModels.swift",
+      "span": "L1-L70",
+      "signature": null,
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "82644cf19eb3bb5f10a5ecedac103b9ad23348b9652165313e70f84c68427d69",
+      "chars": 2529,
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionModels.swift#SessionEvent",
+      "name": "SessionEvent",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionModels.swift",
+      "span": "L12-L21",
+      "signature": "struct SessionEvent: Identifiable, Sendable, Equatable",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "fac8bfbc50e12f694546b9ff796f8545a02697723969fb4e47a9e8f89e2e43d2",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionModels.swift#SessionStreamPhase",
+      "name": "SessionStreamPhase",
+      "kind": "enum",
+      "path": "WaifuClaw/Features/Session/SessionModels.swift",
+      "span": "L27-L41",
+      "signature": "enum SessionStreamPhase: Equatable",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "083f3ead5506f5f70946c11e6071175f46e79495f070b5b51bdd604eac5a39ea",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceipt",
+      "name": "SkillReceipt",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionModels.swift",
+      "span": "L50-L59",
+      "signature": "struct SkillReceipt: Identifiable, Sendable, Equatable",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "e5c53575d3a44a0cd33851aa0c9df1c63affd9a90a5f6e3dfe311c103a86b56d",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceiptList",
+      "name": "SkillReceiptList",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionModels.swift",
+      "span": "L63-L69",
+      "signature": "struct SkillReceiptList: Sendable, Equatable",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "b70c75d50d2357868e1ff032c311ff84e1eacebcf52c007241fa6b928d28b775",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "name": "SessionSkillsCard.swift",
+      "kind": "file",
+      "path": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "span": "L1-L142",
+      "signature": null,
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "6862cba0d94211a64b128dd354462ed25f2d5009f3d0b33c9263bf0e3db82c2c",
+      "chars": 5503,
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "name": "SessionSkillsCard",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "span": "L11-L105",
+      "signature": "struct SessionSkillsCard: View",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "e31a5921a17de998aaa0b6d92d94b6294570c4cf585b20daa939e24559083f23",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard.badge",
+      "name": "badge",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "span": "L73-L91",
+      "signature": "private static func badge(for receipt: SkillReceipt) -> (text: String, tone: BadgeTone)",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "2925ccc2778acbe6589306b412d932e62273842283857ecb550f2f2fb57ff582",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionSkillsCard",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard.skillsList",
+      "name": "skillsList",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "span": "L44-L69",
+      "signature": "private func skillsList(_ list: SkillReceiptList) -> some View",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "55265073412164f83fe7eee1ee402aadbf40b20162d078e1ca30983f7c700776",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionSkillsCard",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionSkillsCard.swift#viewModel",
+      "name": "viewModel",
+      "kind": "variable",
+      "path": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "span": "L108-L111",
+      "signature": "let viewModel = SessionDetailViewModel( summary: MockRunsData.summaries[0], data: MockSessionData() )",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "b819b1467728ea58d067e3f01c647386b99aa9be8b2b7e52f4b2d7b9aebb1a17",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionSkillsCard.swift#viewModel~2",
+      "name": "viewModel",
+      "kind": "variable",
+      "path": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "span": "L130-L133",
+      "signature": "let viewModel = SessionDetailViewModel( summary: MockRunsData.summaries[0], data: MockSessionData() )",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "b819b1467728ea58d067e3f01c647386b99aa9be8b2b7e52f4b2d7b9aebb1a17",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "name": "SessionTerminalCard.swift",
+      "kind": "file",
+      "path": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "span": "L1-L203",
+      "signature": null,
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "9a0fd8ef38002835299a207ca8af2a244d0fae19386dfa2330cf2da1c7af6ad2",
+      "chars": 7122,
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionStreamPhase",
+      "name": "SessionStreamPhase",
+      "kind": "module",
+      "path": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "span": "L5-L39",
+      "signature": "extension SessionStreamPhase",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "c234c8ae82235f6928ffe0b9ee6586176f8d9a839b659431c22f8b9fd28cbcf9",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionStreamPhase.badgeText",
+      "name": "badgeText",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "span": "L8-L23",
+      "signature": "func badgeText(everConnected: Bool) -> String",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "acb55665890d43e6265c7f42d062abd6a3bdf617209ee0c875215dd8408f533e",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionStreamPhase",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "name": "SessionTerminalCard",
+      "kind": "struct",
+      "path": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "span": "L46-L183",
+      "signature": "struct SessionTerminalCard: View",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "8bb0245bd49418b9c6dc03f24a5cd23e3d3fca5cdc45bce49fdc9df2414ff64d",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard.terminalLine",
+      "name": "terminalLine",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "span": "L163-L176",
+      "signature": "private func terminalLine(_ event: SessionEvent) -> some View",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "8430ea9c18260f36b74a99565a4319bbfd645f108a9f4d47b5030dfa3cfe6dc4",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionTerminalCard",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionTerminalCard.swift#viewModel",
+      "name": "viewModel",
+      "kind": "variable",
+      "path": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "span": "L186-L189",
+      "signature": "let viewModel = SessionDetailViewModel( summary: MockRunsData.summaries[0], data: MockSessionData() )",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "b819b1467728ea58d067e3f01c647386b99aa9be8b2b7e52f4b2d7b9aebb1a17",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "name": "SessionViewModels.swift",
+      "kind": "file",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L1-L217",
+      "signature": null,
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "1ce98ef8fda9a1ba4925bd9b784b81c33bdbb08e4c88870e3c39f1b9c186fef3",
+      "chars": 7302,
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "name": "SessionDetailViewModel",
+      "kind": "class",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L52-L216",
+      "signature": "@Observable @MainActor final class SessionDetailViewModel",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "87f7bcaf2428855f2e14519009388ed1c000a66da447887e3974c5d7815f41c1",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.connect",
+      "name": "connect",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L166-L204",
+      "signature": "private func connect()",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "cbb0d1022f33df1e9cff59840836f38a8600267ed319551baa1f6b92628a5b22",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.loadBacklog",
+      "name": "loadBacklog",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L135-L146",
+      "signature": "private func loadBacklog() async",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "8d8856f211711ecd2dd9f852ee3456e949d47ae6cdd5481f6e4a12da49aee90b",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.loadSkills",
+      "name": "loadSkills",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L148-L159",
+      "signature": "private func loadSkills() async",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "f6105f04bc360f77c460df2069f83fc7190e82767347e81b4bb28581edb3d25a",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.pause",
+      "name": "pause",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L113-L119",
+      "signature": "func pause()",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "fb01e400757e91827a203feeb7941203f6a75702ffa23a46a280e1156ab9e89c",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.phaseForError",
+      "name": "phaseForError",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L209-L215",
+      "signature": "private static func phaseForError(_ error: Error) -> SessionStreamPhase",
+      "exported": false,
+      "origin": "ast",
+      "body_hash": "98aae5f587168829bb400d75d575c485ccd4dbc9cbe53fea806f1e2012545580",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.reconnect",
+      "name": "reconnect",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L125-L127",
+      "signature": "func reconnect()",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "6ecd03e8d39035c4e815330599b3858c4199ffb1c42213c8d75edc8952a713c4",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.resume",
+      "name": "resume",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L121-L123",
+      "signature": "func resume()",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "f07a51678517f1323a5e45f148804807893466a200af193ebe711c27026f2ca7",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.retrySkills",
+      "name": "retrySkills",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L129-L131",
+      "signature": "func retrySkills() async",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "8a8f997e2ab440530f31caa9e56b4df13d77035ce14d803c8527945aa5344a67",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.scrollKey",
+      "name": "scrollKey",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L102-L104",
+      "signature": "static func scrollKey(for runID: String) -> String",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "5be8b7fa5df9bb25556dea8bac79eae7ca849a3aae909b1375cfb177dfc6afb7",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.SessionDetailViewModel",
+      "name": "SessionDetailViewModel",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L74-L79",
+      "signature": "init(summary: RunSummary, data: any SessionData & Sendable)",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "d7926b8387bd6ebbdf034018e6dc1fc6b2c5dbb3ae97395e95716c95b60decaf",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 2
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.setAutoScroll",
+      "name": "setAutoScroll",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L106-L109",
+      "signature": "func setAutoScroll(_ value: Bool)",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "fe4e9ca07c9ff453b4191154eefc7d3e93665070e4a14927b268858232a03aed",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 1
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.start",
+      "name": "start",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L87-L91",
+      "signature": "func start() async",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "729dde5f8e60a029caba92c3380a8942cf6e8857a5677ec590d9864f8b8f728b",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.stop",
+      "name": "stop",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L95-L98",
+      "signature": "func stop()",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "c2b1561ca411e9177659e2c606d3b62408d4c78fee476a84bea71ff1b68f313c",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionDetailViewModel",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel",
+      "name": "SessionListViewModel",
+      "kind": "class",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L8-L40",
+      "signature": "@Observable @MainActor final class SessionListViewModel",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "8fa34197982d53574f988abbaa707bccdedb43afa586475ad93f47075d5c4b76",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel.Phase",
+      "name": "Phase",
+      "kind": "enum",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L11-L15",
+      "signature": "enum Phase: Equatable",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "6b145b4e09d94863a5a1084a7d0ac2f3df12c861d0c52dc52349eb8bdfd9fba9",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel.refresh",
+      "name": "refresh",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L28-L39",
+      "signature": "func refresh() async",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "a28468b31dff4414e2fd214ee5229ca4b15a9f1f8ca25e9bc94ef13d4e311162",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionListViewModel",
+      "arity": 0
+    },
+    {
+      "id": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel.SessionListViewModel",
+      "name": "SessionListViewModel",
+      "kind": "method",
+      "path": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "span": "L22-L24",
+      "signature": "init(runsData: any RunsData & Sendable)",
+      "exported": true,
+      "origin": "ast",
+      "body_hash": "3bacba656c5fe5e4096aa306c8c0f887871e8860ae3c246c6793235c8ef878fe",
+      "summary_state": "pending",
+      "summary": null,
+      "crux": null,
+      "owner": "SessionListViewModel",
+      "arity": 1
     },
     {
       "id": "WaifuClaw/Features/Settings/BYOK/BYOKError.swift",
@@ -11677,6 +12995,12 @@
     },
     {
       "source": "WaifuClaw/Features/Home/HomeView.swift",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift",
       "target": "WaifuClaw/Features/Home/HomeView.swift#HomeView",
       "relation": "calls",
       "confidence": "extracted"
@@ -11686,6 +13010,18 @@
       "target": "WaifuClaw/Features/Home/HomeViewModel.swift#HomeViewModel",
       "relation": "calls",
       "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift",
+      "target": "WaifuClaw/Features/Home/SystemHealthView.swift#MockSystemHealthData",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData",
+      "relation": "contains",
+      "confidence": "extracted"
     },
     {
       "source": "WaifuClaw/Features/Home/HomeView.swift",
@@ -11731,6 +13067,18 @@
     },
     {
       "source": "WaifuClaw/Features/Home/HomeView.swift",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HomeMemoryTile",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HomeModelTile",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift",
       "target": "WaifuClaw/Features/Home/HomeView.swift#HomeSkeleton",
       "relation": "contains",
       "confidence": "extracted"
@@ -11755,6 +13103,12 @@
     },
     {
       "source": "WaifuClaw/Features/Home/HomeView.swift",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HomeThreadsTile",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift",
       "target": "WaifuClaw/Features/Home/HomeView.swift#HomeView",
       "relation": "contains",
       "confidence": "extracted"
@@ -11770,6 +13124,36 @@
       "target": "SwiftUI",
       "relation": "imports",
       "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData.activeAgent",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData.greeting",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData.memorySummary",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData.todaysThreads",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HangingDashboardData",
+      "target": "WaifuClaw/Features/Home/DashboardData.swift#DashboardData",
+      "relation": "extends",
+      "confidence": "inferred"
     },
     {
       "source": "WaifuClaw/Features/Home/HomeView.swift#HomeAgentCard",
@@ -11868,6 +13252,54 @@
       "confidence": "inferred"
     },
     {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeMemoryTile",
+      "target": "WaifuClaw/Features/DesignSystem/Components/StatTile.swift#StatTile",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeMemoryTile",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HomeSkeleton",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeMemoryTile",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#StatErrorTile",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeMemoryTile",
+      "target": "View",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeModelTile",
+      "target": "WaifuClaw/Features/DesignSystem/Components/StatTile.swift#StatTile",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeModelTile",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HomeSkeleton",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeModelTile",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#StatErrorTile",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeModelTile",
+      "target": "View",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
       "source": "WaifuClaw/Features/Home/HomeView.swift#HomeSkeleton",
       "target": "View",
       "relation": "extends",
@@ -11881,19 +13313,19 @@
     },
     {
       "source": "WaifuClaw/Features/Home/HomeView.swift#HomeStatsSection",
-      "target": "WaifuClaw/Features/DesignSystem/Components/StatTile.swift#StatTile",
-      "relation": "calls",
-      "confidence": "inferred"
-    },
-    {
-      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeStatsSection",
-      "target": "WaifuClaw/Features/Home/HomeView.swift#HomeSkeleton",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HomeMemoryTile",
       "relation": "calls",
       "confidence": "extracted"
     },
     {
       "source": "WaifuClaw/Features/Home/HomeView.swift#HomeStatsSection",
-      "target": "WaifuClaw/Features/Home/HomeView.swift#StatErrorTile",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HomeModelTile",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeStatsSection",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HomeThreadsTile",
       "relation": "calls",
       "confidence": "extracted"
     },
@@ -11952,6 +13384,30 @@
       "confidence": "inferred"
     },
     {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeThreadsTile",
+      "target": "WaifuClaw/Features/DesignSystem/Components/StatTile.swift#StatTile",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeThreadsTile",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#HomeSkeleton",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeThreadsTile",
+      "target": "WaifuClaw/Features/Home/HomeView.swift#StatErrorTile",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeThreadsTile",
+      "target": "View",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
       "source": "WaifuClaw/Features/Home/HomeView.swift#HomeView",
       "target": "WaifuClaw/Features/DesignSystem/Kline/KlinePanel.swift#KlinePanel",
       "relation": "calls",
@@ -11990,6 +13446,12 @@
     {
       "source": "WaifuClaw/Features/Home/HomeView.swift#HomeView",
       "target": "WaifuClaw/Features/Home/HomeViewModel.swift#HomeViewModel.refresh",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Home/HomeView.swift#HomeView",
+      "target": "WaifuClaw/Features/Home/SystemHealthView.swift#SystemHealthView",
       "relation": "calls",
       "confidence": "inferred"
     },
@@ -15248,6 +16710,1044 @@
     {
       "source": "WaifuClaw/Features/Runs/RunsProviders.swift#ThreadLiteDTO",
       "target": "Decodable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionData",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#sessionISOFormatter",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionJSON",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionStreamError",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SkillReceiptDTO",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SkillReceiptEnvelopeDTO",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SkillReceiptEventDTO",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#StoredEventDTO",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift",
+      "target": "Foundation",
+      "relation": "imports",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.LiveSessionData",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.mapStreamError",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.pumpJoinStream",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.sessionEvents",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.sessionEventStream",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.skillReceipts",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionData",
+      "relation": "extends",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.mapStreamError",
+      "target": "WaifuClaw/Core/Security/TLSPinningDelegate.swift#TLSPinningDelegate.clearPinFailure",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.pumpJoinStream",
+      "target": "WaifuClaw/Core/Security/TLSPinningDelegate.swift#TLSPinningDelegate",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.pumpJoinStream",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.mapStreamError",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.pumpJoinStream",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SessionEvent",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.sessionEvents",
+      "target": "WaifuClaw/Core/API/APIClient.swift#APIClient.get",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.sessionEvents",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SessionEvent",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.skillReceipts",
+      "target": "WaifuClaw/Core/API/APIClient.swift#APIClient.get",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.skillReceipts",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceipt",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#LiveSessionData.skillReceipts",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceiptList",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.MockSessionData",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.Mode",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.sessionEvents",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.sessionEventStream",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.skillReceipts",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionData",
+      "relation": "extends",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.sessionEvents",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SessionEvent",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.skillReceipts",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceipt",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData.skillReceipts",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceiptList",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionData.sessionEvents",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionData.sessionEventStream",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionData",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionData.skillReceipts",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent.SessionEvent",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent.SessionEvent~2",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent.summarizeStored",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent.truncate",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent.summarizeStored",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionEvent.truncate",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionJSON",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#SessionJSON.SessionJSON",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionJSON",
+      "target": "Decodable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionStreamError",
+      "target": "Equatable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SessionStreamError",
+      "target": "Error",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SkillReceiptDTO",
+      "target": "Decodable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SkillReceiptEnvelopeDTO",
+      "target": "Decodable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#SkillReceiptEventDTO",
+      "target": "Decodable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionData.swift#StoredEventDTO",
+      "target": "Decodable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift",
+      "target": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift",
+      "target": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift",
+      "target": "SwiftUI",
+      "relation": "imports",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "target": "WaifuClaw/Features/DesignSystem/Components/StatusBadge.swift#StatusBadge",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.tone",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "target": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "target": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.start",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.stop",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "target": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView.SessionDetailView",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "target": "View",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView.SessionDetailView",
+      "target": "WaifuClaw/Features/Runs/RunModels.swift#RunStep.State",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView.SessionDetailView",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift",
+      "target": "WaifuClaw/Features/Runs/MockRunsData.swift#MockRunsData",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionEmptyState",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionErrorCard",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionFilter",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift",
+      "target": "SwiftUI",
+      "relation": "imports",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionEmptyState",
+      "target": "View",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionErrorCard",
+      "target": "View",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionFilter",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionFilter.matches",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionFilter",
+      "target": "CaseIterable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionFilter",
+      "target": "Identifiable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionFilter",
+      "target": "String",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "target": "WaifuClaw/Features/Session/SessionDetailView.swift#SessionDetailView",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionEmptyState",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionErrorCard",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionFilter.matches",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.sessionRow",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel.refresh",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.SessionListView",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.sessionRow",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.tone",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView",
+      "target": "View",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.SessionListView",
+      "target": "WaifuClaw/Features/Runs/RunModels.swift#RunStep.State",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.SessionListView",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.sessionRow",
+      "target": "WaifuClaw/Features/DesignSystem/Components/StatusBadge.swift#StatusBadge",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.sessionRow",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionListView.tone",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SessionEvent",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SessionStreamPhase",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceipt",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceiptList",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift",
+      "target": "Foundation",
+      "relation": "imports",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift#SessionEvent",
+      "target": "Equatable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift#SessionEvent",
+      "target": "Identifiable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift#SessionEvent",
+      "target": "Sendable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift#SessionStreamPhase",
+      "target": "Equatable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceipt",
+      "target": "Equatable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceipt",
+      "target": "Identifiable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceipt",
+      "target": "Sendable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceiptList",
+      "target": "Equatable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceiptList",
+      "target": "Sendable",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceipt",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SkillReceiptList",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionSkillsCard.swift#viewModel",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionSkillsCard.swift#viewModel~2",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift",
+      "target": "SwiftUI",
+      "relation": "imports",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "target": "WaifuClaw/Features/DesignSystem/Components/SectionHeader.swift#SectionHeader",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionErrorCard",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "target": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard.skillsList",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.retrySkills",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "target": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard.badge",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "target": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard.skillsList",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard",
+      "target": "View",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#SessionSkillsCard.skillsList",
+      "target": "WaifuClaw/Features/DesignSystem/Components/StatusBadge.swift#StatusBadge",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#viewModel",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#viewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#viewModel~2",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionSkillsCard.swift#viewModel~2",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionModels.swift#SessionEvent",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionStreamPhase",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "target": "WaifuClaw/Features/Session/SessionTerminalCard.swift#viewModel",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift",
+      "target": "SwiftUI",
+      "relation": "imports",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionStreamPhase",
+      "target": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionStreamPhase.badgeText",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "target": "WaifuClaw/Features/DesignSystem/Components/StatusBadge.swift#StatusBadge",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "target": "WaifuClaw/Features/Session/SessionListView.swift#SessionErrorCard",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "target": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard.terminalLine",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.pause",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.reconnect",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.resume",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.setAutoScroll",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.start",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "target": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard.terminalLine",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#SessionTerminalCard",
+      "target": "View",
+      "relation": "extends",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#viewModel",
+      "target": "WaifuClaw/Features/Session/SessionData.swift#MockSessionData",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionTerminalCard.swift#viewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "relation": "calls",
+      "confidence": "inferred"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift",
+      "target": "Foundation",
+      "relation": "imports",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.connect",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.loadBacklog",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.loadSkills",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.pause",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.phaseForError",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.reconnect",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.resume",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.retrySkills",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.scrollKey",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.SessionDetailViewModel",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.setAutoScroll",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.start",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.stop",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.reconnect",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.connect",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.resume",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.connect",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.retrySkills",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.loadSkills",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.start",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.connect",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.start",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.loadBacklog",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.start",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionDetailViewModel.loadSkills",
+      "relation": "calls",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel.Phase",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel.refresh",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel",
+      "target": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel.SessionListViewModel",
+      "relation": "contains",
+      "confidence": "extracted"
+    },
+    {
+      "source": "WaifuClaw/Features/Session/SessionViewModels.swift#SessionListViewModel.Phase",
+      "target": "Equatable",
       "relation": "extends",
       "confidence": "inferred"
     },

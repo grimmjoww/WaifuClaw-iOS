@@ -33,7 +33,7 @@ struct SessionDetailView: View {
                 .padding(Theme.spacingL)
             }
         }
-        .navigationTitle("Session")
+        .navigationTitle(summary.id)
         .navigationBarTitleDisplayMode(.inline)
         .task {
             await viewModel.start()
