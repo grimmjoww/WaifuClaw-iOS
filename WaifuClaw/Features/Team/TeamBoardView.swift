@@ -121,17 +121,23 @@ final class TeamBoardViewModel {
         // Sendable local so the @Sendable capture closures below don't
         // need to touch self (MainActor-isolated) off-actor.
         let source = dataSource
-        async let membersResult = capture { try await source.members() }
-        async let conversationsResult = capture { try await source.conversations(limit: 30) }
-        async let inboxResult = capture { try await source.inboxItems(limit: 5) }
-        async let milestonesResult = capture { try await source.milestones() }
-        let results = await (membersResult, conversationsResult, inboxResult, milestonesResult)
-        guard isCurrent(current) else { return }
+        do {
+            async let membersResult = capture { try await source.members() }
+            async let conversationsResult = capture { try await source.conversations(limit: 30) }
+            async let inboxResult = capture { try await source.inboxItems(limit: 5) }
+            async let milestonesResult = capture { try await source.milestones() }
+            // capture only rethrows CancellationError (normal lifecycle),
+            // so the single catch below is the cancellation path.
+            let results = try await (membersResult, conversationsResult, inboxResult, milestonesResult)
+            guard isCurrent(current) else { return }
 
-        apply(results.0, to: \.members, phase: \.membersPhase, current: current)
-        apply(results.1, to: \.conversations, phase: \.conversationsPhase, current: current)
-        apply(results.2, to: \.inboxItems, phase: \.inboxPhase, current: current)
-        apply(results.3, to: \.milestones, phase: \.milestonesPhase, current: current)
+            apply(results.0, to: \.members, phase: \.membersPhase, current: current)
+            apply(results.1, to: \.conversations, phase: \.conversationsPhase, current: current)
+            apply(results.2, to: \.inboxItems, phase: \.inboxPhase, current: current)
+            apply(results.3, to: \.milestones, phase: \.milestonesPhase, current: current)
+        } catch {
+            return
+        }
     }
 
     /// (Re)loads the kanban board. Lazy: only called when the Board segment
@@ -263,7 +269,7 @@ struct TeamBoardView: View {
             }
         }
         .background(Theme.background)
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         .task {
             await viewModel.refreshPrimary()
         }
@@ -568,9 +574,6 @@ struct TeamBoardView: View {
         }
     }
 
-    private func retryPrimary() {
-        Task { await viewModel.refreshPrimary() }
-    }
 }
 
 // MARK: - Agent medallion (in-file)
