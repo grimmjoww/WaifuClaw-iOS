@@ -27,3 +27,28 @@ not set up yet.
 
 The desktop app and backend live in `grimmjoww/WaifuClaw-Source` (private). The
 iPhone app talks to it over the existing authenticated, TLS-pinned remote API.
+
+## Roadmap
+
+**Now — Phase 1: phone as remote.** The iPhone app remote-controls the WaifuClaw
+running on your own computer. No hosted servers.
+
+- [x] SwiftUI app compiles on a real Mac (unsigned CI via Codemagic + GitHub Actions)
+- [ ] Design adaptation — mockup designs become real SwiftUI (in progress)
+- [ ] First-launch onboarding: intro pages, display name, iOS permission prompts
+      (notifications, Face ID, local network)
+- [ ] Pairing with the WaifuClaw desktop over the local network
+- [ ] BYOK — bring your own provider key (free tier)
+
+**Next:**
+
+- [ ] Pro tier — associative memory / pro recall (paid)
+- [ ] Monetization call: Apple in-app purchase vs web-issued license keys
+- [ ] TestFlight beta (needs the $99/yr Apple Developer Program)
+- [ ] App Store release
+
+**Later:**
+
+- [ ] Kline, the animated companion (sprite animation first, 3D down the road)
+- [ ] Self-hosted servers — once the app earns its keep, the phone app becomes
+      standalone and the desktop stops being required
