@@ -126,27 +126,27 @@ enum DashboardError: LocalizedError, Equatable {
         }
         switch api {
         case .notPaired:
-            .notPaired
+            return .notPaired
         case .deviceRevoked:
-            .sessionExpired
+            return .sessionExpired
         case .unreachable, .desktopNotResponding, .network:
-            .offline
+            return .offline
         case .tlsMismatch:
-            .server(message: "Security warning: your computer's identity changed.")
+            return .server(message: "Security warning: your computer's identity changed.")
         case .http(let status, let message):
             if status == 401 {
-                .sessionExpired
+                return .sessionExpired
             } else {
-                .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
+                return .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
             }
         case .paymentRequired:
-            .server(message: "This needs a Pro license — see Settings → Pro.")
+            return .server(message: "This needs a Pro license — see Settings → Pro.")
         case .byokKeyInvalid(let provider):
             // Added 2026-09-29 (leaf 1.6.1): APIError gained this case for the
             // BYOK feature and this switch wasn't updated — non-exhaustive.
-            .server(message: "Your \(provider) API key was rejected — check it in Settings → API Key.")
+            return .server(message: "Your \(provider) API key was rejected — check it in Settings → API Key.")
         case .pairingCodeExpired, .decoding:
-            .server(message: api.errorDescription ?? "Something went wrong loading the dashboard.")
+            return .server(message: api.errorDescription ?? "Something went wrong loading the dashboard.")
         }
     }
 }
@@ -234,7 +234,7 @@ struct MockDashboardData: DashboardData {
                 ),
             ]
         case .empty:
-            []
+            return [ThreadSummary]()
         case .offline:
             throw DashboardError.offline
         case .unpaired:
