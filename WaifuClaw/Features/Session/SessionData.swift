@@ -138,7 +138,7 @@ private let sessionISOFormatter = ISO8601DateFormatter()
 // MARK: - SessionEvent construction
 
 extension SessionEvent {
-    init(stored dto: StoredEventDTO, index: Int) {
+    fileprivate init(stored dto: StoredEventDTO, index: Int) {
         let kind = dto.event_type ?? "event"
         let occurredAt = dto.created_at.flatMap { sessionISOFormatter.date(from: $0) }
         let (summary, isError) = Self.summarizeStored(kind: kind, dto: dto)
@@ -203,10 +203,9 @@ extension SessionEvent {
 
 /// Real gateway data source.
 ///
-/// NOTE (matches the Runs leaf's precedent): the three run routes used here
-/// have no constants in `Endpoints.swift` yet (another leaf's file — not
-/// touched): GET …/runs/{run}/events, GET …/runs/{run}/skill-receipts, and
-/// GET …/runs/{run}/join. Paths are kept local and documented per call.
+/// Live session data: run events, skill receipts, and the join SSE stream.
+/// Route paths come from `Endpoints.Threads` (leaf-api-constants); only the
+/// call-site query params (?limit=) stay local.
 struct LiveSessionData: SessionData {
     let api: APIClient
     private let baseURL: URL
@@ -222,14 +221,14 @@ struct LiveSessionData: SessionData {
 
     func sessionEvents(threadID: String, runID: String) async throws -> [SessionEvent] {
         let dtos: [StoredEventDTO] = try await api.get(
-            "/api/threads/\(threadID)/runs/\(runID)/events?limit=500"
+            Endpoints.Threads.runEvents(threadID, runID) + "?limit=500"
         )
         return dtos.enumerated().map { SessionEvent(stored: $1, index: $0) }
     }
 
     func skillReceipts(threadID: String, runID: String) async throws -> SkillReceiptList {
         let envelope: SkillReceiptEnvelopeDTO = try await api.get(
-            "/api/threads/\(threadID)/runs/\(runID)/skill-receipts?limit=100"
+            Endpoints.Threads.skillReceipts(threadID, runID) + "?limit=100"
         )
         return SkillReceiptList(
             receipts: envelope.data.map {
@@ -286,7 +285,7 @@ struct LiveSessionData: SessionData {
                 return
             }
             var request = URLRequest(
-                url: baseURL.appendingPathComponent("/api/threads/\(threadID)/runs/\(runID)/join")
+                url: baseURL.appendingPathComponent(Endpoints.Threads.runJoin(threadID, runID))
             )
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue("text/event-stream", forHTTPHeaderField: "Accept")

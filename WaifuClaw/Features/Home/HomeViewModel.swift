@@ -22,7 +22,12 @@ final class HomeViewModel {
     var memory: LoadState<MemorySummary> = .idle
 
     private let data: any DashboardData
-    private var loadTask: Task<Void, Never>?
+    /// Thread-safe task holder. deinit on a @MainActor class is nonisolated,
+    /// so it cannot touch isolated state — and `isolated deinit` needs an
+    /// experimental compiler flag we don't enable. The box lets deinit cancel
+    /// the in-flight load safely from any thread. Task.cancel() itself is
+    /// thread-safe and idempotent.
+    private let loadBox = LoadTaskBox()
     /// Monotonic refresh counter. A cancelled load's continuations check this
     /// before writing state, so a stale load can never overwrite a newer one
     /// even if cancellation lands between its guard and its assignment.
@@ -36,14 +41,14 @@ final class HomeViewModel {
     /// (Re)loads every section. Cancels any in-flight load first so a stale
     /// response can never overwrite a newer one.
     func refresh() {
-        loadTask?.cancel()
+        loadBox.cancel()
         generation += 1
         let current = generation
-        loadTask = Task { await loadSections(generation: current) }
+        loadBox.store(Task { await loadSections(generation: current) })
     }
 
     deinit {
-        loadTask?.cancel()
+        loadBox.cancel()
     }
 
     // MARK: - Private
@@ -156,6 +161,22 @@ private struct DashboardStatePreview: View {
 #Preview("Dashboard — offline") {
     NavigationStack {
         DashboardStatePreview(mode: .offline, title: "Offline")
+    }
+}
+
+/// Holds the in-flight load task behind a lock so both MainActor-isolated
+/// code (refresh) and nonisolated code (deinit) can cancel it safely.
+/// No experimental compiler flags, no unchecked-unsafe escapes.
+private final class LoadTaskBox: Sendable {
+    private let lock = NSLock()
+    private var task: Task<Void, Never>?
+
+    func store(_ task: Task<Void, Never>) {
+        lock.withLock { self.task = task }
+    }
+
+    func cancel() {
+        lock.withLock { task }?.cancel()
     }
 }
 

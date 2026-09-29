@@ -300,7 +300,7 @@ struct MockSystemHealthData: SystemHealthData {
         case .allDown:
             return Self.downRows
         case .unpaired:
-            return LiveSystemHealthData.unpairedRows
+            return await LiveSystemHealthData.unpairedRows
         }
     }
 

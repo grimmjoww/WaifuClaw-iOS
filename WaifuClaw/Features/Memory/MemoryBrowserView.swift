@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Memory tab: free-tier fact CRUD plus the paid associative-recall section.
+/// Memory (in Settings): free-tier fact CRUD plus the paid associative-recall section.
 /// A 402 from recall/retain never silently drops — it becomes the Pro upsell
 /// (audit §7).
 struct MemoryBrowserView: View {
@@ -148,6 +148,8 @@ struct MemoryBrowserView: View {
                 }
             case .needsPro:
                 // 402 → loud upsell, never silently missing recall (audit §7).
+                // Pro lives in Settings now (not a tab), so this links straight
+                // to it — a tab switch here would land on the wrong tab.
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Associative recall is a Pro feature.")
                         .font(.subheadline.bold())
@@ -155,8 +157,11 @@ struct MemoryBrowserView: View {
                     Text("Your free memory keeps working — Pro adds recall by meaning.")
                         .font(.footnote)
                         .foregroundStyle(Theme.textSecondary)
-                    Button("See Pro options") {
-                        appState.tabSelection = 2
+                    NavigationLink {
+                        LicenseView()
+                    } label: {
+                        Text("See Pro options")
+                            .frame(maxWidth: .infinity)
                     }
                     .themePrimaryButton()
                 }

@@ -185,7 +185,7 @@ final class TeamBoardViewModel {
     }
 
     private func apply<T>(
-        _ result: Result<T, Error>,
+        _ result: Result<[T], Error>,
         to values: ReferenceWritableKeyPath<TeamBoardViewModel, [T]>,
         phase: ReferenceWritableKeyPath<TeamBoardViewModel, Phase>,
         current: Int

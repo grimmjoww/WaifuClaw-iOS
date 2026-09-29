@@ -64,29 +64,29 @@ enum TeamError: LocalizedError, Equatable {
         }
         switch api {
         case .notPaired:
-            .notPaired
+            return .notPaired
         case .deviceRevoked:
-            .sessionExpired
+            return .sessionExpired
         case .unreachable, .desktopNotResponding, .network:
-            .offline
+            return .offline
         case .tlsMismatch:
-            .server(message: "Security warning: your computer's identity changed.")
+            return .server(message: "Security warning: your computer's identity changed.")
         case .http(let status, let message):
             if status == 401 {
-                .sessionExpired
+                return .sessionExpired
             } else if status == 403 {
-                .agentsDisabled
+                return .agentsDisabled
             } else if status == 404 {
-                .server(message: "That thread no longer exists on your computer.")
+                return .server(message: "That thread no longer exists on your computer.")
             } else {
-                .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
+                return .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
             }
         case .paymentRequired:
-            .server(message: "This needs a Pro license — see the License tab.")
+            return .server(message: "This needs a Pro license — see Settings → Pro.")
         case .pairingCodeExpired, .decoding:
-            .server(message: api.errorDescription ?? "Something went wrong loading the team.")
+            return .server(message: api.errorDescription ?? "Something went wrong loading the team.")
         case .byokKeyInvalid:
-            .server(message: api.errorDescription ?? "Something went wrong loading the team.")
+            return .server(message: api.errorDescription ?? "Something went wrong loading the team.")
         }
     }
 }
@@ -164,27 +164,6 @@ private struct ThreadDTO: Decodable {
     }
 }
 
-/// CodingKey that accepts any string key (for open-ended content dicts).
-private struct AnyKey: CodingKey {
-    var stringValue: String
-    var intValue: Int?
-
-    init(_ string: String) {
-        self.stringValue = string
-        self.intValue = nil
-    }
-
-    init?(stringValue: String) {
-        self.stringValue = stringValue
-        self.intValue = nil
-    }
-
-    init?(intValue: Int) {
-        self.stringValue = "\(intValue)"
-        self.intValue = intValue
-    }
-}
-
 /// GET /api/threads/{id}/messages item (thread_runs.py:757). The wire shape
 /// is `list[dict]` — open-ended event-store rows — so every field is
 /// optional and content may be a bare string or a dict.
@@ -214,9 +193,11 @@ private struct MessageDTO: Decodable {
         runID = try container.decodeIfPresent(String.self, forKey: .runID)
         seq = try container.decodeIfPresent(Int.self, forKey: .seq)
         createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt)
-        authorName = (try container.decodeIfPresent(String.self, forKey: .author))
-            ?? (try container.decodeIfPresent(String.self, forKey: .authorName))
-            ?? (try container.decodeIfPresent(String.self, forKey: .name))
+        // One `try` covers the whole ?? chain — a throwing RHS makes the
+        // operator itself throwing, so the try must be outside the parens.
+        authorName = try container.decodeIfPresent(String.self, forKey: .author)
+            ?? container.decodeIfPresent(String.self, forKey: .authorName)
+            ?? container.decodeIfPresent(String.self, forKey: .name)
         // Content: bare string, or a dict carrying type/text under various keys.
         let content: ContentDTO? = try? container.decodeIfPresent(ContentDTO.self, forKey: .content)
         contentType = content?.type
@@ -236,16 +217,25 @@ private struct ContentDTO: Decodable {
             self.text = string
             return
         }
-        if let nested = try? single.nestedContainer(keyedBy: AnyKey.self) {
-            func string(_ key: String) -> String? {
-                try? nested.decodeIfPresent(String.self, forKey: AnyKey(key))
-            }
-            self.type = string("type")
-            self.text = string("text") ?? string("content") ?? string("message") ?? string("output")
+        // Dict form: a single-value container can't vend a keyed container,
+        // so decode the known keys as a struct. All keys optional — the
+        // wire format varies, so anything missing just stays nil.
+        if let dict = try? single.decode(DictContentDTO.self) {
+            self.type = dict.type
+            self.text = dict.text ?? dict.content ?? dict.message ?? dict.output
             return
         }
         self.type = nil
         self.text = nil
+    }
+
+    /// The dict form of message content.
+    private struct DictContentDTO: Decodable {
+        let type: String?
+        let text: String?
+        let content: String?
+        let message: String?
+        let output: String?
     }
 }
 
@@ -309,7 +299,7 @@ struct LiveTeamData: TeamData {
             do {
                 snippet = try await messages(threadID: convo.id, limit: 1).first?.displayText
             } catch is CancellationError {
-                throw // A cancelled load is a lifecycle event, not a failure.
+                throw CancellationError() // A cancelled load is a lifecycle event, not a failure.
             } catch {
                 snippet = nil
             }
@@ -361,8 +351,8 @@ struct LiveTeamData: TeamData {
             id: dto.thread_id,
             title: title,
             status: ConversationStatus(raw: dto.status ?? "idle"),
-            updatedAt: dto.updatedAt.flatMap { teamISOFormatter.date(from: $0) },
-            createdAt: dto.createdAt.flatMap { teamISOFormatter.date(from: $0) }
+            updatedAt: dto.updated_at.flatMap { teamISOFormatter.date(from: $0) },
+            createdAt: dto.created_at.flatMap { teamISOFormatter.date(from: $0) }
         )
     }
 

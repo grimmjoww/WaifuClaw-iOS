@@ -2,10 +2,13 @@
 
 ## Environment honesty
 
-This code was written on a Linux sandbox **without Xcode**. It has never
-been compiled. Everything below is the complete, good-faith SwiftUI
-implementation of the Leaf 4 contract; the Mac-side checklist at the bottom
-is what stands between this source and a TestFlight build.
+This code was written on a Linux sandbox **without Xcode**. The integrated
+app (`integrate/app-shell-1.6.1`, commit `573a0e57`) **has since compiled
+clean on a real Mac** — GitHub Actions run `36628926054` (2026-09-29),
+unsigned `xcodebuild` over the whole module, zero errors. Everything below
+is the complete, good-faith SwiftUI implementation of the Leaf 4 contract;
+the Mac-side checklist at the bottom is what stands between this source and
+a TestFlight build.
 
 ## What was built
 
