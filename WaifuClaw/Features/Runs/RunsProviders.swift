@@ -50,25 +50,27 @@ enum RunsError: LocalizedError, Equatable {
         }
         switch api {
         case .notPaired:
-            .notPaired
+            return .notPaired
         case .deviceRevoked:
-            .sessionExpired
+            return .sessionExpired
         case .unreachable, .desktopNotResponding, .network:
-            .offline
+            return .offline
         case .tlsMismatch:
-            .server(message: "Security warning: your computer's identity changed.")
+            return .server(message: "Security warning: your computer's identity changed.")
         case .http(let status, let message):
             if status == 401 {
-                .sessionExpired
+                return .sessionExpired
             } else if status == 404 {
-                .server(message: "That run no longer exists on your computer.")
+                return .server(message: "That run no longer exists on your computer.")
             } else {
-                .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
+                return .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
             }
         case .paymentRequired:
-            .server(message: "This needs a Pro license — see Settings → Pro.")
+            return .server(message: "This needs a Pro license — see Settings → Pro.")
+        case .byokKeyInvalid(let provider):
+            return .server(message: "Your \(provider) API key was rejected — check it in Settings → API Key.")
         case .pairingCodeExpired, .decoding:
-            .server(message: api.errorDescription ?? "Something went wrong loading the run.")
+            return .server(message: api.errorDescription ?? "Something went wrong loading the run.")
         }
     }
 }
@@ -200,7 +202,7 @@ struct LiveRunsData: RunsData {
             do {
                 all.append(contentsOf: try await runs(forThread: thread.thread_id))
             } catch is CancellationError {
-                throw // A cancelled load is a lifecycle event, not a failure.
+                throw CancellationError() // A cancelled load is a lifecycle event, not a failure.
             } catch {
                 // A single thread's failure is not the list's failure.
                 continue
