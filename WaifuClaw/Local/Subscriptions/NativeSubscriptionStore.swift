@@ -71,10 +71,6 @@ final class NativeSubscriptionStore {
         self.storefrontState = configuration.purchasesAreAvailable ? .notStarted : .notAvailable
     }
 
-    deinit {
-        transactionUpdatesTask?.cancel()
-    }
-
     var purchasesAreAvailable: Bool {
         configuration.purchasesAreAvailable
     }
@@ -88,14 +84,19 @@ final class NativeSubscriptionStore {
     func start() async {
         guard !hasStarted else { return }
         hasStarted = true
-        observeTransactionUpdates()
-        await refreshCurrentEntitlements()
-
         guard configuration.purchasesAreAvailable else {
             storefrontState = .notAvailable
             return
         }
+        observeTransactionUpdates()
+        await refreshCurrentEntitlements()
         await fetchProducts()
+    }
+
+    func stop() {
+        transactionUpdatesTask?.cancel()
+        transactionUpdatesTask = nil
+        hasStarted = false
     }
 
     /// Requests only the fixed allowlist from the App Store. The actual
@@ -110,7 +111,7 @@ final class NativeSubscriptionStore {
 
         storefrontState = .loadingProducts
         do {
-            let fetchedProducts = try await Product.products(for: NativeSubscriptionProductID.allIdentifiers)
+            let fetchedProducts = try await Product.products(for: Array(NativeSubscriptionProductID.allIdentifiers).sorted())
             var productsByIdentifier: [String: Product] = [:]
             for product in fetchedProducts where NativeSubscriptionProductID.isAllowed(product.id) {
                 // Keep the response deterministic without assuming StoreKit

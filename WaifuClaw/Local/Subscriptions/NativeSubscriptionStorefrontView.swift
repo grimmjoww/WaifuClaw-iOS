@@ -4,11 +4,12 @@ import SwiftUI
 /// A storefront shell for a future Pro launch. With the shipping launch
 /// configuration, this deliberately contains no purchasable plan, price, or
 /// Restore Purchases action: there is no paid Guardian service to sell yet.
+@MainActor
 struct NativeSubscriptionStorefrontView: View {
     @State private var store: NativeSubscriptionStore
 
-    init(store: NativeSubscriptionStore = NativeSubscriptionStore()) {
-        _store = State(initialValue: store)
+    init() {
+        _store = State(initialValue: NativeSubscriptionStore())
     }
 
     var body: some View {
@@ -27,6 +28,7 @@ struct NativeSubscriptionStorefrontView: View {
         .background { StudioBackdrop() }
         .navigationTitle("Pro")
         .task { await store.start() }
+        .onDisappear { store.stop() }
     }
 
     private var heroCard: some View {
