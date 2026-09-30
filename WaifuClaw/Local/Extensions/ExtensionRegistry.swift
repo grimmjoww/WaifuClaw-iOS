@@ -351,7 +351,7 @@ public final class ExtensionRegistry: ObservableObject {
         return encoder
     }
 
-    public static func defaultStorageURL() -> URL {
+    nonisolated public static func defaultStorageURL() -> URL {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory
         return base
