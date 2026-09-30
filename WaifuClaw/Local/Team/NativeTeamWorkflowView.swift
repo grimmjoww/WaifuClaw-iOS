@@ -43,7 +43,7 @@ public struct NativeTeamWorkflowView: View {
             }
             .padding()
         }
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Team")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -145,8 +145,8 @@ public struct NativeTeamWorkflowView: View {
 
     private var statusCard: some View {
         HStack(alignment: .top, spacing: 10) {
-            Image(systemName: controller.isRunning ? "arrow.triangle.2.circlepath" : "checkmark.circle")
-                .foregroundStyle(controller.isRunning ? Theme.warning : Theme.magenta)
+            CompanionSpriteView(mood: activityMood)
+                .frame(width: 68, height: 68)
             VStack(alignment: .leading, spacing: 3) {
                 Text(controller.status)
                     .font(.subheadline.bold())
@@ -158,6 +158,16 @@ public struct NativeTeamWorkflowView: View {
             Spacer()
         }
         .themeCard()
+    }
+
+    private var activityMood: KlineSpriteMood {
+        if controller.isRunning { return .thinking }
+        switch controller.selectedWorkflow?.phase {
+        case .completed: return .completed
+        case .partialFailure, .failed, .interrupted: return .failed
+        case .workersRunning, .synthesizing: return .reading
+        case .cancelled, nil: return .idle
+        }
     }
 
     private func workflowEvidence(_ workflow: NativeTeamWorkflowRecord) -> some View {

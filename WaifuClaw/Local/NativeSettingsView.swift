@@ -32,6 +32,22 @@ struct NativeSettingsView: View {
                 .foregroundStyle(Theme.magenta)
                 .themeCard()
 
+                VStack(alignment: .leading, spacing: 8) {
+                    StudioEyebrow(title: "Studio companions")
+                    Text("Kline, Rei and Sage are individually articulated 2D visual guides. Choosing one changes the art, not your model, permissions or agent capabilities.")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.textSecondary)
+                    NavigationLink {
+                        ScrollView { NativeCompanionChooserView().padding() }
+                            .background { StudioBackdrop() }
+                            .navigationTitle("Companions")
+                    } label: {
+                        Label("Choose animated companion", systemImage: "person.crop.circle.badge.checkmark")
+                    }
+                    .foregroundStyle(Theme.magentaSoft)
+                }
+                .themeCard()
+
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Agent model")
                         .font(.headline)
@@ -81,6 +97,20 @@ struct NativeSettingsView: View {
                 }
                 .themeCard()
 
+                VStack(alignment: .leading, spacing: 8) {
+                    StudioEyebrow(title: "Project Guardian")
+                    Text("Compare a user-selected project's real on-device file hashes against a baseline you approve. Manual only: no build, tests, model analysis or automatic background scan is claimed.")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.textSecondary)
+                    NavigationLink {
+                        NativeGuardianView()
+                    } label: {
+                        Label("Open Project Guardian", systemImage: "shield.lefthalf.filled")
+                    }
+                    .foregroundStyle(Theme.magentaSoft)
+                }
+                .themeCard()
+
                 NavigationLink {
                     NativeNoticesView()
                 } label: {
@@ -125,7 +155,7 @@ struct NativeSettingsView: View {
             }
             .padding()
         }
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Settings")
         .onAppear(perform: refresh)
         .alert("Delete all local conversation history?", isPresented: $showingHistoryDeletion) {

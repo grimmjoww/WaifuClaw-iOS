@@ -36,7 +36,7 @@ struct NativeAgentView: View {
                         }
                         if controller.messages.isEmpty && controller.streamedText.isEmpty {
                             VStack(alignment: .leading, spacing: 12) {
-                                KlineSpriteView(mood: controller.klineMood)
+                                CompanionSpriteView(mood: controller.klineMood)
                                     .frame(height: 175)
                                     .frame(maxWidth: .infinity)
                                 Text("Work with a project on this iPhone")
@@ -103,7 +103,7 @@ struct NativeAgentView: View {
                 }
             }
             HStack(spacing: 8) {
-                KlineSpriteView(mood: controller.klineMood)
+                CompanionSpriteView(mood: controller.klineMood)
                     .frame(width: 58, height: 58)
                 Text(controller.status)
                     .lineLimit(2)
@@ -119,7 +119,7 @@ struct NativeAgentView: View {
             .padding(.vertical, 8)
             composer
         }
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Agent")
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

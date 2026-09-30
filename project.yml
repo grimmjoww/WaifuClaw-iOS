@@ -36,6 +36,8 @@ targets:
       - path: WaifuClaw/Theme/Theme.swift
       - path: WaifuClaw/Core/Security/KeychainStore.swift
       - path: WaifuClaw/Assets.xcassets
+      - path: WaifuClaw/Fonts
+        buildPhase: resources
       - path: WaifuClaw/PrivacyInfo.xcprivacy
         buildPhase: resources
       - path: WaifuClaw/Features/DesignSystem/Components/ProgressBar.swift

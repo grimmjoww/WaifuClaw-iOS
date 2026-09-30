@@ -56,7 +56,7 @@ final class ExtensionInvocationTests: XCTestCase {
         XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer github-secret")
         XCTAssertEqual(request.value(forHTTPHeaderField: "X-GitHub-Api-Version"), "2026-03-10")
 
-        let body = try XCTUnwrap(request.httpBody)
+        let body = try XCTUnwrap(ExtensionInvocationURLProtocol.lastBody)
         let payload = try XCTUnwrap(try JSONSerialization.jsonObject(with: body) as? [String: Any])
         XCTAssertEqual(payload["text"] as? String, "# Hello")
         XCTAssertEqual(payload["mode"] as? String, "gfm")
@@ -288,6 +288,7 @@ private final class ExtensionInvocationURLProtocol: URLProtocol {
     private static let lock = NSLock()
     private static var handler: ((URLRequest) -> Stub)?
     private static var capturedRequest: URLRequest?
+    private static var capturedBody: Data?
     private static var count = 0
     private static var stopped = false
 
@@ -295,6 +296,12 @@ private final class ExtensionInvocationURLProtocol: URLProtocol {
         lock.lock()
         defer { lock.unlock() }
         return capturedRequest
+    }
+
+    static var lastBody: Data? {
+        lock.lock()
+        defer { lock.unlock() }
+        return capturedBody
     }
 
     static var requestCount: Int {
@@ -313,22 +320,44 @@ private final class ExtensionInvocationURLProtocol: URLProtocol {
         lock.lock()
         self.handler = handler
         capturedRequest = nil
+        capturedBody = nil
         count = 0
         stopped = false
         lock.unlock()
     }
 
     static func record(_ request: URLRequest) {
+        // URLSession often converts URLRequest.httpBody to httpBodyStream before
+        // presenting the request to URLProtocol. Read it in this TEST transport;
+        // the production request still sends exactly the JSON body it encoded.
+        let body = request.httpBody ?? readBodyStream(request.httpBodyStream)
         lock.lock()
         capturedRequest = request
+        capturedBody = body
         count += 1
         lock.unlock()
+    }
+
+    private static func readBodyStream(_ stream: InputStream?) -> Data? {
+        guard let stream else { return nil }
+        stream.open()
+        defer { stream.close() }
+        var data = Data()
+        var buffer = [UInt8](repeating: 0, count: 4_096)
+        while stream.hasBytesAvailable {
+            let read = stream.read(&buffer, maxLength: buffer.count)
+            if read < 0 { return nil }
+            if read == 0 { break }
+            data.append(contentsOf: buffer.prefix(read))
+        }
+        return data
     }
 
     static func reset() {
         lock.lock()
         handler = nil
         capturedRequest = nil
+        capturedBody = nil
         count = 0
         stopped = false
         lock.unlock()

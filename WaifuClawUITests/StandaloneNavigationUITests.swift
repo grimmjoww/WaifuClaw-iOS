@@ -33,8 +33,16 @@ final class StandaloneNavigationUITests: XCTestCase {
         XCTAssertTrue(name.waitForExistence(timeout: 5))
         name.tap()
         name.typeText("iPhone Builder")
-        let keyboardIntroduction = app.windows.element(boundBy: 1).buttons["Continue"]
-        if keyboardIntroduction.exists { keyboardIntroduction.tap() }
+        // First launch of a fresh iOS simulator can display Apple's keyboard
+        // coaching window above the app. Dismiss that system UI, not the app's
+        // separate onboarding button, before testing the actual finish action.
+        let coachingText = "Speed up your typing by sliding your finger across the letters to compose a word."
+        let coachingWindow = app.windows.containing(.staticText, identifier: coachingText).firstMatch
+        if coachingWindow.exists {
+            let dismissCoaching = coachingWindow.buttons["Continue"]
+            XCTAssertTrue(dismissCoaching.exists)
+            dismissCoaching.tap()
+        }
         let finishOnboarding = app.buttons["onboarding.finish"]
         XCTAssertTrue(finishOnboarding.waitForExistence(timeout: 5))
         finishOnboarding.tap()

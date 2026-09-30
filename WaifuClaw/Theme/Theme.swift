@@ -8,10 +8,9 @@ import SwiftUI
 /// dark). Colors are hardcoded sRGB values rather than an asset catalog
 /// because this repo is authored on Linux, where .xcassets can't be validated.
 ///
-/// Deviation notes (deliberate, recorded for leaf 1.1.1 G2/G3):
-/// - No custom font files: typography is semantic Dynamic Type roles
-///   (.largeTitle … .caption); the "dimensional display lettering" feel comes
-///   from the displayGradient treatment, not a fixed-size custom font.
+/// Cinzel Decorative (SIL OFL 1.1) is reserved for legible fantasy display
+/// headings; body text remains the iOS system font with Dynamic Type scaling.
+/// Its full copyright and license are bundled under Third-Party Notices.
 /// - No blue "info" color: per the Phantom Horizons palette the info tone is
 ///   magenta (see BadgeTone.info). The status set is success/warning/danger.
 /// - Card/PrimaryButton/DisplayText live nested in this enum (one file) rather
@@ -59,11 +58,12 @@ enum Theme {
 
     // MARK: - Typography (Dynamic Type roles — never fixed point sizes)
 
-    /// Hero display, e.g. "Good morning, Willie."
-    static var display: Font { .largeTitle }
-    /// Screen titles, e.g. "OutcomeRun", "Team Board".
+    /// Ornate, readable studio mark and feature title; scales with Dynamic Type.
+    static var studioMark: Font { .custom("CinzelDecorative-Bold", size: 26, relativeTo: .title) }
+    static var display: Font { .custom("CinzelDecorative-Bold", size: 30, relativeTo: .largeTitle) }
+    static var sectionDisplay: Font { .custom("CinzelDecorative-Regular", size: 19, relativeTo: .title3) }
+    /// Functional screen/card labels stay system-font readable at small sizes.
     static var title: Font { .title }
-    /// Card / panel titles.
     static var headline: Font { .headline }
     /// Body copy.
     static var body: Font { .body }
@@ -98,8 +98,29 @@ enum Theme {
         func body(content: Content) -> some View {
             content
                 .padding(Theme.spacingL)
-                .background(Theme.surface)
-                .clipShape(.rect(cornerRadius: Theme.radiusM))
+                .background {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(LinearGradient(
+                            colors: [Color(red: 0.17, green: 0.11, blue: 0.20), Theme.surface],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 12)
+                                .strokeBorder(LinearGradient(
+                                    colors: [Theme.magentaSoft.opacity(0.40), Theme.hairline, Theme.magenta.opacity(0.20)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ), lineWidth: 1)
+                        }
+                        .overlay(alignment: .topLeading) {
+                            Rectangle()
+                                .fill(Theme.magentaGradient)
+                                .frame(width: 38, height: 2)
+                                .padding(.leading, 16)
+                        }
+                }
+                .shadow(color: Theme.magenta.opacity(0.08), radius: 12, y: 6)
         }
     }
 
@@ -110,8 +131,11 @@ enum Theme {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 14) // headline (~22pt) + 28 = ~50pt ≥ 44pt min target
-                .background(Theme.magenta)
-                .clipShape(.rect(cornerRadius: 14))
+                .background(Theme.magentaGradient, in: RoundedRectangle(cornerRadius: 12))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(Theme.magentaSoft.opacity(0.6), lineWidth: 1)
+                }
         }
     }
 
