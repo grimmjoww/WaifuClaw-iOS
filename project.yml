@@ -54,6 +54,7 @@ targets:
       # (File → New → StoreKit Configuration File) for simulator IAP testing.
       testTargets:
         - WaifuClawTests
+        - WaifuClawUITests
     dependencies: []
 
   WaifuClawTests:
@@ -67,4 +68,18 @@ targets:
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: studio.phantomhorizons.waifuclaw.ios.tests
       GENERATE_INFOPLIST_FILE: YES
+      SWIFT_VERSION: "5.9"
+
+  WaifuClawUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: WaifuClawUITests
+    dependencies:
+      - target: WaifuClaw
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: studio.phantomhorizons.waifuclaw.ios.uitests
+      GENERATE_INFOPLIST_FILE: YES
+      TEST_TARGET_NAME: WaifuClaw
       SWIFT_VERSION: "5.9"

@@ -7,9 +7,9 @@ name: iOS compile check
 on:
   push:
     branches: ['main', 'feat/*', 'fix/*']
-    paths: ['WaifuClaw/**', 'WaifuClawTests/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
+    paths: ['WaifuClaw/**', 'WaifuClawTests/**', 'WaifuClawUITests/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
   pull_request:
-    paths: ['WaifuClaw/**', 'WaifuClawTests/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
+    paths: ['WaifuClaw/**', 'WaifuClawTests/**', 'WaifuClawUITests/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
   workflow_dispatch:
 
 jobs:
