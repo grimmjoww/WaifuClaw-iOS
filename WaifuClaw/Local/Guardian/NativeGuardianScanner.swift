@@ -35,7 +35,6 @@ struct NativeGuardianScanner {
         var omissions: [NativeGuardianOmission] = []
         var visitedEntries = 0
         var totalHashedBytes = 0
-        var enumerationError: Error?
 
         progress?(NativeGuardianScanProgress(
             phase: .enumerating,
@@ -54,19 +53,27 @@ struct NativeGuardianScanner {
             .isRegularFileKey,
             .isSymbolicLinkKey
         ]
-        guard let enumerator = fileManager.enumerator(
-            at: rootURL,
-            includingPropertiesForKeys: propertyKeys,
-            options: [],
-            errorHandler: { _, error in
-                enumerationError = error
-                return false
+        // An explicit queue avoids relying on skipDescendants() semantics for
+        // sensitive siblings on different Files providers and iOS runtimes.
+        // A directory is enqueued only after validating its path and symlink
+        // state. Failed listings fail the entire review rather than treating
+        // unreadable files as clean or deleted.
+        var directories: [URL] = [rootURL]
+        var nextDirectory = 0
+        while nextDirectory < directories.count {
+            let directory = directories[nextDirectory]
+            nextDirectory += 1
+            let entries: [URL]
+            do {
+                entries = try fileManager.contentsOfDirectory(
+                    at: directory,
+                    includingPropertiesForKeys: propertyKeys,
+                    options: []
+                )
+            } catch {
+                throw NativeGuardianError.enumerationFailed(error.localizedDescription)
             }
-        ) else {
-            throw NativeGuardianError.enumerationFailed("The Files folder could not be opened.")
-        }
-
-        while let rawURL = enumerator.nextObject() as? URL {
+            for rawURL in entries {
             visitedEntries += 1
             guard visitedEntries <= NativeGuardianScanLimits.maximumVisitedEntries else {
                 throw NativeGuardianError.entryLimitExceeded(NativeGuardianScanLimits.maximumVisitedEntries)
@@ -79,14 +86,12 @@ struct NativeGuardianScanner {
             guard !relativePath.isEmpty else { continue }
 
             // Never inspect a protected directory/file's metadata or content.
-            // Skipping descendants also prevents an accidental traversal of .git.
+            // Never enqueue sensitive folders such as .git for traversal.
             if NativeGuardianPathGuard.isSensitive(relativePath: relativePath) {
-                enumerator.skipDescendants()
                 continue
             }
 
             if !NativeGuardianPathGuard.isValidRelativePath(relativePath) {
-                enumerator.skipDescendants()
                 continue
             }
 
@@ -102,7 +107,6 @@ struct NativeGuardianScanner {
             // turn an admitted read into a traversal outside the project.
             if values.isSymbolicLink == true {
                 try failIfTracked(relativePath, trackingPaths, reason: "it has become a symlink")
-                enumerator.skipDescendants()
                 continue
             }
 
@@ -112,8 +116,8 @@ struct NativeGuardianScanner {
             }
 
             if values.isDirectory == true {
-                if NativeGuardianPathGuard.depth(of: relativePath) >= NativeGuardianScanLimits.maximumDepth {
-                    enumerator.skipDescendants()
+                if NativeGuardianPathGuard.depth(of: relativePath) < NativeGuardianScanLimits.maximumDepth {
+                    directories.append(rawURL)
                 }
                 reportProgress(progress, visitedEntries, candidateFiles.count, omissions.count)
                 continue
@@ -170,10 +174,7 @@ struct NativeGuardianScanner {
             ))
             totalHashedBytes = nextTotal
             reportProgress(progress, visitedEntries, candidateFiles.count, omissions.count)
-        }
-
-        if let enumerationError {
-            throw NativeGuardianError.enumerationFailed(enumerationError.localizedDescription)
+            }
         }
 
         candidateFiles.sort { $0.relativePath < $1.relativePath }

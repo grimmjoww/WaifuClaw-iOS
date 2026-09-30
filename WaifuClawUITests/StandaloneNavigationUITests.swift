@@ -70,6 +70,7 @@ final class StandaloneNavigationUITests: XCTestCase {
         }
         let finishOnboarding = app.buttons["onboarding.finish"]
         XCTAssertTrue(finishOnboarding.waitForExistence(timeout: 5))
+        XCTAssertTrue(finishOnboarding.isHittable, "Setup must remain tappable above the iOS keyboard")
         finishOnboarding.tap()
 
         let tabs = app.tabBars
@@ -89,6 +90,9 @@ final class StandaloneNavigationUITests: XCTestCase {
         app.launch()
 
         let tabs = app.tabBars
+        // The mobile dashboard creates its action tiles lazily below the
+        // companion hero. Bring Runs into the visible, hittable viewport.
+        app.scrollViews.firstMatch.swipeUp()
         let runs = app.buttons["Inspect runs & evidence"]
         XCTAssertTrue(runs.waitForExistence(timeout: 10))
         runs.tap()

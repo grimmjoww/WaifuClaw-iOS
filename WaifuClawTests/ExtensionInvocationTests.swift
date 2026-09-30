@@ -155,6 +155,11 @@ final class ExtensionInvocationTests: XCTestCase {
         case .failure(let error):
             XCTFail("Unexpected cancellation error \(error)")
         }
+        // URLSession delivers the URLProtocol stop callback on its own queue,
+        // which can follow the cancelled Swift task's return on a busy simulator.
+        for _ in 0..<50 where !ExtensionInvocationURLProtocol.didStopLoading {
+            try await Task.sleep(for: .milliseconds(20))
+        }
         XCTAssertTrue(ExtensionInvocationURLProtocol.didStopLoading)
     }
 

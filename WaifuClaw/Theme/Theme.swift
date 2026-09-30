@@ -1,4 +1,17 @@
+import CoreText
 import SwiftUI
+
+/// The font files are app resources, not system fonts. Explicit registration
+/// also works in a hosted XCTest process, where UIAppFonts is not guaranteed
+/// to have been processed by UIKit before the first SwiftUI view is built.
+enum StudioFontRegistration {
+    static func registerIfNeeded() {
+        for fileName in ["CinzelDecorative-Regular", "CinzelDecorative-Bold"] {
+            guard let fontURL = Bundle.main.url(forResource: fileName, withExtension: "ttf") else { continue }
+            CTFontManagerRegisterFontsForURL(fontURL as CFURL, .process, nil)
+        }
+    }
+}
 
 /// WaifuClaw brand theme — Phantom Horizons palette: dark plum-black with
 /// magenta accents. Never generic piano black.

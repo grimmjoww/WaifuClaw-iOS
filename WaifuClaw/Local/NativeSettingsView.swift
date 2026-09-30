@@ -111,6 +111,20 @@ struct NativeSettingsView: View {
                 }
                 .themeCard()
 
+                VStack(alignment: .leading, spacing: 8) {
+                    StudioEyebrow(title: "Membership")
+                    Text("Pro is not on sale yet. Core agent, Git, memory and companions remain usable without a subscription; no price or checkout is shown until a real ongoing service and App Store products are ready.")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.textSecondary)
+                    NavigationLink {
+                        NativeSubscriptionStorefrontView()
+                    } label: {
+                        Label("Membership & Pro status", systemImage: "sparkles")
+                    }
+                    .foregroundStyle(Theme.magentaSoft)
+                }
+                .themeCard()
+
                 NavigationLink {
                     NativeNoticesView()
                 } label: {

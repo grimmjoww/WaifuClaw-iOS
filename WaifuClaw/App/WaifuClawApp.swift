@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct WaifuClawApp: App {
     init() {
+        StudioFontRegistration.registerIfNeeded()
         #if DEBUG
         // A command-line UserDefaults override of false cannot be changed by
         // onboarding. Reset the persisted value once instead in UI test builds.
@@ -46,9 +47,8 @@ private enum NativeTab: Hashable {
     case settings
 }
 
-/// Mount a feature only when its real phone-local data and controls exist.
-/// Team, full OutcomeRun governance and Pro remain outside this shell until
-/// their native stores and working actions exist, not preview fixtures.
+/// Mount only real phone-local data and controls. Team is reachable from Home;
+/// full OutcomeRun governance and a purchasable Pro tier remain release gates.
 struct MainTabView: View {
     @State private var selectedTab: NativeTab = .home
     @State private var requestedConversationID: UUID?

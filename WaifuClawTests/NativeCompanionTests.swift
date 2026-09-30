@@ -45,7 +45,10 @@ final class NativeCompanionTests: XCTestCase {
         }
     }
 
-    func testStudioDisplayTypefacesAreRegisteredOnDevice() {
+    func testStudioDisplayTypefacesAreRegisteredOnDevice() throws {
+        _ = try XCTUnwrap(Bundle.main.url(forResource: "CinzelDecorative-Regular", withExtension: "ttf"))
+        _ = try XCTUnwrap(Bundle.main.url(forResource: "CinzelDecorative-Bold", withExtension: "ttf"))
+        StudioFontRegistration.registerIfNeeded()
         XCTAssertNotNil(UIFont(name: "CinzelDecorative-Regular", size: 22))
         XCTAssertNotNil(UIFont(name: "CinzelDecorative-Bold", size: 26))
     }

@@ -41,12 +41,16 @@ struct DisplayNameView: View {
                 .onSubmit(continueTapped)
                 .accessibilityLabel("Your display name")
                 .accessibilityHint("Type the name WaifuClaw should call you")
+            Spacer()
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
             Button("Continue", action: continueTapped)
                 .themePrimaryButton()
                 .disabled(trimmedName.isEmpty)
                 .accessibilityIdentifier("onboarding.finish")
                 .padding(.horizontal, 16)
-            Spacer()
+                .padding(.vertical, 10)
+                .background(Theme.background)
         }
         .onAppear {
             // Replaying setup keeps whatever was entered before.

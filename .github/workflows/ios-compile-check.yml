@@ -1,7 +1,7 @@
 # iOS compile check — runs on GitHub's own Mac machines.
 # No extra accounts, no extra apps to install: it just runs on this repo.
-# Unsigned build proves the SwiftUI compiles; signing/TestFlight still
-# needs the $99 Apple Developer membership (separate step, later).
+# Unsigned build checks SwiftUI compilation and simulator behavior; signing and
+# TestFlight still need configured distribution credentials and an app record.
 name: iOS compile check
 
 on:
