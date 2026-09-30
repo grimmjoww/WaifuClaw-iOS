@@ -2,6 +2,16 @@ import SwiftUI
 
 @main
 struct WaifuClawApp: App {
+    init() {
+        #if DEBUG
+        // A command-line UserDefaults override of false cannot be changed by
+        // onboarding. Reset the persisted value once instead in UI test builds.
+        if ProcessInfo.processInfo.environment["WAIFUCLAW_UI_TEST_RESET_ONBOARDING"] == "1" {
+            UserDefaults.standard.removeObject(forKey: OnboardingKeys.hasCompletedOnboarding)
+        }
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()

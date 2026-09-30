@@ -169,6 +169,31 @@ final class LocalRunStoreTests: XCTestCase {
         }
     }
 
+    func testClearLocalHistoryCascadesToMessagesRunsAndEvidence() async throws {
+        let databaseURL = try makeDatabaseURL()
+        let store = try LocalRunStore(databaseURL: databaseURL)
+        let conversation = try await store.createConversation(title: "Private project")
+        _ = try await store.appendMessage(
+            conversationID: conversation.id,
+            role: .user,
+            content: "Example private text"
+        )
+        let run = try await store.createRun(conversationID: conversation.id)
+        _ = try await store.appendEvent(runID: run.id, kind: "tool", summary: "Example evidence")
+
+        let deletedCount = try await store.deleteAllConversations()
+        XCTAssertEqual(deletedCount, 1)
+        let reopened = try LocalRunStore(databaseURL: databaseURL)
+        let conversations = try await reopened.listConversations()
+        let messages = try await reopened.messages(in: conversation.id)
+        let runs = try await reopened.runs(in: conversation.id)
+        let events = try await reopened.events(in: run.id)
+        XCTAssertTrue(conversations.isEmpty)
+        XCTAssertTrue(messages.isEmpty)
+        XCTAssertTrue(runs.isEmpty)
+        XCTAssertTrue(events.isEmpty)
+    }
+
     private func makeDatabaseURL() throws -> URL {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)

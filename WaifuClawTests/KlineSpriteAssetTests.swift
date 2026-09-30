@@ -18,4 +18,13 @@ final class KlineSpriteAssetTests: XCTestCase {
         let notice = try String(contentsOf: url, encoding: .utf8)
         XCTAssertTrue(notice.contains("Copyright (c) 2024 NeuralMemory Contributors"))
     }
+
+    func testPrivacyManifestIsActuallyBundled() throws {
+        let url = try XCTUnwrap(Bundle.main.url(forResource: "PrivacyInfo", withExtension: "xcprivacy"))
+        let plist = try XCTUnwrap(NSDictionary(contentsOf: url))
+        let requiredReasons = try XCTUnwrap(plist["NSPrivacyAccessedAPITypes"] as? [[String: Any]])
+        XCTAssertTrue(requiredReasons.contains {
+            ($0["NSPrivacyAccessedAPIType"] as? String) == "NSPrivacyAccessedAPICategoryUserDefaults"
+        })
+    }
 }

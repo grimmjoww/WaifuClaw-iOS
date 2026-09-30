@@ -35,6 +35,13 @@ final class NativeAgentController {
                 try await loadConversation(selectedConversationID)
             } else if let first = conversations.first {
                 try await loadConversation(first.id)
+            } else {
+                selectedConversationID = nil
+                messages = []
+                recentEvents = []
+                streamedText = ""
+                status = "No local conversations yet"
+                klineMood = .idle
             }
         } catch {
             show(error)

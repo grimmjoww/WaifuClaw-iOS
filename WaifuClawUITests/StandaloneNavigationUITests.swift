@@ -3,7 +3,7 @@ import XCTest
 final class StandaloneNavigationUITests: XCTestCase {
     func testPhoneOnlyOnboardingReachesAgentAndModelSettings() {
         let app = XCUIApplication()
-        app.launchArguments = ["-hasCompletedOnboarding", "NO"]
+        app.launchEnvironment["WAIFUCLAW_UI_TEST_RESET_ONBOARDING"] = "1"
         app.launch()
 
         let next = app.buttons["Next"]

@@ -133,6 +133,23 @@ public actor LocalRunStore {
         }
     }
 
+    /// Deletes all phone-local conversations and their messages, runs and run
+    /// events through enforced SQLite foreign-key cascades. Provider keys and
+    /// approved project memories have separate explicit deletion controls.
+    @discardableResult
+    public func deleteAllConversations() throws -> Int {
+        let count = try withStatement("SELECT COUNT(*) FROM conversations;") { statement in
+            guard try stepToRowOrDone(statement) else {
+                throw LocalRunStoreError.corruptData("Conversation count was unavailable")
+            }
+            return Int(sqlite3_column_int64(statement, 0))
+        }
+        try withStatement("DELETE FROM conversations;") { statement in
+            try stepToDone(statement)
+        }
+        return count
+    }
+
     /// Appends a message and marks its parent conversation as recently updated.
     public func appendMessage(
         conversationID: UUID,

@@ -80,7 +80,7 @@ struct NativeHomeView: View {
         }
         .background(Theme.background)
         .navigationTitle("WaifuClaw")
-        .task { await reload() }
+        .onAppear { Task { await reload() } }
     }
 
     private var greeting: String {

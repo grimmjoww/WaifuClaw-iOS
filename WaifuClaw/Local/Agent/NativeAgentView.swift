@@ -119,8 +119,10 @@ struct NativeAgentView: View {
                 controller.errorMessage = error.localizedDescription
             }
         }
-        .task { await controller.load() }
-        .onAppear { controller.refreshWorkspace() }
+        .onAppear {
+            controller.refreshWorkspace()
+            if !controller.isRunning { Task { await controller.load() } }
+        }
         .onChange(of: scenePhase) { _, phase in
             // iOS 17 can suspend the process. Do not claim a local run keeps
             // executing after backgrounding; persist the cancelled run.

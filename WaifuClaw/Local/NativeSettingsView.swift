@@ -4,6 +4,8 @@ struct NativeSettingsView: View {
     @AppStorage(OnboardingKeys.displayName) private var displayName = ""
     @State private var modelDescription = "Not configured"
     @State private var storageError: String?
+    @State private var storageNotice: String?
+    @State private var showingHistoryDeletion = false
 
     var body: some View {
         ScrollView {
@@ -85,6 +87,14 @@ struct NativeSettingsView: View {
                         .foregroundStyle(Theme.textPrimary)
                     Text("Conversations and agent run events are kept in this app's local database. A selected Files project stays in its original folder. Model keys stay in the iPhone Keychain.")
                         .foregroundStyle(Theme.textSecondary)
+                    Button("Delete all local conversations and runs", role: .destructive) {
+                        showingHistoryDeletion = true
+                    }
+                    .font(.subheadline.bold())
+                    if let storageNotice {
+                        Text(storageNotice)
+                            .foregroundStyle(Theme.success)
+                    }
                     if let storageError {
                         Text(storageError)
                             .foregroundStyle(Theme.danger)
@@ -109,6 +119,14 @@ struct NativeSettingsView: View {
         .background(Theme.background)
         .navigationTitle("Settings")
         .task { refresh() }
+        .alert("Delete all local conversation history?", isPresented: $showingHistoryDeletion) {
+            Button("Delete conversations and runs", role: .destructive) {
+                Task { await clearLocalHistory() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently removes this phone's conversations, messages, run records and event evidence. It does not erase saved model keys, project files, or separately approved project memories.")
+        }
     }
 
     private func refresh() {
@@ -123,6 +141,18 @@ struct NativeSettingsView: View {
             modelDescription = "Not configured. Choose a model and add your own provider key."
         } catch {
             storageError = error.localizedDescription
+        }
+    }
+
+    private func clearLocalHistory() async {
+        do {
+            let store = try LocalRunStore()
+            let count = try await store.deleteAllConversations()
+            storageNotice = "Deleted \(count) local conversation\(count == 1 ? "" : "s") and their run evidence."
+            storageError = nil
+        } catch {
+            storageNotice = nil
+            storageError = "Could not delete local history: \(error.localizedDescription)"
         }
     }
 }

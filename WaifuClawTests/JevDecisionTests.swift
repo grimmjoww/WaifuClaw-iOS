@@ -139,15 +139,17 @@ final class JevDecisionTests: XCTestCase {
         defer { try? storage.delete() }
 
         do {
-            XCTAssertNil(try storage.load())
+            let initialKey = try storage.load()
+            XCTAssertNil(initialKey)
             try storage.save("not-a-real-jev-key")
             XCTAssertEqual(try storage.load(), "not-a-real-jev-key")
             try storage.delete()
-            XCTAssertNil(try storage.load())
+            let deletedKey = try storage.load()
+            XCTAssertNil(deletedKey)
         } catch let error as JevKeychainStore.StorageError {
             if case let .status(status) = error,
-               [errSecNotAvailable, errSecInteractionNotAllowed].contains(status) {
-                throw XCTSkip("The current test host does not expose an unlocked Keychain: \(status)")
+               [errSecNotAvailable, errSecInteractionNotAllowed, errSecMissingEntitlement].contains(status) {
+                throw XCTSkip("Unsigned simulator or locked test host cannot access Keychain: \(status); signed-device validation remains required")
             }
             throw error
         }
