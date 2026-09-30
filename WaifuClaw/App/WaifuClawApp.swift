@@ -37,8 +37,8 @@ private enum NativeTab: Hashable {
 }
 
 /// Mount a feature only when its real phone-local data and controls exist.
-/// Runs, Team, Memory, Plugins and Pro join this shell as their native stores
-/// and working actions are delivered, not as preview fixtures.
+/// Team, full OutcomeRun governance and Pro remain outside this shell until
+/// their native stores and working actions exist, not preview fixtures.
 struct MainTabView: View {
     @State private var selectedTab: NativeTab = .home
 

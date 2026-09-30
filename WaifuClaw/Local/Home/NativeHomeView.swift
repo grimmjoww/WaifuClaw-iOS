@@ -38,6 +38,12 @@ struct NativeHomeView: View {
                         .themePrimaryButton()
                     Button("Browse or edit project files", action: openWorkspace)
                         .font(.subheadline.bold())
+                    NavigationLink {
+                        NativeRunsView()
+                    } label: {
+                        Label("Inspect runs & evidence", systemImage: "list.bullet.rectangle")
+                            .font(.subheadline.bold())
+                    }
                     Button("Configure model & API key", action: openSettings)
                         .font(.subheadline.bold())
                 }

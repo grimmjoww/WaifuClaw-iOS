@@ -33,4 +33,35 @@ final class StandaloneNavigationUITests: XCTestCase {
         app.buttons["Model & API Key"].tap()
         XCTAssertTrue(app.buttons["Save provider settings"].waitForExistence(timeout: 5))
     }
+
+    func testRealWorkspaceMemoryAndIntegrationSettingsAreVisible() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-hasCompletedOnboarding", "YES"]
+        app.launch()
+
+        let tabs = app.tabBars
+        let runs = app.buttons["Inspect runs & evidence"]
+        XCTAssertTrue(runs.waitForExistence(timeout: 10))
+        runs.tap()
+        XCTAssertTrue(app.navigationBars["Runs"].waitForExistence(timeout: 5))
+        XCTAssertTrue(tabs.buttons["Workspace"].waitForExistence(timeout: 10))
+        tabs.buttons["Workspace"].tap()
+        XCTAssertTrue(app.buttons["Choose folder"].waitForExistence(timeout: 5))
+
+        tabs.buttons["Memory"].tap()
+        XCTAssertTrue(app.buttons["Choose project folder"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.switches["Include relevant approved memories in agent requests"].exists)
+
+        tabs.buttons["Settings"].tap()
+        let jev = app.buttons["Jev Decisions"]
+        XCTAssertTrue(jev.waitForExistence(timeout: 5))
+        jev.tap()
+        XCTAssertTrue(app.buttons["Save Jev key"].waitForExistence(timeout: 5))
+
+        app.navigationBars.buttons["Settings"].tap()
+        let extensions = app.buttons["Manage extensions & hooks"]
+        XCTAssertTrue(extensions.waitForExistence(timeout: 5))
+        extensions.tap()
+        XCTAssertTrue(app.buttons["Import manifest from Files"].waitForExistence(timeout: 5))
+    }
 }
