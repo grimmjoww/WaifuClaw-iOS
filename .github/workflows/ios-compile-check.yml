@@ -11,6 +11,11 @@ on:
   pull_request:
     paths: ['WaifuClaw/**', 'WaifuClawTests/**', 'WaifuClawUITests/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
   workflow_dispatch:
+    inputs:
+      live_mcp:
+        description: 'Also test public, read-only DeepWiki MCP discovery over HTTPS'
+        type: boolean
+        default: false
 
 jobs:
   compile:
@@ -39,6 +44,8 @@ jobs:
             CODE_SIGNING_ALLOWED=NO
 
       - name: Test WaifuClaw on iPhone simulator
+        env:
+          WAIFUCLAW_LIVE_MCP: ${{ github.event_name == 'workflow_dispatch' && inputs.live_mcp && '1' || '0' }}
         run: |
           SIMULATOR_ID=$(xcrun simctl list devices available --json | python3 -c 'import json,sys; groups=json.load(sys.stdin)["devices"].values(); print(next((d["udid"] for devices in groups for d in devices if d.get("isAvailable") and d.get("name", "").startswith("iPhone")), ""))')
           test -n "$SIMULATOR_ID" || { echo 'No available iPhone simulator'; exit 1; }
@@ -63,12 +70,17 @@ jobs:
           import subprocess, sys
           subprocess.run(['xcrun', 'simctl', 'bootstatus', sys.argv[1], '-b'], check=True, timeout=90)
           PY
-          APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -type d -path '*/Build/Products/Debug-iphonesimulator/WaifuClaw.app' -print -quit)
+          APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -maxdepth 5 -type d -path '*/Build/Products/Debug-iphonesimulator/WaifuClaw.app' -print -quit)
           test -n "$APP_PATH" || { echo 'Simulator app not built'; exit 1; }
+          # Earlier UI tests may have selected Rei or cached an older launch
+          # screen. Capture a fresh install of the actual default Kline UI.
+          xcrun simctl uninstall "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios || true
           xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
           xcrun simctl terminate "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios || true
           xcrun simctl launch "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios -hasCompletedOnboarding YES
           mkdir -p visual-qa
+          sleep 2
+          xcrun simctl io "$SIMULATOR_ID" screenshot visual-qa/companion-home.png
           python3 - "$SIMULATOR_ID" <<'PY'
           import os, signal, subprocess, sys, time
           time.sleep(2)
@@ -96,6 +108,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: companion-motion-simulator
-          path: visual-qa/companion-home.mp4
+          path: visual-qa/companion-home.*
           if-no-files-found: warn
           retention-days: 7

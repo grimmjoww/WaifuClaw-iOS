@@ -27,6 +27,7 @@ struct NativeHomeView: View {
         }
         .background { StudioBackdrop() }
         .navigationTitle("WaifuClaw")
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear { Task { await reload() } }
     }
 
@@ -70,31 +71,26 @@ struct NativeHomeView: View {
 
     private var companionHero: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .center, spacing: 4) {
+                VStack(alignment: .leading, spacing: 9) {
                     StudioEyebrow(title: "Animated companion")
                     Text(selectedCompanion.definition.name)
                         .font(Theme.sectionDisplay)
                         .foregroundStyle(Theme.textPrimary)
-                    Text("Visual guide · the model and permissions stay yours")
+                    Text("A guide, not a remote worker")
                         .font(.caption)
                         .foregroundStyle(Theme.textSecondary)
+                    Label("ON DEVICE", systemImage: "iphone.gen3")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.success)
+                        .accessibilityLabel("The app's workspace and sprite run on this iPhone")
                 }
-                Spacer()
-                Label("ON DEVICE", systemImage: "iphone.gen3")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.success)
-                    .padding(.horizontal, 9)
-                    .padding(.vertical, 6)
-                    .background(Theme.success.opacity(0.11), in: Capsule())
-                    .accessibilityLabel("The app's workspace and sprite run on this iPhone")
-            }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-            CompanionSpriteView(mood: .idle)
-                .frame(height: 265)
-                .frame(maxWidth: .infinity)
-                .accessibilityHint("Her articulated movement and blinking pause when Reduce Motion is enabled")
-                .background {
+                CompanionSpriteView(mood: .idle)
+                    .frame(width: 175, height: 215)
+                    .accessibilityHint("Her articulated movement and blinking pause when Reduce Motion is enabled")
+                    .background {
                     RadialGradient(
                         colors: [Theme.magenta.opacity(0.23), Theme.magenta.opacity(0.05), .clear],
                         center: .center,
@@ -102,6 +98,7 @@ struct NativeHomeView: View {
                         endRadius: 170
                     )
                 }
+            }
 
             NavigationLink {
                 ScrollView { NativeCompanionChooserView().padding() }

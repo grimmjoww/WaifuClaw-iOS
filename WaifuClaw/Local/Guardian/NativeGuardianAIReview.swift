@@ -493,24 +493,32 @@ actor NativeGuardianAIReviewer {
             throw NativeGuardianAIReviewError.projectIdentityMismatch
         }
         guard let snapshot = try guardianStore.load(projectID: projectID),
-              snapshot.reviews.contains(guardianReview) else {
+              let persistedReview = snapshot.reviews.first(where: { persisted in
+                  persisted.id == guardianReview.id &&
+                  persisted.projectID == guardianReview.projectID &&
+                  persisted.baselineID == guardianReview.baselineID &&
+                  persisted.candidateFiles == guardianReview.candidateFiles &&
+                  persisted.changes == guardianReview.changes &&
+                  persisted.omissions == guardianReview.omissions &&
+                  persisted.visitedEntries == guardianReview.visitedEntries &&
+                  abs(persisted.scannedAt.timeIntervalSince1970 - guardianReview.scannedAt.timeIntervalSince1970) <= 0.001
+              }) else {
             throw NativeGuardianAIReviewError.guardianReviewNotPersisted
         }
 
         let preparation = Self.prepare(
             workspace: workspace,
             projectID: projectID,
-            guardianReview: guardianReview
+            guardianReview: persistedReview
         )
         switch preparation {
         case .refused(let failure):
             let report = Self.refusalReport(
                 projectID: projectID,
-                guardianReview: guardianReview,
+                guardianReview: persistedReview,
                 failure: failure
             )
-            try await reportStore.save(report)
-            return report
+            return try await persist(report)
         case .ready(let request):
             let outcome: ProviderOutcome
             do {
@@ -565,9 +573,17 @@ actor NativeGuardianAIReviewer {
                     modelOpinion: nil
                 )
             }
-            try await reportStore.save(report)
-            return report
+            return try await persist(report)
         }
+    }
+
+    private func persist(_ report: NativeGuardianAIReviewReport) async throws -> NativeGuardianAIReviewReport {
+        try await reportStore.save(report)
+        let persisted = try await reportStore.reports(projectID: report.projectID)
+        guard let canonical = persisted.first(where: { $0.id == report.id }) else {
+            throw NativeGuardianAIReviewError.persistence("The newly written report could not be read back.")
+        }
+        return canonical
     }
 
     private static func verifiedWorkspace(rootURL: URL) throws -> ScopedWorkspace {
@@ -843,7 +859,8 @@ actor NativeGuardianAIReviewer {
 
     private static func makeExcerpt(_ text: String) -> (text: String, lineStart: Int, lineEnd: Int) {
         guard !text.isEmpty else { return ("", 0, 0) }
-        let lines = text.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+        var lines = text.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+        if text.hasSuffix("\n") { lines.removeLast() }
         var selected: [String] = []
         var lineEnd = 0
         for (offset, line) in lines.prefix(NativeGuardianAIReviewLimits.maximumExcerptLinesPerFile).enumerated() {
@@ -859,7 +876,8 @@ actor NativeGuardianAIReviewer {
             }
             break
         }
-        return (selected.joined(separator: "\n"), 1, lineEnd)
+        let excerpt = selected.joined(separator: "\n")
+        return (excerpt.isEmpty && text.hasSuffix("\n") ? "\n" : excerpt, 1, lineEnd)
     }
 
     private static func utf8Prefix(of text: String, limit: Int) -> String {

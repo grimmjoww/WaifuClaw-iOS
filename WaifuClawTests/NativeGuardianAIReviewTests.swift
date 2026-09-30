@@ -203,6 +203,42 @@ final class NativeGuardianAIReviewTests: XCTestCase {
         XCTAssertEqual(persisted, [report])
     }
 
+    func testForgedReviewWithPersistedIDCannotSendProviderData() async throws {
+        let root = try temporaryDirectory()
+        let guardianHistory = try temporaryDirectory()
+        let reportHistory = try temporaryDirectory()
+        defer {
+            try? FileManager.default.removeItem(at: root)
+            try? FileManager.default.removeItem(at: guardianHistory)
+            try? FileManager.default.removeItem(at: reportHistory)
+        }
+        try write("let visible = true\n", to: root.appendingPathComponent("Source.swift"))
+        let guardianStore = try NativeGuardianStore(rootDirectory: guardianHistory)
+        let scanned = try NativeGuardianScanner(rootURL: root).scan(baseline: nil)
+        _ = try guardianStore.recordReview(scanned, for: scanned.projectID)
+        let forged = NativeGuardianReviewRecord(
+            id: scanned.id,
+            projectID: scanned.projectID,
+            baselineID: scanned.baselineID,
+            scannedAt: scanned.scannedAt,
+            candidateFiles: scanned.candidateFiles,
+            changes: [],
+            omissions: scanned.omissions,
+            visitedEntries: scanned.visitedEntries
+        )
+        let provider = FixtureProvider(result: .text("should not run"))
+        let reviewer = NativeGuardianAIReviewer(
+            guardianStore: guardianStore,
+            reportStore: try NativeGuardianAIReviewStore(rootDirectory: reportHistory)
+        )
+        do {
+            _ = try await reviewer.review(rootURL: root, guardianReview: forged, provider: provider)
+            XCTFail("A forged review must not reach the model")
+        } catch NativeGuardianAIReviewError.guardianReviewNotPersisted {
+            XCTAssertEqual(provider.invocationCount(), 0)
+        }
+    }
+
     private func temporaryDirectory() throws -> URL {
         let url = FileManager.default.temporaryDirectory
             .appendingPathComponent("native-guardian-ai-\(UUID().uuidString)", isDirectory: true)
