@@ -218,7 +218,7 @@ struct WorkspaceEditor: Sendable {
         guard Self.sha256(undoRecord.originalData) == undoRecord.originalSHA256 else {
             throw WorkspaceEditorError.coordinationFailed
         }
-        try withSecurityScopedAccess {
+        return try withSecurityScopedAccess {
             let target = try resolvedURL(undoRecord.relativePath, allowsRoot: false)
             try coordinatedWrite(at: target) { coordinatedURL in
                 let currentURL = coordinatedURL.standardizedFileURL.resolvingSymlinksInPath()
