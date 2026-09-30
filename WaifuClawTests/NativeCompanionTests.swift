@@ -45,6 +45,11 @@ final class NativeCompanionTests: XCTestCase {
         }
     }
 
+    func testStudioDisplayTypefacesAreRegisteredOnDevice() {
+        XCTAssertNotNil(UIFont(name: "CinzelDecorative-Regular", size: 22))
+        XCTAssertNotNil(UIFont(name: "CinzelDecorative-Bold", size: 26))
+    }
+
     func testEachCompanionSchedulesActualIndependentMotionAndReduceMotionStopsIt() throws {
         for companion in CompanionCatalog.all {
             let scene = CompanionSpriteScene(companion: companion)

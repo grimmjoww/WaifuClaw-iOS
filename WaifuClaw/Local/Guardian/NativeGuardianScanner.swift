@@ -85,7 +85,7 @@ struct NativeGuardianScanner {
                 continue
             }
 
-            if !NativeGuardianPathGuard.isValidRelativePath(relativePath: relativePath) {
+            if !NativeGuardianPathGuard.isValidRelativePath(relativePath) {
                 enumerator.skipDescendants()
                 continue
             }

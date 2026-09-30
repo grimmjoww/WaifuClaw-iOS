@@ -197,6 +197,10 @@ actor NativeAgentEngine {
                         break
                     }
                 }
+                // Cancelling an AsyncThrowingStream consumer may make its
+                // producer finish without an error. Never convert that into an
+                // "incomplete response" failure when Stop actually cancelled it.
+                try Task.checkCancellation()
                 if calls.isEmpty {
                     guard !visibleAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                         throw NativeAgentError.incompleteResponse
@@ -278,6 +282,12 @@ actor NativeAgentEngine {
             continuation.finish(throwing: CancellationError())
         } catch {
             if let runID {
+                if Task.isCancelled || (error as? URLError)?.code == .cancelled {
+                    try? await store.setRunPhase(runID, phase: .cancelled, error: nil)
+                    _ = try? await store.appendEvent(runID: runID, kind: "run.cancelled", summary: "Stopped by user or system")
+                    continuation.finish(throwing: CancellationError())
+                    return
+                }
                 try? await store.setRunPhase(runID, phase: .failed, error: error.localizedDescription)
                 _ = try? await store.appendEvent(runID: runID, kind: "run.failed", summary: "Run failed: \(error.localizedDescription)")
             }

@@ -54,12 +54,16 @@ struct NativeRunsView: View {
                         }
                         .padding(.vertical, 5)
                     }
+                    .listRowBackground(Theme.surface.opacity(0.88))
+                    .listRowSeparatorTint(Theme.hairline)
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
                 .refreshable { await reload() }
             }
         }
         .navigationTitle("Runs")
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .task { await reload() }
     }
 
@@ -98,8 +102,9 @@ private struct NativeRunDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 VStack(alignment: .leading, spacing: 8) {
+                    StudioEyebrow(title: "Local run record")
                     Text(conversationTitle)
-                        .font(.title3.bold())
+                        .font(Theme.sectionDisplay)
                     Label((currentRun ?? run).phase.displayName, systemImage: (currentRun ?? run).phase.iconName)
                         .foregroundStyle((currentRun ?? run).phase.color)
                     Text("Run ID: \(run.id.uuidString)")
@@ -117,9 +122,7 @@ private struct NativeRunDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .themeCard()
 
-                Text("Event timeline")
-                    .font(.headline)
-                    .foregroundStyle(Theme.textPrimary)
+                StudioEyebrow(title: "Event timeline")
                 if let loadError {
                     Text(loadError).foregroundStyle(Theme.danger)
                     Button("Retry") { Task { await reload() } }
@@ -150,7 +153,7 @@ private struct NativeRunDetailView: View {
             }
             .padding()
         }
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Run evidence")
         .toolbar { Button("Refresh") { Task { await reload() } } }
         .task { await reload() }
