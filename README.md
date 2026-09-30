@@ -44,7 +44,8 @@ running on your own computer. No hosted servers.
 
 - [ ] Pro tier — associative memory / pro recall (paid)
 - [ ] Monetization call: Apple in-app purchase vs web-issued license keys
-- [ ] TestFlight beta (needs the $99/yr Apple Developer Program)
+- [x] Apple Developer Program membership ($99/yr, active since 2026-09-30)
+- [ ] TestFlight beta
 - [ ] App Store release
 
 **Later:**
