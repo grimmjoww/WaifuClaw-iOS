@@ -15,13 +15,21 @@ final class NativeAgentController {
     var isRunning = false
     var workspaceName: String?
     var klineMood: KlineSpriteMood = .idle
+    var pendingPatches: [NativePatchProposal] = []
+    var patchPreview: NativePatchApprovalPreview?
+    var lastAppliedPatch: NativePatchProposal?
+    var isApplyingPatch = false
 
     private var store: LocalRunStore?
     private var selectedWorkspace: ScopedWorkspace?
+    private var selectedPatchProject: NativePatchProject?
+    private var patchWorkflow: NativePatchWorkflow?
     private var activeTask: Task<Void, Never>?
     private static let bookmarkKey = "native.workspace.folderBookmark"
 
     init() {
+        do { patchWorkflow = try NativePatchWorkflow() }
+        catch { show(error) }
         restoreWorkspace()
     }
 
@@ -43,6 +51,7 @@ final class NativeAgentController {
                 status = "No local conversations yet"
                 klineMood = .idle
             }
+            refreshPendingPatches()
         } catch {
             show(error)
         }
@@ -66,29 +75,39 @@ final class NativeAgentController {
     }
 
     func selectWorkspace(_ url: URL) {
+        guard !isRunning, !isApplyingPatch else { return }
         do {
             let workspace = try ScopedWorkspace(rootURL: url)
+            let patchProject = try NativePatchProject(userSelectedFolderURL: url)
             let bookmark = try url.bookmarkData(
                 options: [],
                 includingResourceValuesForKeys: nil,
                 relativeTo: nil
             )
             UserDefaults.standard.set(bookmark, forKey: Self.bookmarkKey)
+            if selectedPatchProject?.projectID != patchProject.projectID {
+                patchPreview = nil
+                lastAppliedPatch = nil
+            }
             selectedWorkspace = workspace
+            selectedPatchProject = patchProject
             workspaceName = url.lastPathComponent
             errorMessage = nil
             status = "Project selected: \(url.lastPathComponent)"
+            refreshPendingPatches()
         } catch {
             show(error)
         }
     }
 
     func refreshWorkspace() {
+        guard !isRunning, !isApplyingPatch else { return }
         restoreWorkspace()
+        refreshPendingPatches()
     }
 
     func send() {
-        guard !isRunning else { return }
+        guard !isRunning, !isApplyingPatch else { return }
         let prompt = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !prompt.isEmpty else { return }
         isRunning = true
@@ -107,6 +126,8 @@ final class NativeAgentController {
         streamedText = ""
         var activeRunID: UUID?
         let runProjectID = selectedWorkspace.map { NativeProjectIdentity.id(for: $0.rootURL) }
+        let runPatchProject = selectedPatchProject
+        let runPatchWorkflow = patchWorkflow
         do {
             let configuration = try LocalModelPreferences.load()
             guard let key = try KeychainStore.agentKey() else {
@@ -135,7 +156,7 @@ final class NativeAgentController {
             klineMood = .thinking
             let useJev = JevDecisionPreferences().isDecisionOptedIn
             let jevKey = useJev ? (try? JevKeychainStore().load()) : nil
-            let useMemory = UserDefaults.standard.bool(forKey: "native.memory.useInAgent")
+            let useMemory = NativeMemoryConsent().isEnabled(for: runProjectID)
             let engine = NativeAgentEngine(store: store)
             for try await signal in await engine.stream(
                 conversationID: conversationID,
@@ -144,7 +165,9 @@ final class NativeAgentController {
                 workspace: selectedWorkspace,
                 jevEnabled: useJev,
                 jevKey: jevKey,
-                memoryEnabled: useMemory
+                memoryEnabled: useMemory,
+                patchWorkflow: runPatchWorkflow,
+                patchProject: runPatchProject
             ) {
                 switch signal {
                 case .started(let id):
@@ -158,8 +181,14 @@ final class NativeAgentController {
                     status = activity
                     klineMood = activity.contains("read_file") || activity.contains("list_files") ? .reading : .thinking
                     await refreshRunEvidence(conversationID: conversationID, store: store)
+                case .patchProposed:
+                    refreshPendingPatches()
+                    status = "Edit proposed; no file changed. Review the diff below."
+                    klineMood = .reading
                 case .completed:
-                    status = "Run completed and saved on this phone"
+                    status = pendingPatches.contains(where: { $0.runID == activeRunID })
+                        ? "Response saved; proposed edit awaits your review"
+                        : "Run completed and saved on this phone"
                     klineMood = .completed
                     if let activeRunID {
                         recordExtensionHook(.runFinished, runID: activeRunID, projectID: runProjectID)
@@ -204,8 +233,123 @@ final class NativeAgentController {
         recentEvents = (try? await store.events(in: last.id)) ?? []
     }
 
+    func refreshPendingPatches() {
+        guard let patchWorkflow, let selectedPatchProject else {
+            pendingPatches = []
+            return
+        }
+        do {
+            pendingPatches = try patchWorkflow.pendingProposals(in: selectedPatchProject)
+        } catch {
+            pendingPatches = []
+            show(error)
+        }
+    }
+
+    func reviewPatch(_ proposal: NativePatchProposal) {
+        guard !isRunning, let patchWorkflow, let selectedPatchProject else { return }
+        do {
+            let preview = try patchWorkflow.approvalPreview(
+                proposalID: proposal.id,
+                in: selectedPatchProject
+            )
+            refreshPendingPatches()
+            guard preview.isCurrent else {
+                patchPreview = nil
+                errorMessage = "This edit proposal is no longer current. The project file was not changed."
+                return
+            }
+            patchPreview = preview
+            errorMessage = nil
+        } catch {
+            patchPreview = nil
+            show(error)
+        }
+    }
+
+    func approvePatch(_ proposalID: UUID) async {
+        guard !isRunning, !isApplyingPatch,
+              patchPreview?.proposal.id == proposalID,
+              let patchWorkflow, let selectedPatchProject else { return }
+        isApplyingPatch = true
+        defer { isApplyingPatch = false }
+        do {
+            let outcome = try await Task.detached(priority: .userInitiated) {
+                try patchWorkflow.approveAndApply(proposalID: proposalID, in: selectedPatchProject)
+            }.value
+            patchPreview = nil
+            refreshPendingPatches()
+            if outcome.didWriteWorkspace && outcome.proposal.status == .applied {
+                lastAppliedPatch = outcome.proposal
+                status = "Approved edit saved to \(outcome.proposal.relativePath)"
+                await recordPatchEvent(outcome.proposal, kind: "patch.applied", summary: "User approved and saved \(outcome.proposal.relativePath)")
+            } else {
+                status = "Edit not applied; the project file changed after review"
+                errorMessage = "The proposal was invalidated. Reload the file and ask for a new proposal."
+                await recordPatchEvent(outcome.proposal, kind: "patch.invalidated", summary: "Approval refused a changed project file")
+            }
+        } catch {
+            show(error)
+            refreshPendingPatches()
+        }
+    }
+
+    func rejectPatch(_ proposalID: UUID) {
+        guard !isRunning, !isApplyingPatch,
+              let patchWorkflow, let selectedPatchProject else { return }
+        do {
+            let rejected = try patchWorkflow.reject(proposalID: proposalID, in: selectedPatchProject)
+            patchPreview = nil
+            status = "Proposed edit rejected; no file changed"
+            refreshPendingPatches()
+            Task { await recordPatchEvent(rejected, kind: "patch.rejected", summary: "User declined edit to \(rejected.relativePath)") }
+        } catch {
+            show(error)
+        }
+    }
+
+    func undoLastApprovedPatch() async {
+        guard !isRunning, !isApplyingPatch,
+              let lastAppliedPatch, let patchWorkflow, let selectedPatchProject else { return }
+        isApplyingPatch = true
+        defer { isApplyingPatch = false }
+        do {
+            let outcome = try await Task.detached(priority: .userInitiated) {
+                try patchWorkflow.undoLastApprovedSave(proposalID: lastAppliedPatch.id, in: selectedPatchProject)
+            }.value
+            self.lastAppliedPatch = nil
+            if outcome.didWriteWorkspace {
+                status = "Restored the previous bytes of \(outcome.proposal.relativePath)"
+                await recordPatchEvent(outcome.proposal, kind: "patch.undone", summary: "User restored previous bytes of \(outcome.proposal.relativePath)")
+            } else {
+                errorMessage = "Undo refused a changed file; no bytes were overwritten."
+                await recordPatchEvent(outcome.proposal, kind: "patch.undo_refused", summary: "Undo refused changed workspace bytes")
+            }
+        } catch {
+            show(error)
+        }
+    }
+
+    private func recordPatchEvent(_ proposal: NativePatchProposal, kind: String, summary: String) async {
+        do {
+            let runStore = try store ?? LocalRunStore()
+            store = runStore
+            _ = try await runStore.appendEvent(runID: proposal.runID, kind: kind, summary: summary)
+            if let selectedConversationID { await refreshRunEvidence(conversationID: selectedConversationID, store: runStore) }
+        } catch {
+            errorMessage = "The project action completed, but local run evidence could not be updated: \(error.localizedDescription)"
+        }
+    }
+
     private func restoreWorkspace() {
-        guard let bookmark = UserDefaults.standard.data(forKey: Self.bookmarkKey) else { return }
+        guard let bookmark = UserDefaults.standard.data(forKey: Self.bookmarkKey) else {
+            selectedWorkspace = nil
+            selectedPatchProject = nil
+            patchPreview = nil
+            lastAppliedPatch = nil
+            workspaceName = nil
+            return
+        }
         do {
             var stale = false
             let url = try URL(
@@ -214,11 +358,24 @@ final class NativeAgentController {
                 relativeTo: nil,
                 bookmarkDataIsStale: &stale
             )
-            guard !stale else { return }
-            selectedWorkspace = try ScopedWorkspace(rootURL: url)
+            guard !stale else {
+                throw ScopedWorkspace.WorkspaceError.invalidFolder
+            }
+            let restoredWorkspace = try ScopedWorkspace(rootURL: url)
+            let restoredPatchProject = try NativePatchProject(userSelectedFolderURL: url)
+            if selectedPatchProject?.projectID != restoredPatchProject.projectID {
+                patchPreview = nil
+                lastAppliedPatch = nil
+            }
+            selectedWorkspace = restoredWorkspace
+            selectedPatchProject = restoredPatchProject
             workspaceName = url.lastPathComponent
         } catch {
             // A revoked Files grant must be reselected by the user, not hidden.
+            patchPreview = nil
+            lastAppliedPatch = nil
+            selectedWorkspace = nil
+            selectedPatchProject = nil
             workspaceName = nil
             errorMessage = "The saved project folder is no longer available. Choose it again."
         }

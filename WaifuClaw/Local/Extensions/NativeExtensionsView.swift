@@ -1,15 +1,16 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// Management UI for locally registered, declarative extension manifests.
-/// Importing a manifest registers metadata only: WaifuClaw does not download or
-/// run plugin code, and this screen does not invoke plugin endpoints.
+/// Management UI for declarative extension manifests and bounded local hooks.
+/// Importing never runs code; the official GitHub Markdown action can be sent
+/// separately, only after the user confirms its exact request and destination.
 @MainActor
 struct NativeExtensionsView: View {
     @StateObject private var registry: ExtensionRegistry
     @State private var showingImporter = false
     @State private var operationError: String?
     @State private var selectedProjectID: String?
+    private let invocationClient = ExtensionInvocationClient()
 
     init(registry: ExtensionRegistry? = nil) {
         _registry = StateObject(wrappedValue: registry ?? ExtensionRegistry())
@@ -28,8 +29,33 @@ struct NativeExtensionsView: View {
                     Label("Import manifest from Files", systemImage: "square.and.arrow.down")
                 }
                 .accessibilityHint("Choose a JSON extension manifest. No scripts or code are imported.")
+                if !registry.installedExtensions.contains(where: { $0.id == VerifiedMarkdownExtension.manifest.id }) {
+                    Button {
+                        do { try registry.importManifest(VerifiedMarkdownExtension.manifest) }
+                        catch { operationError = error.localizedDescription }
+                    } label: {
+                        Label("Install GitHub Markdown action", systemImage: "text.book.closed")
+                    }
+                    .accessibilityHint("Registers GitHub's documented Markdown renderer locally; no network request is sent until you review and confirm one.")
+                }
             } header: {
                 Text("Declarative extensions")
+            }
+
+            Section("Manual third-party action") {
+                if registry.installedExtensions.contains(where: {
+                    $0.isEnabled && invocationClient.isInvocationSupported(for: $0.manifest)
+                }) {
+                    NavigationLink {
+                        NativeExtensionActionView(registry: registry, client: invocationClient)
+                    } label: {
+                        Label("Use GitHub Markdown action", systemImage: "network")
+                    }
+                } else {
+                    Text("Install and enable the GitHub Markdown action above to send an explicitly reviewed request. Other manifests remain local metadata in this version.")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.textSecondary)
+                }
             }
 
             Section {
@@ -63,7 +89,9 @@ struct NativeExtensionsView: View {
                                 .lineLimit(1)
                                 .textSelection(.enabled)
 
-                            Text("\(plugin.manifest.actions.count) declared action\(plugin.manifest.actions.count == 1 ? "" : "s") · registration only")
+                            Text(invocationClient.isInvocationSupported(for: plugin.manifest)
+                                 ? "\(plugin.manifest.actions.count) declared · manual GitHub Markdown request available"
+                                 : "\(plugin.manifest.actions.count) declared · registration only")
                                 .font(.footnote)
                                 .foregroundStyle(Theme.textSecondary)
 
@@ -81,7 +109,7 @@ struct NativeExtensionsView: View {
             } header: {
                 Text("Installed")
             } footer: {
-                Text("Enabled means the manifest’s declared metadata is available to the app. This version has no HTTP plugin invocation API.")
+                Text("Enabled metadata alone cannot run downloaded code. Only GitHub's allowlisted /markdown endpoint has a real manual, separately confirmed network action; no model or hook can invoke it.")
             }
 
             Section {

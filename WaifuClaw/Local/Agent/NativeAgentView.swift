@@ -37,11 +37,41 @@ struct NativeAgentView: View {
                                 Text("Work with a project on this iPhone")
                                     .font(.title2.bold())
                                     .foregroundStyle(Theme.textPrimary)
-                                Text("Choose a folder in Files, add your model key in Settings, then ask WaifuClaw to inspect your code. Agent tools read files only; edit your own files in Workspace. Git is not connected yet.")
+                                Text("Choose a folder in Files and add your model key in Settings. The agent can read project text and propose a bounded edit, but cannot save it without your separate diff review. You can edit files yourself in Workspace.")
                                     .foregroundStyle(Theme.textSecondary)
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
+                        }
+                        if !controller.pendingPatches.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Edits awaiting your approval")
+                                    .font(.headline)
+                                Text("The model has not changed these files. Review every diff before choosing whether to apply one.")
+                                    .font(.footnote)
+                                    .foregroundStyle(Theme.textSecondary)
+                                ForEach(controller.pendingPatches) { proposal in
+                                    Button {
+                                        controller.reviewPatch(proposal)
+                                    } label: {
+                                        Label("Review \(proposal.relativePath)", systemImage: "doc.text.magnifyingglass")
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                    .accessibilityIdentifier("patch.review.\(proposal.id.uuidString)")
+                                    .disabled(controller.isRunning || controller.isApplyingPatch)
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .themeCard()
+                            .padding(.horizontal)
+                        }
+                        if let applied = controller.lastAppliedPatch {
+                            Button("Undo my approved edit to \(applied.relativePath)") {
+                                Task { await controller.undoLastApprovedPatch() }
+                            }
+                            .accessibilityIdentifier("patch.undo")
+                            .disabled(controller.isRunning || controller.isApplyingPatch)
+                            .padding(.horizontal)
                         }
                         if !controller.recentEvents.isEmpty {
                             VStack(alignment: .leading, spacing: 6) {
@@ -119,6 +149,20 @@ struct NativeAgentView: View {
                 controller.errorMessage = error.localizedDescription
             }
         }
+        .sheet(isPresented: Binding(
+            get: { controller.patchPreview != nil },
+            set: { if !$0 { controller.patchPreview = nil } }
+        )) {
+            if let preview = controller.patchPreview {
+                NativePatchReviewSheet(
+                    preview: preview,
+                    isApplying: controller.isApplyingPatch,
+                    onClose: { controller.patchPreview = nil },
+                    onReject: { controller.rejectPatch(preview.proposal.id) },
+                    onApprove: { Task { await controller.approvePatch(preview.proposal.id) } }
+                )
+            }
+        }
         .onAppear {
             controller.refreshWorkspace()
             if !controller.isRunning { Task { await controller.load() } }
@@ -145,6 +189,7 @@ struct NativeAgentView: View {
             Button(controller.workspaceName == nil ? "Choose" : "Change") {
                 showingFolderPicker = true
             }
+            .disabled(controller.isRunning || controller.isApplyingPatch)
         }
         .padding()
         .background(Theme.surface)
@@ -155,12 +200,12 @@ struct NativeAgentView: View {
             TextField("Ask about your project…", text: $controller.draft, axis: .vertical)
                 .lineLimit(1...5)
                 .textFieldStyle(.roundedBorder)
-                .disabled(controller.isRunning)
+                .disabled(controller.isRunning || controller.isApplyingPatch)
             Button("Send", systemImage: "arrow.up.circle.fill", action: controller.send)
                 .labelStyle(.iconOnly)
                 .font(.system(size: 30))
                 .foregroundStyle(Theme.magenta)
-                .disabled(controller.isRunning || controller.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .disabled(controller.isRunning || controller.isApplyingPatch || controller.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
         .padding()
     }

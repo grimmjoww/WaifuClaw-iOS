@@ -31,7 +31,7 @@ struct RootView: View {
             if hasCompletedOnboarding {
                 MainTabView()
             } else {
-                OnboardingView()
+                OnboardingView(onComplete: { hasCompletedOnboarding = true })
             }
         }
         .tint(Theme.magenta)

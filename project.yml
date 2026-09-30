@@ -15,6 +15,14 @@ options:
   deploymentTarget:
     iOS: "17.0"
 
+packages:
+  SwiftGitX:
+    url: https://github.com/ibrahimcetin/SwiftGitX.git
+    exactVersion: "0.4.0"
+  libgit2:
+    url: https://github.com/ibrahimcetin/libgit2.git
+    exactVersion: "1.9.2"
+
 targets:
   WaifuClaw:
     type: application
@@ -60,7 +68,11 @@ targets:
       testTargets:
         - WaifuClawTests
         - WaifuClawUITests
-    dependencies: []
+    dependencies:
+      - package: SwiftGitX
+        product: SwiftGitX
+      - package: libgit2
+        product: libgit2
 
   WaifuClawTests:
     type: bundle.unit-test

@@ -32,12 +32,18 @@ struct NativeHomeView: View {
                     Text("Continue building")
                         .font(.title3.bold())
                         .foregroundStyle(Theme.textPrimary)
-                    Text("Inspect a project and talk with your model using your own key. The agent can list and read files; you can review and save your own edits in Workspace. The agent does not yet edit, execute code or claim tests passed.")
+                    Text("Inspect a project with your own model key. The agent can read files and propose one bounded change; nothing is written until you review and approve its full diff. You can also edit directly in Workspace. No build or test is claimed without evidence.")
                         .foregroundStyle(Theme.textSecondary)
                     Button("Open agent", action: openAgent)
                         .themePrimaryButton()
                     Button("Browse or edit project files", action: openWorkspace)
                         .font(.subheadline.bold())
+                    NavigationLink {
+                        NativeGitView()
+                    } label: {
+                        Label("Clone, fetch or pull Git", systemImage: "arrow.triangle.branch")
+                            .font(.subheadline.bold())
+                    }
                     NavigationLink {
                         NativeRunsView()
                     } label: {

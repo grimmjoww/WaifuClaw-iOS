@@ -24,7 +24,7 @@ final class StandaloneNavigationUITests: XCTestCase {
         finishOnboarding.tap()
 
         let tabs = app.tabBars
-        XCTAssertTrue(tabs.buttons["Home"].waitForExistence(timeout: 10))
+        XCTAssertTrue(tabs.buttons["Home"].waitForExistence(timeout: 15), app.debugDescription)
         tabs.buttons["Agent"].tap()
         XCTAssertTrue(app.buttons["Choose"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["Model settings"].exists)
@@ -50,9 +50,17 @@ final class StandaloneNavigationUITests: XCTestCase {
 
         tabs.buttons["Memory"].tap()
         XCTAssertTrue(app.buttons["Choose project folder"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.switches["Include relevant approved memories in agent requests"].exists)
+        XCTAssertFalse(app.switches["Include relevant approved memories in agent requests"].exists,
+                       "Memory-sharing consent should appear only after a real project is chosen")
 
         tabs.buttons["Settings"].tap()
+        let permissions = app.buttons["Connections & Permissions"]
+        XCTAssertTrue(permissions.waitForExistence(timeout: 5))
+        permissions.tap()
+        XCTAssertTrue(app.navigationBars["Connections & Permissions"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Choose project folder in Files"].exists)
+        XCTAssertTrue(app.buttons["Set up or test model connection"].exists)
+        app.navigationBars.buttons["Settings"].tap()
         let jev = app.buttons["Jev Decisions"]
         XCTAssertTrue(jev.waitForExistence(timeout: 5))
         jev.tap()

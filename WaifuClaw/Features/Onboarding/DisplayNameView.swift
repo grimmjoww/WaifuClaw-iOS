@@ -62,6 +62,7 @@ struct DisplayNameView: View {
     private func continueTapped() {
         let clean = trimmedName
         guard !clean.isEmpty else { return }
+        nameFocused = false
         storedName = clean
         onContinue()
     }

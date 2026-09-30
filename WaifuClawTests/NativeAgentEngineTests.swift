@@ -54,6 +54,60 @@ final class NativeAgentEngineTests: XCTestCase {
         XCTAssertFalse(messages.contains(where: { $0.content.contains("private file contents") }))
     }
 
+    func testModelEditToolCreatesOnlyAPendingProposalAndNeverWritesWorkspace() async throws {
+        let store = try LocalRunStore(databaseURL: try temporaryDatabaseURL())
+        let conversation = try await store.createConversation(title: "Reviewable edit")
+        let folder = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: folder) }
+        let file = folder.appendingPathComponent("note.txt")
+        try "before\n".write(to: file, atomically: true, encoding: .utf8)
+        let workspace = try ScopedWorkspace(rootURL: folder)
+        let project = try NativePatchProject(userSelectedFolderURL: folder)
+        let patchDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: patchDirectory) }
+        let workflow = try NativePatchWorkflow(
+            persistenceDirectoryURL: patchDirectory
+        )
+        let arguments = NativePatchModelEditArguments(
+            relativePath: "note.txt",
+            expectedSHA256: NativePatchDigest.sha256(Data("before\n".utf8)),
+            newText: "after\n",
+            reason: "Change the text"
+        )
+        let json = try XCTUnwrap(String(data: JSONEncoder().encode(arguments), encoding: .utf8))
+        let provider = SequencedTestProvider([
+            [.toolCall(AgentToolCall(id: "read1", name: "read_file", argumentsJSON: #"{"path":"note.txt"}"#)), .finished],
+            [.toolCall(AgentToolCall(id: "edit1", name: "propose_edit", argumentsJSON: json)), .finished],
+            [.text("I proposed a change. Review it before it is applied."), .finished]
+        ])
+        var proposedIDs: [UUID] = []
+        let engine = NativeAgentEngine(store: store)
+        for try await signal in await engine.stream(
+            conversationID: conversation.id,
+            prompt: "Update note.txt",
+            provider: provider,
+            workspace: workspace,
+            patchWorkflow: workflow,
+            patchProject: project
+        ) {
+            if case .patchProposed(let id) = signal { proposedIDs.append(id) }
+        }
+
+        XCTAssertEqual(try String(contentsOf: file, encoding: .utf8), "before\n")
+        let pending = try workflow.pendingProposals(in: project)
+        XCTAssertEqual(pending.map(\.id), proposedIDs)
+        XCTAssertEqual(pending.first?.status, .pending)
+        let runs = try await store.runs(in: conversation.id)
+        let run = try XCTUnwrap(runs.first)
+        XCTAssertEqual(run.phase, .finished)
+        let events = try await store.events(in: run.id)
+        XCTAssertTrue(events.map(\.kind).contains("patch.proposed"))
+        XCTAssertFalse(events.map(\.kind).contains("patch.applied"))
+    }
+
     private func temporaryDatabaseURL() throws -> URL {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)

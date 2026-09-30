@@ -23,6 +23,15 @@ struct NativeSettingsView: View {
                 }
                 .themeCard()
 
+                NavigationLink {
+                    NativeConnectionsView()
+                } label: {
+                    Label("Connections & Permissions", systemImage: "checkmark.shield.fill")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .foregroundStyle(Theme.magenta)
+                .themeCard()
+
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Agent model")
                         .font(.headline)
@@ -60,7 +69,7 @@ struct NativeSettingsView: View {
                     Text("Extensions & hooks")
                         .font(.headline)
                         .foregroundStyle(Theme.textPrimary)
-                    Text("Import declarative third-party manifests and enable local run-finished/failed activity markers. Imported actions do not yet execute or contact a vendor.")
+                    Text("Import declarative third-party manifests and enable local run activity. GitHub Markdown can be called manually after exact request review; other actions remain registration-only. No downloaded code executes.")
                         .foregroundStyle(Theme.textSecondary)
                     NavigationLink {
                         NativeExtensionsView()
@@ -118,7 +127,7 @@ struct NativeSettingsView: View {
         }
         .background(Theme.background)
         .navigationTitle("Settings")
-        .task { refresh() }
+        .onAppear(perform: refresh)
         .alert("Delete all local conversation history?", isPresented: $showingHistoryDeletion) {
             Button("Delete conversations and runs", role: .destructive) {
                 Task { await clearLocalHistory() }

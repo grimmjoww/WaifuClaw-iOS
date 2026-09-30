@@ -178,7 +178,8 @@ final class NativeMemoryController {
 
 struct NativeMemoryView: View {
     @State private var controller = NativeMemoryController()
-    @AppStorage("native.memory.useInAgent") private var useInAgent = false
+    @State private var shareApprovedMemories = false
+    private let memoryConsent = NativeMemoryConsent()
 
     var body: some View {
         @Bindable var controller = controller
@@ -212,7 +213,13 @@ struct NativeMemoryView: View {
                 }
             }
         }
-        .onAppear { Task { await controller.refreshProject() } }
+        .onAppear {
+            Task {
+                await controller.refreshProject()
+                refreshMemoryConsent()
+            }
+        }
+        .onChange(of: controller.projectID) { _, _ in refreshMemoryConsent() }
         .fileImporter(
             isPresented: $controller.showingFolderPicker,
             allowedContentTypes: [.folder],
@@ -220,7 +227,12 @@ struct NativeMemoryView: View {
         ) { result in
             switch result {
             case .success(let urls):
-                if let folder = urls.first { Task { await controller.selectFolder(folder) } }
+                if let folder = urls.first {
+                    Task {
+                        await controller.selectFolder(folder)
+                        refreshMemoryConsent()
+                    }
+                }
             case .failure(let error):
                 controller.errorMessage = "Files could not select that project: \(error.localizedDescription)"
             }
@@ -274,15 +286,25 @@ struct NativeMemoryView: View {
             Text("Model access to memory")
                 .font(.headline)
                 .foregroundStyle(Theme.textPrimary)
-            Toggle("Include relevant approved memories in agent requests", isOn: $useInAgent)
+            Toggle("Include relevant approved memories in agent requests", isOn: Binding(
+                get: { shareApprovedMemories },
+                set: { enabled in
+                    memoryConsent.setEnabled(enabled, for: controller.projectID)
+                    shareApprovedMemories = memoryConsent.isEnabled(for: controller.projectID)
+                }
+            ))
                 .tint(Theme.magenta)
-            Text(useInAgent
+            Text(shareApprovedMemories
                 ? "Up to three matching facts from this project may be sent to your configured model provider with an agent request. Their IDs will be recorded in local run evidence."
                 : "Off. No saved memory facts are added to coding-model requests; you can still recall them here on-device.")
                 .font(.footnote)
                 .foregroundStyle(Theme.textSecondary)
         }
         .themeCard()
+    }
+
+    private func refreshMemoryConsent() {
+        shareApprovedMemories = memoryConsent.isEnabled(for: controller.projectID)
     }
 
     private var captureCard: some View {
