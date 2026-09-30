@@ -1,20 +1,35 @@
 # Third-Party Notices
 
-The WaifuClaw iOS app itself is proprietary software — see `LICENSE`
-(all rights reserved). The components listed below are included under
-their own licenses; their copyright notices and license texts are
-reproduced here exactly as their licenses require.
+The WaifuClaw iOS app itself is proprietary software — see `LICENSE` (all rights reserved). The following source project informed the new native memory graph. Its copyright and license notice is preserved here; this does not relicense the rest of the iOS application.
 
-## Currently included
+## NeuralMemory — graph-memory concepts adapted for iPhone
 
-_None. As of 2026-09-29 the iOS app contains no third-party MIT-licensed
-code. (The WaifuClaw backend in `grimmjoww/WaifuClaw-Source` is DeerFlow-derived
-and carries its own attributions there; Hermes design references were studied,
-not vendored.)_
+Source: [`grimmjoww/neural-memory`](https://github.com/grimmjoww/neural-memory), reviewed commit `2015cb9b0973a6fe14a3bc547c932d64d6ced203`. The native Swift/SQLite implementation is a limited adaptation, **not** the upstream Python or Pro implementation. Its exact feature mapping and limitations are documented in `WaifuClaw/Local/Memory/UPSTREAM.md`.
+
+```text
+MIT License
+
+Copyright (c) 2024 NeuralMemory Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 ## Policy
 
-If MIT-licensed code (for example, from the Hermes agent or DeerFlow) is ever
-vendored into this repository, its copyright notice and full MIT license text
-will be added to this file, per the MIT license terms. The project's own
-proprietary license is unaffected by those per-component attributions.
+When code from DeerFlow, Hermes, or another third party is vendored, add its copyright and full license here before distribution. The desktop/backend project has its own license notices; its Python runtime is **not** bundled in this iOS target.

@@ -31,6 +31,8 @@ struct RootView: View {
 private enum NativeTab: Hashable {
     case home
     case agent
+    case workspace
+    case memory
     case settings
 }
 
@@ -45,6 +47,7 @@ struct MainTabView: View {
             NavigationStack {
                 NativeHomeView(
                     openAgent: { selectedTab = .agent },
+                    openWorkspace: { selectedTab = .workspace },
                     openSettings: { selectedTab = .settings }
                 )
             }
@@ -56,6 +59,18 @@ struct MainTabView: View {
             }
             .tabItem { Label("Agent", systemImage: "bubble.left.and.text.bubble.right.fill") }
             .tag(NativeTab.agent)
+
+            NavigationStack {
+                NativeWorkspaceView()
+            }
+            .tabItem { Label("Workspace", systemImage: "curlybraces.square.fill") }
+            .tag(NativeTab.workspace)
+
+            NavigationStack {
+                NativeMemoryView()
+            }
+            .tabItem { Label("Memory", systemImage: "brain.head.profile") }
+            .tag(NativeTab.memory)
 
             NavigationStack {
                 NativeSettingsView()

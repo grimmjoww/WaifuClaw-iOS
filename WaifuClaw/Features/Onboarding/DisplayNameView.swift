@@ -44,6 +44,7 @@ struct DisplayNameView: View {
             Button("Continue", action: continueTapped)
                 .themePrimaryButton()
                 .disabled(trimmedName.isEmpty)
+                .accessibilityIdentifier("onboarding.finish")
                 .padding(.horizontal, 16)
             Spacer()
         }

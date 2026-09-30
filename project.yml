@@ -36,6 +36,8 @@ targets:
       - path: WaifuClaw/Features/Onboarding/IntroPagesView.swift
       - path: WaifuClaw/Features/Onboarding/DisplayNameView.swift
       - path: WaifuClaw/Local
+      - path: THIRD-PARTY-NOTICES.md
+        buildPhase: resources
     info:
       path: WaifuClaw/Info.plist
     settings:

@@ -1,12 +1,26 @@
 import SwiftUI
 
 struct NativeSettingsView: View {
+    @AppStorage(OnboardingKeys.displayName) private var displayName = ""
     @State private var modelDescription = "Not configured"
     @State private var storageError: String?
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Your name")
+                        .font(.headline)
+                        .foregroundStyle(Theme.textPrimary)
+                    TextField("Display name", text: $displayName)
+                        .textFieldStyle(.roundedBorder)
+                        .accessibilityLabel("Display name")
+                    Text("Saved on this phone for the Home greeting.")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                .themeCard()
+
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Agent model")
                         .font(.headline)
@@ -22,6 +36,47 @@ struct NativeSettingsView: View {
                     }
                     .foregroundStyle(Theme.magenta)
                 }
+                .themeCard()
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Optional decisions")
+                        .font(.headline)
+                        .foregroundStyle(Theme.textPrimary)
+                    Text("Jev is an optional typed routing check, not a coding model. It has a separate user-provided key and is off by default.")
+                        .foregroundStyle(Theme.textSecondary)
+                    NavigationLink {
+                        JevSettingsView()
+                    } label: {
+                        Label("Jev Decisions", systemImage: "point.3.connected.trianglepath.dotted")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .foregroundStyle(Theme.magenta)
+                }
+                .themeCard()
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Extensions & hooks")
+                        .font(.headline)
+                        .foregroundStyle(Theme.textPrimary)
+                    Text("Import declarative third-party manifests and enable local run-finished/failed activity markers. Imported actions do not yet execute or contact a vendor.")
+                        .foregroundStyle(Theme.textSecondary)
+                    NavigationLink {
+                        NativeExtensionsView()
+                    } label: {
+                        Label("Manage extensions & hooks", systemImage: "puzzlepiece.extension")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .foregroundStyle(Theme.magenta)
+                }
+                .themeCard()
+
+                NavigationLink {
+                    NativeNoticesView()
+                } label: {
+                    Label("Third-party notices", systemImage: "doc.text")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .foregroundStyle(Theme.magenta)
                 .themeCard()
 
                 VStack(alignment: .leading, spacing: 8) {

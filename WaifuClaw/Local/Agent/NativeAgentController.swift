@@ -74,10 +74,15 @@ final class NativeAgentController {
         }
     }
 
+    func refreshWorkspace() {
+        restoreWorkspace()
+    }
+
     func send() {
         guard !isRunning else { return }
         let prompt = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !prompt.isEmpty else { return }
+        isRunning = true
         activeTask = Task { await run(prompt: prompt) }
     }
 
@@ -90,6 +95,8 @@ final class NativeAgentController {
     private func run(prompt: String) async {
         errorMessage = nil
         streamedText = ""
+        var activeRunID: UUID?
+        let runProjectID = selectedWorkspace.map { NativeProjectIdentity.id(for: $0.rootURL) }
         do {
             let configuration = try LocalModelPreferences.load()
             guard let key = try KeychainStore.agentKey() else {
@@ -115,15 +122,22 @@ final class NativeAgentController {
             draft = ""
             isRunning = true
             status = "Thinking on this iPhone…"
+            let useJev = JevDecisionPreferences().isDecisionOptedIn
+            let jevKey = useJev ? (try? JevKeychainStore().load()) : nil
+            let useMemory = UserDefaults.standard.bool(forKey: "native.memory.useInAgent")
             let engine = NativeAgentEngine(store: store)
             for try await signal in await engine.stream(
                 conversationID: conversationID,
                 prompt: prompt,
                 provider: provider,
-                workspace: selectedWorkspace
+                workspace: selectedWorkspace,
+                jevEnabled: useJev,
+                jevKey: jevKey,
+                memoryEnabled: useMemory
             ) {
                 switch signal {
-                case .started:
+                case .started(let id):
+                    activeRunID = id
                     messages = try await store.messages(in: conversationID)
                     status = "Working on this iPhone…"
                 case .text(let chunk):
@@ -133,6 +147,9 @@ final class NativeAgentController {
                     await refreshRunEvidence(conversationID: conversationID, store: store)
                 case .completed:
                     status = "Run completed and saved on this phone"
+                    if let activeRunID {
+                        recordExtensionHook(.runFinished, runID: activeRunID, projectID: runProjectID)
+                    }
                 }
             }
             messages = try await store.messages(in: conversationID)
@@ -144,6 +161,9 @@ final class NativeAgentController {
         } catch {
             show(error)
             status = "Run failed"
+            if let activeRunID {
+                recordExtensionHook(.runFailed, runID: activeRunID, projectID: runProjectID)
+            }
         }
         isRunning = false
         activeTask = nil
@@ -189,5 +209,18 @@ final class NativeAgentController {
 
     private func show(_ error: Error) {
         errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+    }
+
+    private func recordExtensionHook(_ event: HookEvent, runID: UUID, projectID: String?) {
+        let registry = ExtensionRegistry()
+        if let persistenceError = registry.persistenceError {
+            errorMessage = "Run evidence was saved, but hook settings could not be read: \(persistenceError)"
+            return
+        }
+        do {
+            _ = try registry.record(event: event, runID: runID, projectID: projectID)
+        } catch {
+            errorMessage = "Run evidence was saved, but a local hook marker was not: \(error.localizedDescription)"
+        }
     }
 }

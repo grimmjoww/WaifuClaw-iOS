@@ -11,6 +11,8 @@ struct NativeModelSettingsView: View {
     @State private var notice: String?
     @State private var isError = false
     @State private var confirmRemoval = false
+    @State private var testing = false
+    @State private var testTask: Task<Void, Never>?
 
     var body: some View {
         ScrollView {
@@ -58,6 +60,10 @@ struct NativeModelSettingsView: View {
                         .foregroundStyle(Theme.textSecondary)
                     Button("Save provider settings", action: save)
                         .themePrimaryButton()
+                    Button(testing ? "Testing model…" : "Test model connection (uses provider credits)") {
+                        testTask = Task { await testConnection() }
+                    }
+                    .disabled(testing || !hasSavedKey)
                     if hasSavedKey {
                         Button("Remove provider key", role: .destructive) {
                             confirmRemoval = true
@@ -83,6 +89,7 @@ struct NativeModelSettingsView: View {
         .background(Theme.background)
         .navigationTitle("Model & API Key")
         .task { refresh() }
+        .onDisappear { testTask?.cancel() }
         .confirmationDialog("Remove this phone's provider key?", isPresented: $confirmRemoval) {
             Button("Remove key", role: .destructive, action: removeKey)
         } message: {
@@ -130,6 +137,42 @@ struct NativeModelSettingsView: View {
             keyInput = ""
             notice = "Provider key removed from this phone."
             isError = false
+        } catch {
+            showError(error)
+        }
+    }
+
+    private func testConnection() async {
+        testing = true
+        defer {
+            testing = false
+            testTask = nil
+        }
+        do {
+            let configuration = try LocalModelPreferences.load()
+            guard let key = try KeychainStore.agentKey() else {
+                throw LocalModelConfigurationError.missingKey
+            }
+            let provider = try OpenAICompatibleProvider(
+                baseURL: configuration.endpoint,
+                model: configuration.model,
+                apiKey: key
+            )
+            var answer = ""
+            for try await event in provider.stream(
+                messages: [AgentPromptMessage(role: "user", content: "Reply with OK.")],
+                tools: []
+            ) {
+                try Task.checkCancellation()
+                if case .text(let chunk) = event { answer += chunk }
+            }
+            guard !answer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                throw NativeAgentError.incompleteResponse
+            }
+            notice = "Live response from \(configuration.model): \(String(answer.prefix(80)))"
+            isError = false
+        } catch is CancellationError {
+            // Leaving this screen cancels the user-initiated provider request.
         } catch {
             showError(error)
         }

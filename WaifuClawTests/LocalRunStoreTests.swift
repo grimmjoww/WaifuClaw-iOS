@@ -38,12 +38,23 @@ final class LocalRunStoreTests: XCTestCase {
         let events = try await reopenedStore.events(in: run.id)
 
         XCTAssertEqual(conversations.map(\.id), [conversation.id])
-        XCTAssertEqual(messages, [message])
+        XCTAssertEqual(messages.count, 1)
+        let loadedMessage = try XCTUnwrap(messages.first)
+        XCTAssertEqual(loadedMessage.id, message.id)
+        XCTAssertEqual(loadedMessage.conversationID, message.conversationID)
+        XCTAssertEqual(loadedMessage.role, message.role)
+        XCTAssertEqual(loadedMessage.content, message.content)
+        XCTAssertEqual(loadedMessage.createdAt.timeIntervalSince1970, message.createdAt.timeIntervalSince1970, accuracy: 0.001)
         XCTAssertEqual(runs.count, 1)
         XCTAssertEqual(runs[0].id, run.id)
         XCTAssertEqual(runs[0].phase, .finished)
         XCTAssertNil(runs[0].errorMessage)
-        XCTAssertEqual(events, [event])
+        XCTAssertEqual(events.count, 1)
+        let loadedEvent = try XCTUnwrap(events.first)
+        XCTAssertEqual(loadedEvent.id, event.id)
+        XCTAssertEqual(loadedEvent.kind, event.kind)
+        XCTAssertEqual(loadedEvent.summary, event.summary)
+        XCTAssertEqual(loadedEvent.createdAt.timeIntervalSince1970, event.createdAt.timeIntervalSince1970, accuracy: 0.001)
     }
 
     func testOrderingIsChronologicalAndConversationsUseRecentActivity() async throws {

@@ -5,6 +5,7 @@ struct NativeHomeView: View {
     @State private var conversations: [LocalConversation] = []
     @State private var loadError: String?
     let openAgent: () -> Void
+    let openWorkspace: () -> Void
     let openSettings: () -> Void
 
     var body: some View {
@@ -30,10 +31,12 @@ struct NativeHomeView: View {
                     Text("Continue building")
                         .font(.title3.bold())
                         .foregroundStyle(Theme.textPrimary)
-                    Text("Inspect a project and talk with your model using your own key. This first local agent can list and read files; it cannot edit, execute code or claim tests passed.")
+                    Text("Inspect a project and talk with your model using your own key. The agent can list and read files; you can review and save your own edits in Workspace. The agent does not yet edit, execute code or claim tests passed.")
                         .foregroundStyle(Theme.textSecondary)
                     Button("Open agent", action: openAgent)
                         .themePrimaryButton()
+                    Button("Browse or edit project files", action: openWorkspace)
+                        .font(.subheadline.bold())
                     Button("Configure model & API key", action: openSettings)
                         .font(.subheadline.bold())
                 }

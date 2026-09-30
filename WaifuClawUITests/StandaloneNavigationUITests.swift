@@ -17,7 +17,11 @@ final class StandaloneNavigationUITests: XCTestCase {
         XCTAssertTrue(name.waitForExistence(timeout: 5))
         name.tap()
         name.typeText("iPhone Builder")
-        app.buttons["Continue"].tap()
+        let keyboardIntroduction = app.windows.element(boundBy: 1).buttons["Continue"]
+        if keyboardIntroduction.exists { keyboardIntroduction.tap() }
+        let finishOnboarding = app.buttons["onboarding.finish"]
+        XCTAssertTrue(finishOnboarding.waitForExistence(timeout: 5))
+        finishOnboarding.tap()
 
         let tabs = app.tabBars
         XCTAssertTrue(tabs.buttons["Home"].waitForExistence(timeout: 10))
