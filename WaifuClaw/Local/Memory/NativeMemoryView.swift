@@ -193,6 +193,7 @@ struct NativeMemoryView: View {
                 }
                 if controller.projectID != nil {
                     privacyCard
+                    automaticNotesCard
                     captureCard
                     recallCard
                     storedCard
@@ -308,6 +309,26 @@ struct NativeMemoryView: View {
         shareApprovedMemories = memoryConsent.isEnabled(for: controller.projectID)
     }
 
+    private var automaticNotesCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Automatic memory notes")
+                .font(.headline)
+                .foregroundStyle(Theme.textPrimary)
+            Text("Optionally draft unverified notes from real finished agent runs. Nothing enters trusted memory without your exact-note review; enabling this does not also permit model sharing.")
+                .font(.footnote)
+                .foregroundStyle(Theme.textSecondary)
+            if let projectID = controller.projectID {
+                NavigationLink("Configure and review automatic notes") {
+                    NativeAutomaticMemoryView(
+                        projectID: projectID,
+                        projectName: controller.projectName ?? "Selected project"
+                    )
+                }
+            }
+        }
+        .themeCard()
+    }
+
     private var captureCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Remember a fact")
@@ -326,7 +347,7 @@ struct NativeMemoryView: View {
             Button("Review and save fact") { controller.showingCaptureConfirmation = true }
                 .themePrimaryButton()
                 .disabled(controller.factDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-            Text("Only the fact you confirm is saved. Conversations and project files are not captured automatically.")
+            Text("Only the exact fact you confirm is saved. Optional automatic notes are separate, off by default, and always require review before entering approved memory.")
                 .font(.footnote)
                 .foregroundStyle(Theme.textSecondary)
         }

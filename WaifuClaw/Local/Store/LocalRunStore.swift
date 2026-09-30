@@ -51,6 +51,7 @@ public actor LocalRunStore {
             at: resolvedURL.deletingLastPathComponent(),
             withIntermediateDirectories: true
         )
+        try NativeDatabaseProtection.prepareDirectory(resolvedURL.deletingLastPathComponent())
 
         var openedDatabase: OpaquePointer?
         let openResult = sqlite3_open_v2(
@@ -77,6 +78,7 @@ public actor LocalRunStore {
         do {
             try configureConnection()
             try migrateIfNeeded()
+            try NativeDatabaseProtection.protectExistingFiles(at: resolvedURL)
         } catch {
             sqlite3_close_v2(openedDatabase)
             database = nil

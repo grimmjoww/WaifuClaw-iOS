@@ -185,13 +185,45 @@ final class NativeAgentController {
                     refreshPendingPatches()
                     status = "Edit proposed; no file changed. Review the diff below."
                     klineMood = .reading
-                case .completed:
+                case .completed(let assistantMessageID):
                     status = pendingPatches.contains(where: { $0.runID == activeRunID })
                         ? "Response saved; proposed edit awaits your review"
                         : "Run completed and saved on this phone"
                     klineMood = .completed
                     if let activeRunID {
                         recordExtensionHook(.runFinished, runID: activeRunID, projectID: runProjectID)
+                        if let runProjectID,
+                           NativeMemoryAutocapturePreferenceStore().preference(for: runProjectID) == .optedIn {
+                            do {
+                                let queue = try NativeMemoryPendingCandidateQueue()
+                                let adapter = NativeMemoryAutocaptureLifecycleAdapter(
+                                    runStore: store,
+                                    pendingQueue: queue
+                                )
+                                let capture = try await adapter.captureFinishedRun(
+                                    runID: activeRunID,
+                                    projectID: runProjectID,
+                                    conversationID: conversationID,
+                                    assistantMessageID: assistantMessageID
+                                )
+                                if capture.outcome == .enqueued {
+                                    status = "Run saved; \(capture.candidateIDs.count) unverified memory note(s) await review in Memory"
+                                    do {
+                                        _ = try await store.appendEvent(
+                                            runID: activeRunID,
+                                            kind: "memory.candidates_queued",
+                                            summary: "\(capture.candidateIDs.count) unverified candidate(s) queued for explicit Memory review; no approved fact saved"
+                                        )
+                                    } catch {
+                                        errorMessage = "Memory notes were queued, but their run-evidence receipt could not be saved: \(error.localizedDescription)"
+                                    }
+                                }
+                            } catch {
+                                // The agent run remains finished even if optional
+                                // local suggestion storage or evidence fails.
+                                errorMessage = "The run finished, but automatic memory notes were unavailable: \(error.localizedDescription)"
+                            }
+                        }
                     }
                 }
             }

@@ -27,7 +27,7 @@ This is a new, deliberately small Swift implementation using Foundation and SQLi
 
 ## What this component actually guarantees
 
-- **User-approved writes only.** Production writes exist only through `capture(_:approval:)`, whose required `approval: .userApproved` argument makes a user-confirmed save explicit. There is no chat, file, or agent auto-capture API.
+- **User-approved graph writes only.** Production graph writes exist only through `capture(_:approval:)`, whose required `approval: .userApproved` argument makes a user-confirmed save explicit. The separate `Automatic/` module may, when enabled per project, enqueue unverified local drafts after an actual finished agent run; it cannot call the graph store until the user reviews and approves the exact draft.
 - **Project isolation.** Every node, synapse, foreign-key relationship, recall query, deletion, and export carries `project_id`. Composite foreign keys prevent a fact in one project from referencing an anchor or fact in another.
 - **On-device only.** The component uses only `Foundation` and `SQLite3`; it contains no remote client, endpoint, upload, embedding-provider, or credential/key storage.
 - **Bounded deterministic behavior.** Project capacity defaults to 2,000 facts; each fact has at most 24 anchors; scores and weights are `0...1`; graph traversal has hard caps and deterministic tie-breaking.
@@ -69,6 +69,6 @@ let localJSON = try await memoryStore.exportJSON(forProject: saved.projectID)
 
 ## Explicit limitations — no unverifiable “Pro” claim
 
-This is **not** an upstream NeuralMemory Pro edition or a complete 400-module Python port. In particular it does **not** implement hybrid/vector/embedding recall, HNSW, external models, cross-project search, cloud sync, Pro storage adapters, encryption features, workflow tooling, cognitive layers, fibers, semantic relation extraction, or an upstream compatibility protocol.
+This component is **not** an upstream NeuralMemory Pro edition or a complete Python port. In particular it does **not** implement upstream hybrid/vector indexes, HNSW, external embedding models, cross-project search, cloud sync, Pro storage adapters, cognitive layers, fibers, semantic relation extraction, or the full upstream 63-tool compatibility protocol.
 
-Recall is a transparent **exact normalized-token + bounded weighted co-occurrence graph**. It is useful for on-device approved facts, but it does not understand paraphrases that share no token anchors. Any future embedding or hybrid layer should be separately designed, explicitly disclosed, kept project-scoped, and tested; it must not be labeled as implemented by this component today.
+The core store's recall is a transparent **exact normalized-token + bounded weighted co-occurrence graph**. The wider iOS Agent additionally attempts a small, system-provided Apple `NLEmbedding` sentence rerank of selected approved facts on supported devices, with graph/lexical fallback. This separate candidate-ranking enhancement is not an upstream hybrid index or evidence of tool parity. See [`NativeTools/INTEGRATION.md`](NativeTools/INTEGRATION.md) for the two narrower read-only handlers and [`docs/NEURAL-63-PARITY.md`](../../../docs/NEURAL-63-PARITY.md) for the pinned upstream audit.

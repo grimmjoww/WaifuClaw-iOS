@@ -71,6 +71,23 @@ private final class MCPMemoryCredentials: NativeMCPCredentialStore, @unchecked S
 final class NativeMCPTests: XCTestCase {
     private let endpoint = "https://mcp.example.com/mcp"
 
+    func testLiveDeepWikiDiscoveryWhenExplicitlyRequested() async throws {
+        guard ProcessInfo.processInfo.environment["WAIFUCLAW_LIVE_MCP"] == "1" else {
+            throw XCTSkip("Set WAIFUCLAW_LIVE_MCP=1 to run an opt-in live public MCP interoperability test.")
+        }
+        let (registry, directory) = try store()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let server = try await registry.addServer(
+            name: "Public DeepWiki",
+            endpoint: "https://mcp.deepwiki.com/mcp"
+        )
+        let connector = NativeMCPConnector(registry: registry)
+        let tools = try await connector.discover(serverID: server.id)
+        XCTAssertTrue(tools.contains(where: { $0.name == "read_wiki_structure" }))
+        XCTAssertTrue(tools.contains(where: { $0.name == "read_wiki_contents" }))
+        await connector.disconnect(serverID: server.id)
+    }
+
     private func fixtureConfiguration() -> URLSessionConfiguration {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MCPFixtureProtocol.self]
