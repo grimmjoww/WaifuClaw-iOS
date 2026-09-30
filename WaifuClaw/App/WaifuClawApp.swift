@@ -51,6 +51,7 @@ private enum NativeTab: Hashable {
 /// their native stores and working actions exist, not preview fixtures.
 struct MainTabView: View {
     @State private var selectedTab: NativeTab = .home
+    @State private var requestedConversationID: UUID?
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -58,14 +59,18 @@ struct MainTabView: View {
                 NativeHomeView(
                     openAgent: { selectedTab = .agent },
                     openWorkspace: { selectedTab = .workspace },
-                    openSettings: { selectedTab = .settings }
+                    openSettings: { selectedTab = .settings },
+                    openConversation: { id in
+                        requestedConversationID = id
+                        selectedTab = .agent
+                    }
                 )
             }
             .tabItem { Label("Home", systemImage: "house.fill") }
             .tag(NativeTab.home)
 
             NavigationStack {
-                NativeAgentView()
+                NativeAgentView(requestedConversationID: requestedConversationID)
             }
             .tabItem { Label("Agent", systemImage: "bubble.left.and.text.bubble.right.fill") }
             .tag(NativeTab.agent)

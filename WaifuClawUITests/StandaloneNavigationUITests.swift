@@ -1,6 +1,22 @@
 import XCTest
 
 final class StandaloneNavigationUITests: XCTestCase {
+    func testMultiagentTeamIsReachableWithoutFakeOnlineAgents() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-hasCompletedOnboarding", "YES"]
+        app.launch()
+
+        let openTeam = app.buttons["Start a multiagent workflow"]
+        XCTAssertTrue(openTeam.waitForExistence(timeout: 10))
+        openTeam.tap()
+        XCTAssertTrue(app.navigationBars["Team"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.textViews["Team workflow goal"].exists)
+        let projectRead = app.switches["Allow workers to read selected project files"]
+        XCTAssertTrue(projectRead.exists)
+        XCTAssertEqual(projectRead.value as? String, "0")
+        XCTAssertFalse(app.buttons["Start workflow"].isEnabled)
+    }
+
     func testPhoneOnlyOnboardingReachesAgentAndModelSettings() {
         let app = XCUIApplication()
         app.launchEnvironment["WAIFUCLAW_UI_TEST_RESET_ONBOARDING"] = "1"

@@ -7,6 +7,7 @@ struct NativeHomeView: View {
     let openAgent: () -> Void
     let openWorkspace: () -> Void
     let openSettings: () -> Void
+    let openConversation: (UUID) -> Void
 
     var body: some View {
         ScrollView {
@@ -55,6 +56,21 @@ struct NativeHomeView: View {
                 }
                 .themeCard()
 
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("Team workflows", systemImage: "person.3.sequence.fill")
+                        .font(.headline)
+                        .foregroundStyle(Theme.textPrimary)
+                    Text("Run three independent BYOK workers and an evidence-only supervisor on this iPhone. Project access is off until you explicitly allow it; the model provider may charge for each turn.")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.textSecondary)
+                    NavigationLink {
+                        NativeTeamWorkflowView()
+                    } label: {
+                        Label("Start a multiagent workflow", systemImage: "person.3.fill")
+                    }
+                }
+                .themeCard()
+
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Recent conversations")
                         .font(.title3.bold())
@@ -68,14 +84,21 @@ struct NativeHomeView: View {
                             .foregroundStyle(Theme.textSecondary)
                     } else {
                         ForEach(conversations.prefix(5)) { conversation in
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text(conversation.title)
-                                    .foregroundStyle(Theme.textPrimary)
-                                    .lineLimit(2)
-                                Text(conversation.updatedAt, style: .relative)
-                                    .font(.caption)
-                                    .foregroundStyle(Theme.textSecondary)
+                            Button {
+                                openConversation(conversation.id)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 3) {
+                                    Text(conversation.title)
+                                        .foregroundStyle(Theme.textPrimary)
+                                        .lineLimit(2)
+                                    Text(conversation.updatedAt, style: .relative)
+                                        .font(.caption)
+                                        .foregroundStyle(Theme.textSecondary)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
+                            .buttonStyle(.plain)
+                            .accessibilityHint("Open this saved conversation in Agent")
                         }
                     }
                 }

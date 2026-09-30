@@ -5,6 +5,11 @@ struct NativeAgentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var controller = NativeAgentController()
     @State private var showingFolderPicker = false
+    let requestedConversationID: UUID?
+
+    init(requestedConversationID: UUID? = nil) {
+        self.requestedConversationID = requestedConversationID
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -165,7 +170,18 @@ struct NativeAgentView: View {
         }
         .onAppear {
             controller.refreshWorkspace()
-            if !controller.isRunning { Task { await controller.load() } }
+            if !controller.isRunning {
+                Task {
+                    await controller.load()
+                    if let requestedConversationID {
+                        await controller.selectConversation(requestedConversationID)
+                    }
+                }
+            }
+        }
+        .onChange(of: requestedConversationID) { _, id in
+            guard let id else { return }
+            Task { await controller.selectConversation(id) }
         }
         .onChange(of: scenePhase) { _, phase in
             // iOS 17 can suspend the process. Do not claim a local run keeps
