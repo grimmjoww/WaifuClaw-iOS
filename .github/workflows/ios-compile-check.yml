@@ -53,24 +53,42 @@ jobs:
 
       - name: Record real companion motion on iPhone simulator
         if: always() && steps.build.outcome == 'success'
+        timeout-minutes: 5
         run: |
           set -euo pipefail
           SIMULATOR_ID=$(xcrun simctl list devices available --json | python3 -c 'import json,sys; groups=json.load(sys.stdin)["devices"].values(); print(next((d["udid"] for devices in groups for d in devices if d.get("isAvailable") and d.get("name", "").startswith("iPhone")), ""))')
           test -n "$SIMULATOR_ID"
           xcrun simctl boot "$SIMULATOR_ID" || true
-          xcrun simctl bootstatus "$SIMULATOR_ID" -b
+          python3 - "$SIMULATOR_ID" <<'PY'
+          import subprocess, sys
+          subprocess.run(['xcrun', 'simctl', 'bootstatus', sys.argv[1], '-b'], check=True, timeout=90)
+          PY
           APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -type d -path '*/Build/Products/Debug-iphonesimulator/WaifuClaw.app' -print -quit)
           test -n "$APP_PATH" || { echo 'Simulator app not built'; exit 1; }
           xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
           xcrun simctl terminate "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios || true
           xcrun simctl launch "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios -hasCompletedOnboarding YES
           mkdir -p visual-qa
-          sleep 2
-          xcrun simctl io "$SIMULATOR_ID" recordVideo --codec=h264 --force visual-qa/companion-home.mp4 &
-          RECORDER_PID=$!
-          sleep 5
-          kill -INT "$RECORDER_PID" || true
-          wait "$RECORDER_PID" || true
+          python3 - "$SIMULATOR_ID" <<'PY'
+          import os, signal, subprocess, sys, time
+          time.sleep(2)
+          recorder = subprocess.Popen(
+              ['xcrun', 'simctl', 'io', sys.argv[1], 'recordVideo', '--codec=h264', '--force', 'visual-qa/companion-home.mp4'],
+              start_new_session=True,
+          )
+          try:
+              time.sleep(5)
+              if recorder.poll() is None:
+                  os.killpg(recorder.pid, signal.SIGINT)
+              recorder.wait(timeout=20)
+          except subprocess.TimeoutExpired:
+              try:
+                  os.killpg(recorder.pid, signal.SIGKILL)
+              except ProcessLookupError:
+                  pass
+              recorder.wait(timeout=5)
+              raise RuntimeError('Simulator recording did not finish; no motion proof was captured')
+          PY
           test -s visual-qa/companion-home.mp4
 
       - name: Upload simulator companion motion proof

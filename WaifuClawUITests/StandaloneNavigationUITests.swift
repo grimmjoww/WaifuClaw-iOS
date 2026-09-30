@@ -124,5 +124,19 @@ final class StandaloneNavigationUITests: XCTestCase {
         XCTAssertTrue(extensions.waitForExistence(timeout: 5))
         extensions.tap()
         XCTAssertTrue(app.buttons["Import manifest from Files"].waitForExistence(timeout: 5))
+
+        app.navigationBars.buttons["Settings"].tap()
+        let mcp = app.buttons["Manage MCP servers"]
+        XCTAssertTrue(mcp.waitForExistence(timeout: 5))
+        mcp.tap()
+        XCTAssertTrue(app.buttons["Save server locally"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", "OAuth-only servers")).firstMatch.exists)
+
+        app.navigationBars.buttons["Settings"].tap()
+        app.swipeUp()
+        let pro = app.buttons["Membership & Pro status"]
+        XCTAssertTrue(pro.waitForExistence(timeout: 5))
+        pro.tap()
+        XCTAssertTrue(app.staticTexts["There is no price or checkout in this release. Nothing on this screen can charge your Apple Account."].waitForExistence(timeout: 5))
     }
 }

@@ -98,6 +98,20 @@ struct NativeSettingsView: View {
                 .themeCard()
 
                 VStack(alignment: .leading, spacing: 8) {
+                    StudioEyebrow(title: "Model Context Protocol")
+                    Text("Connect public HTTPS MCP servers, inspect their real tool catalogs, and approve the exact JSON before any manual tool call. Optional bearer credentials stay in Keychain. OAuth-only and locally executable servers are not supported yet.")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.textSecondary)
+                    NavigationLink {
+                        NativeMCPView()
+                    } label: {
+                        Label("Manage MCP servers", systemImage: "network")
+                    }
+                    .foregroundStyle(Theme.magentaSoft)
+                }
+                .themeCard()
+
+                VStack(alignment: .leading, spacing: 8) {
                     StudioEyebrow(title: "Project Guardian")
                     Text("Compare a user-selected project's real on-device file hashes against a baseline you approve. Manual only: no build, tests, model analysis or automatic background scan is claimed.")
                         .font(.footnote)

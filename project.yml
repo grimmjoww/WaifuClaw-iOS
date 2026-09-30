@@ -22,6 +22,12 @@ packages:
   libgit2:
     url: https://github.com/ibrahimcetin/libgit2.git
     exactVersion: "1.9.2"
+  MCP:
+    url: https://github.com/modelcontextprotocol/swift-sdk.git
+    exactVersion: "0.12.1"
+  swift-log:
+    url: https://github.com/apple/swift-log.git
+    exactVersion: "1.6.2"
 
 targets:
   WaifuClaw:
@@ -75,6 +81,10 @@ targets:
         product: SwiftGitX
       - package: libgit2
         product: libgit2
+      - package: MCP
+        product: MCP
+      - package: swift-log
+        product: Logging
 
   WaifuClawTests:
     type: bundle.unit-test

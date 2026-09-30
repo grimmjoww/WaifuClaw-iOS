@@ -13,6 +13,7 @@ struct NativeConnectionsView: View {
     @State private var jevStatus = "Checking local configuration…"
     @State private var gitStatus = "Checking local repositories…"
     @State private var extensionsStatus = "Checking local registrations…"
+    @State private var mcpStatus = "Checking local registrations…"
     @State private var operationError: String?
     @State private var operationNotice: String?
     @State private var showingFolderPicker = false
@@ -57,6 +58,16 @@ struct NativeConnectionsView: View {
                     JevSettingsView()
                 }
                 Text("Jev has a separate user key and is off by default. When enabled, a bounded decision request goes to TypeSafe; it cannot bypass an edit approval or replace your coding model.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("MCP · remote tools") {
+                Label(mcpStatus, systemImage: "network")
+                NavigationLink("Manage MCP servers and tool permissions") {
+                    NativeMCPView()
+                }
+                Text("A registered server is not necessarily connected. MCP 2025-11-25 HTTPS tools can be discovered, enabled and called only after exact user review. OAuth-only and locally executable servers are not supported in this version.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -189,5 +200,17 @@ struct NativeConnectionsView: View {
         let usable = enabled.filter { invocationClient.isInvocationSupported(for: $0.manifest) }
         extensionsStatus = "\(enabled.count) enabled declaration\(enabled.count == 1 ? "" : "s") · \(usable.count) supported manual GitHub action\(usable.count == 1 ? "" : "s")"
         if let error = extensionRegistry.persistenceError { operationError = error }
+        Task { await refreshMCPStatus() }
+    }
+
+    private func refreshMCPStatus() async {
+        do {
+            let servers = await (try NativeMCPRegistry()).allServers()
+            let enabled = servers.filter(\.enabled).count
+            mcpStatus = "\(servers.count) registered · \(enabled) enabled · connection not yet checked here"
+        } catch {
+            mcpStatus = "MCP registry unavailable"
+            operationError = "MCP server list could not be opened: \(error.localizedDescription)"
+        }
     }
 }

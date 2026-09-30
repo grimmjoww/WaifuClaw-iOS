@@ -27,10 +27,14 @@ enum NativeAgentError: LocalizedError {
 /// user-supplied model, bounded tool calls, visible evidence, durable state.
 actor NativeAgentEngine {
     private let store: LocalRunStore
+    private let memoryStore: LocalNeuralMemoryStore?
     private let maximumTurns = 5
     private let maximumCalls = 8
 
-    init(store: LocalRunStore) { self.store = store }
+    init(store: LocalRunStore, memoryStore: LocalNeuralMemoryStore? = nil) {
+        self.store = store
+        self.memoryStore = memoryStore
+    }
 
     func stream(
         conversationID: UUID,
@@ -133,25 +137,51 @@ actor NativeAgentEngine {
             }
 
             var memoryContext = ""
-            if memoryEnabled, offerFileTools, let workspace {
+            if memoryEnabled, let workspace {
                 do {
-                    let memory = try LocalNeuralMemoryStore()
+                    let memory = try memoryStore ?? LocalNeuralMemoryStore()
                     let projectID = NativeProjectIdentity.id(for: workspace.rootURL)
-                    let results = try await memory.recall(
+                    let graphResults = try await memory.recall(
                         projectID: projectID,
                         query: text,
-                        options: LocalMemoryRecallOptions(limit: 3)
+                        options: LocalMemoryRecallOptions(limit: 12)
                     )
-                    if !results.isEmpty {
-                        memoryContext = results.map {
-                            "- [approved source: \($0.source.label)] \(String($0.storedFact.prefix(800)))"
+                    // Apple supplies the English sentence model on supported devices.
+                    // A bounded window of recent *approved* facts lets a paraphrase
+                    // match even when graph anchors do not overlap. No third-party
+                    // weights or embedding network request are involved.
+                    let approvedFacts = try await memory.memories(in: projectID)
+                    let graphScores = Dictionary(uniqueKeysWithValues: graphResults.map { ($0.id, $0.score) })
+                    let graphIDs = Set(graphResults.map(\.id))
+                    let recent = approvedFacts.suffix(24).reversed().filter { !graphIDs.contains($0.id) }
+                    let candidates = graphResults.map {
+                        LocalMemoryEmbeddingCandidate(id: $0.id, projectID: projectID,
+                                                      text: $0.storedFact, graphScore: $0.score)
+                    } + recent.map {
+                        LocalMemoryEmbeddingCandidate(id: $0.id, projectID: projectID,
+                                                      text: $0.content, graphScore: 0)
+                    }
+                    let ranked = LocalMemorySentenceReranker(maximumCandidates: 40)
+                        .rerank(projectID: projectID, query: text, candidates: candidates)
+                    let chosen = Array(ranked.filter { result in
+                        if graphScores[result.id] != nil { return true }
+                        if result.scoreSource == .semanticAndDeterministic {
+                            return (result.semanticScore ?? 0) >= 0.60
+                        }
+                        return result.deterministicScore >= 0.25
+                    }.prefix(3))
+                    if !chosen.isEmpty {
+                        let factsByID = Dictionary(uniqueKeysWithValues: approvedFacts.map { ($0.id, $0) })
+                        memoryContext = chosen.compactMap { result -> String? in
+                            guard let fact = factsByID[result.id] else { return nil }
+                            return "- [approved source: \(fact.source.label)] \(String(fact.content.prefix(800)))"
                         }.joined(separator: "\n")
                         _ = try await store.appendEvent(
                             runID: run.id,
                             kind: "memory.recalled",
-                            summary: "Approved project memory IDs prepared for selected model context: \(results.map { $0.id.uuidString }.joined(separator: ", "))"
+                            summary: "Approved project memory IDs selected on-device (semantic ranking when available; deterministic fallback otherwise): \(chosen.map { "\($0.id.uuidString):\($0.scoreSource.rawValue)" }.joined(separator: ", "))"
                         )
-                        continuation.yield(.toolActivity("\(results.count) approved project memories recalled"))
+                        continuation.yield(.toolActivity("\(chosen.count) approved project memories recalled on-device"))
                     }
                 } catch is CancellationError {
                     throw CancellationError()

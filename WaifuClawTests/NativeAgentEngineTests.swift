@@ -108,6 +108,58 @@ final class NativeAgentEngineTests: XCTestCase {
         XCTAssertFalse(events.map(\.kind).contains("patch.applied"))
     }
 
+    func testProjectMemoryIsSharedOnlyWithConsentDuringRealAgentRun() async throws {
+        let store = try LocalRunStore(databaseURL: try temporaryDatabaseURL())
+        let memory = try LocalNeuralMemoryStore(databaseURL: try temporaryDatabaseURL())
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: folder) }
+        let projectID = NativeProjectIdentity.id(for: folder)
+        _ = try await memory.capture(
+            LocalMemoryCaptureRequest(
+                projectID: projectID,
+                fact: "The project must use SQLite for cached notes.",
+                source: LocalMemorySource(kind: .manualNote, label: "Approved project note"),
+                provenance: LocalMemoryProvenance(capturedBy: "user")
+            ), approval: .userApproved
+        )
+        _ = try await memory.capture(
+            LocalMemoryCaptureRequest(
+                projectID: String(repeating: "b", count: 64),
+                fact: "Other project's private memory must never be shared.",
+                source: LocalMemorySource(kind: .manualNote, label: "Other project note"),
+                provenance: LocalMemoryProvenance(capturedBy: "user")
+            ), approval: .userApproved
+        )
+        let conversation = try await store.createConversation(title: "Project memory")
+        let workspace = try ScopedWorkspace(rootURL: folder)
+        let enabled = SequencedTestProvider([[.text("The project uses SQLite."), .finished]])
+        let engine = NativeAgentEngine(store: store, memoryStore: memory)
+        for try await _ in await engine.stream(
+            conversationID: conversation.id, prompt: "How do we store cached notes?",
+            provider: enabled, workspace: workspace, memoryEnabled: true
+        ) {}
+        let context = try XCTUnwrap(enabled.capturedMessages().first?.first?.content)
+        XCTAssertTrue(context.contains("SQLite for cached notes"))
+        XCTAssertFalse(context.contains("Other project's private memory"))
+        let firstRuns = try await store.runs(in: conversation.id)
+        let firstRun = try XCTUnwrap(firstRuns.first)
+        let firstEvents = try await store.events(in: firstRun.id)
+        XCTAssertTrue(firstEvents.map(\.kind).contains("memory.recalled"))
+
+        let disabled = SequencedTestProvider([[.text("I can answer without memory."), .finished]])
+        for try await _ in await engine.stream(
+            conversationID: conversation.id, prompt: "How do we store cached notes?",
+            provider: disabled, workspace: workspace, memoryEnabled: false
+        ) {}
+        let noMemoryContext = try XCTUnwrap(disabled.capturedMessages().first?.first?.content)
+        XCTAssertFalse(noMemoryContext.contains("SQLite for cached notes"))
+        let laterRuns = try await store.runs(in: conversation.id)
+        let latestRun = try XCTUnwrap(laterRuns.last)
+        let laterEvents = try await store.events(in: latestRun.id)
+        XCTAssertFalse(laterEvents.map(\.kind).contains("memory.recalled"))
+    }
+
     private func temporaryDatabaseURL() throws -> URL {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
@@ -122,8 +174,15 @@ private final class SequencedTestProvider: AgentModelProvider, @unchecked Sendab
     private let lock = NSLock()
     private let replies: [[AgentProviderEvent]]
     private var index = 0
+    private var seenMessages: [[AgentPromptMessage]] = []
 
     init(_ replies: [[AgentProviderEvent]]) { self.replies = replies }
+
+    func capturedMessages() -> [[AgentPromptMessage]] {
+        lock.lock()
+        defer { lock.unlock() }
+        return seenMessages
+    }
 
     func stream(
         messages: [AgentPromptMessage],
@@ -131,6 +190,7 @@ private final class SequencedTestProvider: AgentModelProvider, @unchecked Sendab
     ) -> AsyncThrowingStream<AgentProviderEvent, Error> {
         lock.lock()
         let reply = replies[min(index, replies.count - 1)]
+        seenMessages.append(messages)
         index += 1
         lock.unlock()
         return AsyncThrowingStream { continuation in
