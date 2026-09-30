@@ -134,25 +134,9 @@ struct NativeAutomaticMemoryView: View {
     @State private var showingDiscardAll = false
 
     var body: some View {
-        @Bindable var controller = controller
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                VStack(alignment: .leading, spacing: 9) {
-                    StudioEyebrow(title: "Neural memory / automatic notes")
-                    Text(projectName)
-                        .font(.custom("CinzelDecorative-Bold", size: 21, relativeTo: .title3))
-                        .foregroundStyle(Theme.textPrimary)
-                    Toggle("Automatically draft notes from finished agent runs", isOn: Binding(
-                        get: { controller.isEnabled },
-                        set: { controller.setEnabled($0) }
-                    ))
-                    .disabled(controller.projectID == nil || controller.errorMessage != nil)
-                    .tint(Theme.magenta)
-                    Text("Off by default. When on, successful runs may create up to three local draft notes; failed or cancelled runs do not. Drafts are unverified model statements. Nothing becomes an approved graph fact or goes to your model provider until you separately review a note and permit model sharing for this project.")
-                        .font(.footnote)
-                        .foregroundStyle(Theme.textSecondary)
-                }
-                .themeCard()
+                preferencesCard
 
                 if let error = controller.errorMessage {
                     Label(error, systemImage: "exclamationmark.triangle.fill")
@@ -160,59 +144,9 @@ struct NativeAutomaticMemoryView: View {
                         .foregroundStyle(Theme.danger)
                 }
 
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Pending review (\(controller.records.count))")
-                        .font(.headline)
-                        .foregroundStyle(Theme.textPrimary)
-                    if controller.records.isEmpty {
-                        Text("No suggestions yet. Finish a real agent run in this project after opting in; the run may produce no eligible notes.")
-                            .font(.subheadline)
-                            .foregroundStyle(Theme.textSecondary)
-                    }
-                    ForEach(controller.records) { record in
-                        VStack(alignment: .leading, spacing: 8) {
-                            Label("Unverified model statement", systemImage: "questionmark.circle")
-                                .font(.caption.bold())
-                                .foregroundStyle(Theme.magenta)
-                            Text(record.candidate.statement)
-                                .foregroundStyle(Theme.textPrimary)
-                                .textSelection(.enabled)
-                            Text("Run \(record.candidate.provenance.runID.uuidString.prefix(8)) · \(record.enqueuedAt, style: .date)")
-                                .font(.caption)
-                                .foregroundStyle(Theme.textSecondary)
-                            HStack(spacing: 12) {
-                                Button("Review exact note") { reviewing = record }
-                                    .disabled(controller.isBusy)
-                                Button("Discard", role: .destructive) { discarding = record }
-                                    .disabled(controller.isBusy)
-                            }
-                            Divider()
-                        }
-                    }
-                    if !controller.records.isEmpty {
-                        Button("Discard all pending notes", role: .destructive) {
-                            showingDiscardAll = true
-                        }
-                        .disabled(controller.isBusy)
-                    }
-                }
-                .themeCard()
+                pendingCard
                 if !controller.interruptedApprovals.isEmpty {
-                    VStack(alignment: .leading, spacing: 9) {
-                        Label("Interrupted approvals (\(controller.interruptedApprovals.count))", systemImage: "exclamationmark.triangle.fill")
-                            .font(.headline)
-                            .foregroundStyle(Theme.danger)
-                        Text("An approval began but queue cleanup was interrupted. The fact may already exist. For safety it cannot be retried automatically; inspect Approved facts on the main Memory screen before taking further action.")
-                            .font(.footnote)
-                            .foregroundStyle(Theme.textSecondary)
-                        ForEach(controller.interruptedApprovals) { record in
-                            Text(record.candidate.statement)
-                                .textSelection(.enabled)
-                                .foregroundStyle(Theme.textPrimary)
-                            Divider()
-                        }
-                    }
-                    .themeCard()
+                    interruptedCard
                 }
                 Text(controller.status)
                     .font(.footnote)
@@ -224,38 +158,7 @@ struct NativeAutomaticMemoryView: View {
         .navigationTitle("Automatic memory")
         .task(id: projectID) { await controller.load(projectID: projectID, projectName: projectName) }
         .sheet(item: $reviewing) { record in
-            NavigationStack {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 14) {
-                        Text("Exact proposed note")
-                            .font(.headline)
-                        Text(record.candidate.statement)
-                            .textSelection(.enabled)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Text("This came from model output in a real finished run. Approving saves it to this project's on-device graph with an unverified-model source label. It does not verify its truth. Sharing approved memories with a model is a separate switch on the Memory screen.")
-                            .font(.footnote)
-                            .foregroundStyle(Theme.textSecondary)
-                        Text("Run ID: \(record.candidate.provenance.runID.uuidString)")
-                            .font(.caption.monospaced())
-                            .textSelection(.enabled)
-                    }
-                    .padding()
-                }
-                .background { StudioBackdrop() }
-                .navigationTitle("Review memory note")
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") { reviewing = nil }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Approve exact note") {
-                            reviewing = nil
-                            Task { await controller.approve(record) }
-                        }
-                        .disabled(controller.isBusy)
-                    }
-                }
-            }
+            reviewSheet(for: record)
         }
         .alert("Discard this exact unverified note?", isPresented: Binding(
             get: { discarding != nil },
@@ -277,5 +180,121 @@ struct NativeAutomaticMemoryView: View {
         } message: {
             Text("This removes \(controller.records.count) unverified draft(s) only. Approved memories, other projects and interrupted approval claims remain unchanged.")
         }
+    }
+
+    private func reviewSheet(for record: NativeMemoryPendingCandidateRecord) -> some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("Exact proposed note")
+                        .font(.headline)
+                    Text(record.candidate.statement)
+                        .textSelection(.enabled)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text("This came from model output in a real finished run. Approving saves it to this project's on-device graph with an unverified-model source label. It does not verify its truth. Sharing approved memories with a model is a separate switch on the Memory screen.")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.textSecondary)
+                    Text("Run ID: \(record.candidate.provenance.runID.uuidString)")
+                        .font(.caption.monospaced())
+                        .textSelection(.enabled)
+                }
+                .padding()
+            }
+            .background { StudioBackdrop() }
+            .navigationTitle("Review memory note")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { reviewing = nil }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Approve exact note") {
+                        reviewing = nil
+                        Task { await controller.approve(record) }
+                    }
+                    .disabled(controller.isBusy)
+                }
+            }
+        }
+    }
+
+    private var preferencesCard: some View {
+        VStack(alignment: .leading, spacing: 9) {
+            StudioEyebrow(title: "Neural memory / automatic notes")
+            Text(projectName)
+                .font(.custom("CinzelDecorative-Bold", size: 21, relativeTo: .title3))
+                .foregroundStyle(Theme.textPrimary)
+            Toggle("Automatically draft notes from finished agent runs", isOn: Binding(
+                get: { controller.isEnabled },
+                set: { controller.setEnabled($0) }
+            ))
+            .disabled(controller.projectID == nil || controller.errorMessage != nil)
+            .tint(Theme.magenta)
+            Text("Off by default. When on, successful runs may create up to three local draft notes; failed or cancelled runs do not. Drafts are unverified model statements. Nothing becomes an approved graph fact or goes to your model provider until you separately review a note and permit model sharing for this project.")
+                .font(.footnote)
+                .foregroundStyle(Theme.textSecondary)
+        }
+        .themeCard()
+    }
+
+    private var pendingCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Pending review (\(controller.records.count))")
+                .font(.headline)
+                .foregroundStyle(Theme.textPrimary)
+            if controller.records.isEmpty {
+                Text("No suggestions yet. Finish a real agent run in this project after opting in; the run may produce no eligible notes.")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+            }
+            ForEach(controller.records) { record in
+                pendingRow(record)
+            }
+            if !controller.records.isEmpty {
+                Button("Discard all pending notes", role: .destructive) {
+                    showingDiscardAll = true
+                }
+                .disabled(controller.isBusy)
+            }
+        }
+        .themeCard()
+    }
+
+    private func pendingRow(_ record: NativeMemoryPendingCandidateRecord) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Unverified model statement", systemImage: "questionmark.circle")
+                .font(.caption.bold())
+                .foregroundStyle(Theme.magenta)
+            Text(record.candidate.statement)
+                .foregroundStyle(Theme.textPrimary)
+                .textSelection(.enabled)
+            Text("Run \(record.candidate.provenance.runID.uuidString.prefix(8)) · \(record.enqueuedAt, style: .date)")
+                .font(.caption)
+                .foregroundStyle(Theme.textSecondary)
+            HStack(spacing: 12) {
+                Button("Review exact note") { reviewing = record }
+                    .disabled(controller.isBusy)
+                Button("Discard", role: .destructive) { discarding = record }
+                    .disabled(controller.isBusy)
+            }
+            Divider()
+        }
+    }
+
+    private var interruptedCard: some View {
+        VStack(alignment: .leading, spacing: 9) {
+            Label("Interrupted approvals (\(controller.interruptedApprovals.count))", systemImage: "exclamationmark.triangle.fill")
+                .font(.headline)
+                .foregroundStyle(Theme.danger)
+            Text("An approval began but queue cleanup was interrupted. The fact may already exist. For safety it cannot be retried automatically; inspect Approved facts on the main Memory screen before taking further action.")
+                .font(.footnote)
+                .foregroundStyle(Theme.textSecondary)
+            ForEach(controller.interruptedApprovals) { record in
+                Text(record.candidate.statement)
+                    .textSelection(.enabled)
+                    .foregroundStyle(Theme.textPrimary)
+                Divider()
+            }
+        }
+        .themeCard()
     }
 }

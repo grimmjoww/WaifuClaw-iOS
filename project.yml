@@ -42,6 +42,8 @@ targets:
       - path: WaifuClaw/Theme/Theme.swift
       - path: WaifuClaw/Core/Security/KeychainStore.swift
       - path: WaifuClaw/Assets.xcassets
+      - path: WaifuClaw/LaunchScreen.storyboard
+        buildPhase: resources
       - path: WaifuClaw/Fonts
         buildPhase: resources
       - path: WaifuClaw/PrivacyInfo.xcprivacy
@@ -67,7 +69,6 @@ targets:
       SWIFT_VERSION: "5.9"
       IPHONEOS_DEPLOYMENT_TARGET: "17.0"
       TARGETED_DEVICE_FAMILY: "1" # iPhone only for v1
-      INFOPLIST_KEY_UILaunchScreen_Generation: YES
       ENABLE_BITCODE: NO
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     scheme:

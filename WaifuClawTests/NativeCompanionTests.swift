@@ -53,6 +53,26 @@ final class NativeCompanionTests: XCTestCase {
         XCTAssertNotNil(UIFont(name: "CinzelDecorative-Bold", size: 26))
     }
 
+    func testCompiledLaunchStoryboardIsInInstalledApp() throws {
+        XCTAssertEqual(Bundle.main.object(forInfoDictionaryKey: "UILaunchStoryboardName") as? String, "LaunchScreen")
+        _ = try XCTUnwrap(Bundle.main.url(forResource: "LaunchScreen", withExtension: "storyboardc"))
+    }
+
+    @MainActor
+    func testTransparentSquareSpriteHostDoesNotDrawBlackAspectFitMargins() {
+        let portrait = CompanionSpriteHostView(frame: CGRect(x: 0, y: 0, width: 175, height: 215))
+        portrait.setNeedsLayout()
+        portrait.layoutIfNeeded()
+        XCTAssertEqual(portrait.spriteView.frame, CGRect(x: 0, y: 20, width: 175, height: 175))
+        XCTAssertTrue(portrait.spriteView.allowsTransparency)
+        XCTAssertFalse(portrait.spriteView.isOpaque)
+
+        let landscape = CompanionSpriteHostView(frame: CGRect(x: 0, y: 0, width: 215, height: 175))
+        landscape.setNeedsLayout()
+        landscape.layoutIfNeeded()
+        XCTAssertEqual(landscape.spriteView.frame, CGRect(x: 20, y: 0, width: 175, height: 175))
+    }
+
     func testEachCompanionSchedulesActualIndependentMotionAndReduceMotionStopsIt() throws {
         for companion in CompanionCatalog.all {
             let scene = CompanionSpriteScene(companion: companion)

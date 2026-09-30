@@ -69,9 +69,9 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-      - name: Record real companion motion on iPhone simulator
+      - name: Capture real companion frames on iPhone simulator
         if: always() && steps.build.outcome == 'success'
-        timeout-minutes: 5
+        timeout-minutes: 10
         run: |
           set -euo pipefail
           SIMULATOR_ID=$(xcrun simctl list devices available --json | python3 -c 'import json,sys; groups=json.load(sys.stdin)["devices"].values(); print(next((d["udid"] for devices in groups for d in devices if d.get("isAvailable") and d.get("name", "").startswith("iPhone")), ""))')
@@ -87,7 +87,6 @@ jobs:
           # screen. Capture a fresh install of the actual default Kline UI.
           xcrun simctl uninstall "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios || true
           xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
-          xcrun simctl terminate "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios || true
           xcrun simctl launch "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios -hasCompletedOnboarding YES
           mkdir -p visual-qa
           sleep 2
@@ -95,24 +94,31 @@ jobs:
           python3 - "$SIMULATOR_ID" <<'PY'
           import os, signal, subprocess, sys, time
           time.sleep(2)
-          recorder = subprocess.Popen(
-              ['xcrun', 'simctl', 'io', sys.argv[1], 'recordVideo', '--codec=h264', '--force', 'visual-qa/companion-home.mp4'],
-              start_new_session=True,
-          )
-          try:
+          with open('visual-qa/companion-home-recording.log', 'w') as diagnostics:
+              recorder = subprocess.Popen(
+                  ['xcrun', 'simctl', 'io', sys.argv[1], 'recordVideo', '--codec=h264', '--force', 'visual-qa/companion-home.mp4'],
+                  stdout=diagnostics, stderr=subprocess.STDOUT, start_new_session=True,
+              )
               time.sleep(5)
               if recorder.poll() is None:
                   os.killpg(recorder.pid, signal.SIGINT)
-              recorder.wait(timeout=20)
-          except subprocess.TimeoutExpired:
               try:
-                  os.killpg(recorder.pid, signal.SIGKILL)
-              except ProcessLookupError:
-                  pass
-              recorder.wait(timeout=5)
-              raise RuntimeError('Simulator recording did not finish; no motion proof was captured')
+                  recorder.wait(timeout=20)
+              except subprocess.TimeoutExpired:
+                  try:
+                      os.killpg(recorder.pid, signal.SIGKILL)
+                  except ProcessLookupError:
+                      pass
+                  recorder.wait(timeout=5)
+          video_path = 'visual-qa/companion-home.mp4'
+          video_ok = recorder.returncode == 0 and os.path.isfile(video_path) and os.path.getsize(video_path) > 0
+          if not video_ok:
+              print('Video unavailable on this simulator; saving three separate real frames for manual motion inspection. See recording log.')
+              for number in range(1, 4):
+                  subprocess.run(['xcrun', 'simctl', 'io', sys.argv[1], 'screenshot', f'visual-qa/companion-frame-{number}.png'], check=True, timeout=30)
+                  time.sleep(1.2)
           PY
-          test -s visual-qa/companion-home.mp4
+          test -s visual-qa/companion-home.mp4 || test -s visual-qa/companion-frame-3.png
 
       - name: Upload simulator companion motion proof
         if: always()

@@ -23,16 +23,18 @@ struct CompanionSpriteView: UIViewRepresentable {
         companionOverride ?? CompanionID.selected(from: storedCompanionID)
     }
 
-    func makeUIView(context: Context) -> SKView {
-        let view = makeSKView()
+    func makeUIView(context: Context) -> CompanionSpriteHostView {
+        let host = CompanionSpriteHostView()
+        let view = host.spriteView
         let companion = selectedCompanion
         let scene = CompanionSpriteScene(companion: companion.definition)
         view.presentScene(scene)
         configure(view, scene: scene, companion: companion)
-        return view
+        return host
     }
 
-    func updateUIView(_ view: SKView, context: Context) {
+    func updateUIView(_ host: CompanionSpriteHostView, context: Context) {
+        let view = host.spriteView
         let companion = selectedCompanion
         let scene: CompanionSpriteScene
         if let currentScene = view.scene as? CompanionSpriteScene,
@@ -45,18 +47,6 @@ struct CompanionSpriteView: UIViewRepresentable {
         configure(view, scene: scene, companion: companion)
     }
 
-    private func makeSKView() -> SKView {
-        let view = SKView(frame: .zero)
-        view.backgroundColor = .clear
-        view.isOpaque = false
-        view.allowsTransparency = true
-        view.ignoresSiblingOrder = true
-        view.preferredFramesPerSecond = 60
-        view.isAccessibilityElement = true
-        view.accessibilityTraits = .image
-        return view
-    }
-
     private func configure(
         _ view: SKView,
         scene: CompanionSpriteScene,
@@ -66,6 +56,41 @@ struct CompanionSpriteView: UIViewRepresentable {
         scene.configure(mood: mood, reduceMotion: reduceMotion)
         view.accessibilityLabel = mood.accessibilityDescription(for: definition.name)
         view.accessibilityValue = mood.visualStateTitle
+    }
+}
+
+/// SpriteKit paints the unused margins of an `.aspectFit` square SKScene black
+/// inside a portrait SKView, even when both the scene and view are transparent.
+/// Fit a real *square SKView* inside a clear portrait UIKit container instead;
+/// the companion keeps its proportions and the remaining host margins stay clear.
+final class CompanionSpriteHostView: UIView {
+    let spriteView = SKView(frame: .zero)
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .clear
+        isOpaque = false
+        spriteView.backgroundColor = .clear
+        spriteView.isOpaque = false
+        spriteView.allowsTransparency = true
+        spriteView.ignoresSiblingOrder = true
+        spriteView.preferredFramesPerSecond = 60
+        spriteView.isAccessibilityElement = true
+        spriteView.accessibilityTraits = .image
+        addSubview(spriteView)
+    }
+
+    required init?(coder: NSCoder) { return nil }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let side = min(bounds.width, bounds.height)
+        spriteView.frame = CGRect(
+            x: (bounds.width - side) / 2,
+            y: (bounds.height - side) / 2,
+            width: side,
+            height: side
+        )
     }
 }
 
