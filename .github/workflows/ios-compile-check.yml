@@ -44,6 +44,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO
 
       - name: Test WaifuClaw on iPhone simulator
+        id: simulator_tests
         env:
           WAIFUCLAW_LIVE_MCP: ${{ github.event_name == 'workflow_dispatch' && inputs.live_mcp && '1' || '0' }}
         run: |
@@ -53,10 +54,20 @@ jobs:
             -project WaifuClaw.xcodeproj \
             -scheme WaifuClaw \
             -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+            -resultBundlePath "$RUNNER_TEMP/WaifuClaw-TestResults.xcresult" \
             -parallel-testing-enabled NO \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload failed simulator test evidence
+        if: ${{ always() && steps.simulator_tests.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-iphone-simulator-tests
+          path: ${{ runner.temp }}/WaifuClaw-TestResults.xcresult
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Record real companion motion on iPhone simulator
         if: always() && steps.build.outcome == 'success'
