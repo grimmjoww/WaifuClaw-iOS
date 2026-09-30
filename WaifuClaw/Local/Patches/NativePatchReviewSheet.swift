@@ -40,7 +40,7 @@ struct NativePatchReviewSheet: View {
                     .themeCard()
 
                     Text("Complete change to review")
-                        .font(.headline)
+                        .font(Theme.sectionDisplay)
                     Text("− removed   + added   unchanged lines have no marker. Only this exact file is affected; a changed file is refused during Save.")
                         .font(.footnote)
                         .foregroundStyle(Theme.textSecondary)
@@ -62,7 +62,7 @@ struct NativePatchReviewSheet: View {
                 }
                 .padding()
             }
-            .background(Theme.background)
+            .background { StudioBackdrop() }
             .navigationTitle("Review proposed edit")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

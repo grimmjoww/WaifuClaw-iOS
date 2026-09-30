@@ -1,6 +1,31 @@
 import XCTest
 
 final class StandaloneNavigationUITests: XCTestCase {
+    func testCompanionChoiceChangesHomeAndGuardianRequiresRealProject() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-hasCompletedOnboarding", "YES"]
+        app.launch()
+
+        let chooseCompanion = app.buttons["chooseCompanion"]
+        XCTAssertTrue(chooseCompanion.waitForExistence(timeout: 10))
+        chooseCompanion.tap()
+        XCTAssertTrue(app.navigationBars["Companions"].waitForExistence(timeout: 5))
+        let rei = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Rei,")).firstMatch
+        XCTAssertTrue(rei.exists)
+        rei.tap()
+        XCTAssertEqual(rei.value as? String, "Selected")
+        app.navigationBars.buttons["WaifuClaw"].tap()
+        XCTAssertTrue(app.staticTexts["Rei"].waitForExistence(timeout: 5))
+
+        let openGuardian = app.buttons["Review project changes"]
+        XCTAssertTrue(openGuardian.exists)
+        openGuardian.tap()
+        XCTAssertTrue(app.navigationBars["Guardian"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Choose Files folder"].exists)
+        XCTAssertFalse(app.buttons["Scan now"].isEnabled,
+                       "Guardian must not invent a scan before a user grants project access")
+    }
+
     func testMultiagentTeamIsReachableWithoutFakeOnlineAgents() {
         let app = XCUIApplication()
         app.launchArguments = ["-hasCompletedOnboarding", "YES"]

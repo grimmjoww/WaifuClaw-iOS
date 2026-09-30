@@ -242,7 +242,7 @@ public struct NativeGitView: View {
             }
             .padding()
         }
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Git")
         .fileImporter(
             isPresented: $controller.showingFolderPicker,
@@ -269,6 +269,7 @@ public struct NativeGitView: View {
 
     private var cloneCard: some View {
         VStack(alignment: .leading, spacing: 12) {
+            StudioEyebrow(title: "Project / source control")
             Label("Clone a repository", systemImage: "arrow.down.to.line.compact")
                 .font(.headline)
                 .foregroundStyle(Theme.textPrimary)

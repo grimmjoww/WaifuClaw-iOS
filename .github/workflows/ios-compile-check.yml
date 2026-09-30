@@ -28,6 +28,7 @@ jobs:
         run: xcodegen generate
 
       - name: Build WaifuClaw (unsigned compile check)
+        id: build
         run: |
           xcodebuild build \
             -project WaifuClaw.xcodeproj \
@@ -49,3 +50,34 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Record real companion motion on iPhone simulator
+        if: always() && steps.build.outcome == 'success'
+        run: |
+          set -euo pipefail
+          SIMULATOR_ID=$(xcrun simctl list devices available --json | python3 -c 'import json,sys; groups=json.load(sys.stdin)["devices"].values(); print(next((d["udid"] for devices in groups for d in devices if d.get("isAvailable") and d.get("name", "").startswith("iPhone")), ""))')
+          test -n "$SIMULATOR_ID"
+          xcrun simctl boot "$SIMULATOR_ID" || true
+          xcrun simctl bootstatus "$SIMULATOR_ID" -b
+          APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -type d -path '*/Build/Products/Debug-iphonesimulator/WaifuClaw.app' -print -quit)
+          test -n "$APP_PATH" || { echo 'Simulator app not built'; exit 1; }
+          xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
+          xcrun simctl terminate "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios || true
+          xcrun simctl launch "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios -hasCompletedOnboarding YES
+          mkdir -p visual-qa
+          sleep 2
+          xcrun simctl io "$SIMULATOR_ID" recordVideo --codec=h264 --force visual-qa/companion-home.mp4 &
+          RECORDER_PID=$!
+          sleep 5
+          kill -INT "$RECORDER_PID" || true
+          wait "$RECORDER_PID" || true
+          test -s visual-qa/companion-home.mp4
+
+      - name: Upload simulator companion motion proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: companion-motion-simulator
+          path: visual-qa/companion-home.mp4
+          if-no-files-found: warn
+          retention-days: 7

@@ -294,6 +294,7 @@ public struct NativeWorkspaceView: View {
                 .padding(.horizontal)
                 .padding(.vertical, 8)
         }
+        .background { StudioBackdrop() }
         .navigationTitle("Workspace")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -339,6 +340,7 @@ public struct NativeWorkspaceView: View {
             Image(systemName: "folder.fill")
                 .foregroundStyle(.tint)
             VStack(alignment: .leading, spacing: 2) {
+                StudioEyebrow(title: "Native IDE / Files")
                 Text(controller.workspaceName ?? "No folder selected")
                     .font(.headline)
                 if controller.workspaceName != nil {
@@ -363,7 +365,10 @@ public struct NativeWorkspaceView: View {
             .buttonStyle(.bordered)
         }
         .padding()
-        .background(.thinMaterial)
+        .background(Theme.surface.opacity(0.96))
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Theme.magentaGradient).frame(height: 1)
+        }
     }
 
     private var emptyWorkspace: some View {
@@ -427,6 +432,7 @@ public struct NativeWorkspaceView: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
     }
 
     private var editor: some View {

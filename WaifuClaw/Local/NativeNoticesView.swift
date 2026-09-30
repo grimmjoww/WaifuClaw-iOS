@@ -19,7 +19,7 @@ struct NativeNoticesView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
         }
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Third-party notices")
     }
 }

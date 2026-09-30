@@ -18,8 +18,9 @@ struct NativeModelSettingsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 VStack(alignment: .leading, spacing: 10) {
+                    StudioEyebrow(title: "Build with your model")
                     Text("Model provider")
-                        .font(.headline)
+                        .font(Theme.sectionDisplay)
                         .foregroundStyle(Theme.textPrimary)
                     Text("Choose an OpenAI-compatible HTTPS endpoint and its exact model ID. OpenAI uses the address shown below; other compatible providers may use a different URL.")
                         .font(.subheadline)
@@ -79,14 +80,14 @@ struct NativeModelSettingsView: View {
                         .accessibilityAddTraits(.updatesFrequently)
                 }
 
-                Text("The coding agent runs on your phone. When you send a request, the selected provider receives your message and any project excerpts you authorize the agent to read. Your key is stored in this phone's Keychain and sent directly to your selected provider—not a WaifuClaw computer or server. Provider charges are separate from WaifuClaw Pro.")
+                Text("The coding agent runs on your phone. When you send a request, the selected provider receives your message and any project excerpts you authorize the agent to read. Your key is stored in this phone's Keychain and sent directly to your selected provider—not a WaifuClaw computer or server. Provider charges are separate from any future WaifuClaw subscription.")
                     .font(.footnote)
                     .foregroundStyle(Theme.textSecondary)
                     .themeCard()
             }
             .padding()
         }
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Model & API Key")
         .task { refresh() }
         .onDisappear { testTask?.cancel() }

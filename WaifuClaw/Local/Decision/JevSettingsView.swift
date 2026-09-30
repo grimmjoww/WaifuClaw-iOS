@@ -23,8 +23,9 @@ struct JevSettingsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 VStack(alignment: .leading, spacing: 10) {
+                    StudioEyebrow(title: "Decision service / optional")
                     Text("Optional Jev decisions")
-                        .font(.headline)
+                        .font(Theme.sectionDisplay)
                         .foregroundStyle(Theme.textPrimary)
                     Text("Jev is a TypeSafe System One model for typed routing decisions. It is not a chat or coding model, and its result never authorizes an action.")
                         .font(.subheadline)
@@ -147,7 +148,7 @@ struct JevSettingsView: View {
             }
             .padding()
         }
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Jev Decisions")
         .task { refresh() }
         .onDisappear { testTask?.cancel() }

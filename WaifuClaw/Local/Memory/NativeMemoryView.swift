@@ -204,7 +204,7 @@ struct NativeMemoryView: View {
             }
             .padding()
         }
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Memory")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -269,6 +269,7 @@ struct NativeMemoryView: View {
 
     private var projectCard: some View {
         VStack(alignment: .leading, spacing: 8) {
+            StudioEyebrow(title: "Neural memory / on device")
             Label(controller.projectName ?? "No project folder selected", systemImage: "folder.fill")
                 .font(.headline)
                 .foregroundStyle(Theme.textPrimary)

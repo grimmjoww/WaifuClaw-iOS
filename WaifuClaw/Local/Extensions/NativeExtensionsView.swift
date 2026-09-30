@@ -174,7 +174,7 @@ struct NativeExtensionsView: View {
             }
         }
         .scrollContentBackground(.hidden)
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Extensions")
         .onAppear {
             registry.reloadFromDisk()

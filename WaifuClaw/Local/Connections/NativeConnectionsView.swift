@@ -105,7 +105,7 @@ struct NativeConnectionsView: View {
             }
         }
         .scrollContentBackground(.hidden)
-        .background(Theme.background)
+        .background { StudioBackdrop() }
         .navigationTitle("Connections & Permissions")
         .onAppear(perform: refresh)
         .fileImporter(
