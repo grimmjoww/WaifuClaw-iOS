@@ -153,6 +153,17 @@ public actor NativeMemoryPendingCandidateQueue {
     private static let maximumCandidatesPerAppend = 10
     private static let maximumPendingRecordsHardLimit = 5_000
     private static let maximumDocumentBytesHardLimit = 4_000_000
+    // Production screens must share one actor for the default on-disk queue;
+    // a second instance would keep a stale JSON snapshot and could overwrite a
+    // concurrent agent append or approval. Tests may still inject file URLs.
+    private static let defaultInstance: NativeMemoryPendingCandidateQueue? =
+        try? NativeMemoryPendingCandidateQueue()
+
+    public static func shared() throws -> NativeMemoryPendingCandidateQueue {
+        if let defaultInstance { return defaultInstance }
+        // Preserve the real file/storage error if the lazy default open failed.
+        return try NativeMemoryPendingCandidateQueue()
+    }
 
     private struct Document: Codable {
         let formatVersion: Int
@@ -163,6 +174,7 @@ public actor NativeMemoryPendingCandidateQueue {
     private let fileURL: URL
     private let configuration: NativeMemoryPendingCandidateQueueConfiguration
     private var document: Document
+    private var approvalsInFlight: Set<String> = []
 
     /// Opens the queue at an explicit local file URL, or under Application
     /// Support when the host app does not supply one. The initial read fully
@@ -312,6 +324,25 @@ public actor NativeMemoryPendingCandidateQueue {
         return removedCount
     }
 
+    /// Destructive, explicit user-request path. Unlike the everyday bulk
+    /// discard, a full project purge also erases interrupted approval claims.
+    /// An in-progress approval is never removed while its graph write is live.
+    @discardableResult
+    public func deleteAllProjectRecords(in projectID: String) throws -> Int {
+        try Self.validateProjectID(projectID)
+        if let active = document.records.first(where: {
+            $0.projectID == projectID && approvalsInFlight.contains($0.id)
+        }) {
+            throw NativeMemoryPendingCandidateQueueError.approvalInProgress(
+                id: active.id, projectID: projectID
+            )
+        }
+        let removed = document.records.filter { $0.projectID == projectID }.count
+        guard removed > 0 else { return 0 }
+        try replaceDocument(records: document.records.filter { $0.projectID != projectID })
+        return removed
+    }
+
     /// Exports one project's pending review records only. Approved graph facts
     /// are neither queried nor represented by this payload.
     public func exportProject(
@@ -379,6 +410,8 @@ public actor NativeMemoryPendingCandidateQueue {
             state: .approvalClaimed
         )
         try replaceDocument(records: claimedRecords)
+        approvalsInFlight.insert(candidateID)
+        defer { approvalsInFlight.remove(candidateID) }
 
         let candidate = pendingRecord.candidate
         let provenance = candidate.provenance

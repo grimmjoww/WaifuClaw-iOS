@@ -19,7 +19,7 @@ final class NativeAutomaticMemoryController {
 
     init() {
         do {
-            queue = try NativeMemoryPendingCandidateQueue()
+            queue = try NativeMemoryPendingCandidateQueue.shared()
             graph = try LocalNeuralMemoryStore()
         } catch {
             queue = nil

@@ -195,7 +195,7 @@ final class NativeAgentController {
                         if let runProjectID,
                            NativeMemoryAutocapturePreferenceStore().preference(for: runProjectID) == .optedIn {
                             do {
-                                let queue = try NativeMemoryPendingCandidateQueue()
+                                let queue = try NativeMemoryPendingCandidateQueue.shared()
                                 let adapter = NativeMemoryAutocaptureLifecycleAdapter(
                                     runStore: store,
                                     pendingQueue: queue

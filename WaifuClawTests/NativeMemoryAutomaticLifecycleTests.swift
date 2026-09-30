@@ -308,6 +308,55 @@ final class NativeMemoryAutomaticLifecycleTests: XCTestCase {
         XCTAssertEqual(afterRestart, beforeRestart)
     }
 
+    func testFullProjectPurgeDeletesInterruptedClaimAndPendingDraftsOnlyForThatProject() async throws {
+        let environment = try makeEnvironment()
+        environment.preferences.optIn(for: firstProject)
+        environment.preferences.optIn(for: secondProject)
+        let first = try await makeRun(
+            in: environment.runStore, phase: .finished,
+            output: "We decided to use SQLite for local project memory."
+        )
+        let second = try await makeRun(
+            in: environment.runStore, phase: .finished,
+            output: "We configured separate memory notes for this project."
+        )
+        _ = try await environment.adapter.captureFinishedRun(
+            runID: first.runID, projectID: firstProject,
+            conversationID: first.conversationID, assistantMessageID: first.assistantMessageID
+        )
+        _ = try await environment.adapter.captureFinishedRun(
+            runID: second.runID, projectID: secondProject,
+            conversationID: second.conversationID, assistantMessageID: second.assistantMessageID
+        )
+
+        // Simulate an approval interrupted after the queue durably claimed it.
+        // Reopen the test-only file rather than tampering with a live actor.
+        var document = try XCTUnwrap(JSONSerialization.jsonObject(
+            with: Data(contentsOf: environment.queueURL)
+        ) as? [String: Any])
+        var records = try XCTUnwrap(document["records"] as? [[String: Any]])
+        let recordIndex = try XCTUnwrap(records.firstIndex {
+            ($0["projectID"] as? String) == firstProject
+        })
+        records[recordIndex]["state"] = "approvalClaimed"
+        document["records"] = records
+        try JSONSerialization.data(withJSONObject: document).write(
+            to: environment.queueURL, options: .atomic
+        )
+        let reopened = try NativeMemoryPendingCandidateQueue(fileURL: environment.queueURL)
+        let interrupted = try await reopened.records(in: firstProject)
+        XCTAssertEqual(interrupted.map(\.state), [.approvalClaimed])
+
+        let removed = try await reopened.deleteAllProjectRecords(in: firstProject)
+        let after = try NativeMemoryPendingCandidateQueue(fileURL: environment.queueURL)
+        let firstRemaining = try await after.records(in: firstProject)
+        let secondRemaining = try await after.records(in: secondProject)
+        XCTAssertEqual(removed, 1)
+        XCTAssertTrue(firstRemaining.isEmpty)
+        XCTAssertEqual(secondRemaining.count, 1)
+        XCTAssertEqual(secondRemaining[0].state, .pending)
+    }
+
     func testCorruptQueueStateFailsClosed() throws {
         let directory = try makeTemporaryDirectory()
         let queueURL = directory.appendingPathComponent("NativeMemoryPendingCandidates.json")

@@ -143,15 +143,25 @@ final class NativeMemoryController {
 
     func purgeCurrentProject() async {
         guard let store, let projectID else { return }
+        var removedDrafts = 0
         do {
+            // Stop new model-context disclosure and post-run draft creation
+            // before deleting any saved content from this selected project.
+            NativeMemoryConsent().setEnabled(false, for: projectID)
+            NativeMemoryAutocapturePreferenceStore().optOut(for: projectID)
+            let queue = try NativeMemoryPendingCandidateQueue.shared()
+            removedDrafts = try await queue.deleteAllProjectRecords(in: projectID)
             try await store.purgeProject(projectID)
             facts = []
             recalled = []
             exportURL = nil
             errorMessage = nil
-            status = "All approved memories for this project were deleted. Other projects were not touched."
+            status = "Deleted all approved facts and \(removedDrafts) automatic note(s) for this project on this iPhone. Other projects were not touched."
         } catch {
-            report(error)
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            status = removedDrafts > 0
+                ? "Automatic notes were deleted, but approved facts may remain. Review the error and retry."
+                : "Project memory deletion was stopped. Automatic capture and model sharing were turned off."
         }
     }
 
@@ -244,13 +254,16 @@ struct NativeMemoryView: View {
         } message: {
             Text(String(controller.factDraft.prefix(300)))
         }
-        .alert("Delete all memories in this project?", isPresented: $controller.showingPurgeConfirmation) {
+        .alert("Delete local memory data for this project?", isPresented: $controller.showingPurgeConfirmation) {
             Button("Delete all project memories", role: .destructive) {
-                Task { await controller.purgeCurrentProject() }
+                Task {
+                    await controller.purgeCurrentProject()
+                    refreshMemoryConsent()
+                }
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This permanently deletes \(controller.facts.count) approved memories for \(controller.projectName ?? "this project") only.")
+            Text("This permanently deletes \(controller.facts.count) approved facts plus any pending or interrupted automatic notes for \(controller.projectName ?? "this project") on this iPhone and turns off memory sharing and auto-capture. Stop active agent runs first. Other projects and already shared exports are not deleted.")
         }
         .alert("Delete this approved memory?", isPresented: Binding(
             get: { controller.pendingDelete != nil },
@@ -407,12 +420,10 @@ struct NativeMemoryView: View {
                 }
                 Divider()
             }
-            if !controller.facts.isEmpty {
-                Button("Delete all project memories", role: .destructive) {
-                    controller.showingPurgeConfirmation = true
-                }
-                .font(.footnote)
+            Button("Delete all local memory data for this project", role: .destructive) {
+                controller.showingPurgeConfirmation = true
             }
+            .font(.footnote)
         }
         .themeCard()
     }
