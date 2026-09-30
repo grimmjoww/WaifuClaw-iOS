@@ -27,6 +27,7 @@ targets:
       - path: WaifuClaw/App/WaifuClawApp.swift
       - path: WaifuClaw/Theme/Theme.swift
       - path: WaifuClaw/Core/Security/KeychainStore.swift
+      - path: WaifuClaw/Assets.xcassets
       - path: WaifuClaw/Features/DesignSystem/Components/ProgressBar.swift
       - path: WaifuClaw/Features/DesignSystem/Kline/KlineAvatar.swift
       - path: WaifuClaw/Features/DesignSystem/Kline/kline-operator.png

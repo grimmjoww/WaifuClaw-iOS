@@ -14,6 +14,7 @@ final class NativeAgentController {
     var errorMessage: String?
     var isRunning = false
     var workspaceName: String?
+    var klineMood: KlineSpriteMood = .idle
 
     private var store: LocalRunStore?
     private var selectedWorkspace: ScopedWorkspace?
@@ -48,6 +49,7 @@ final class NativeAgentController {
         streamedText = ""
         errorMessage = nil
         status = "New conversation"
+        klineMood = .idle
     }
 
     func selectConversation(_ id: UUID) async {
@@ -83,6 +85,7 @@ final class NativeAgentController {
         let prompt = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !prompt.isEmpty else { return }
         isRunning = true
+        klineMood = .thinking
         activeTask = Task { await run(prompt: prompt) }
     }
 
@@ -122,6 +125,7 @@ final class NativeAgentController {
             draft = ""
             isRunning = true
             status = "Thinking on this iPhone…"
+            klineMood = .thinking
             let useJev = JevDecisionPreferences().isDecisionOptedIn
             let jevKey = useJev ? (try? JevKeychainStore().load()) : nil
             let useMemory = UserDefaults.standard.bool(forKey: "native.memory.useInAgent")
@@ -140,13 +144,16 @@ final class NativeAgentController {
                     activeRunID = id
                     messages = try await store.messages(in: conversationID)
                     status = "Working on this iPhone…"
+                    klineMood = .thinking
                 case .text(let chunk):
                     streamedText += chunk
                 case .toolActivity(let activity):
                     status = activity
+                    klineMood = activity.contains("read_file") || activity.contains("list_files") ? .reading : .thinking
                     await refreshRunEvidence(conversationID: conversationID, store: store)
                 case .completed:
                     status = "Run completed and saved on this phone"
+                    klineMood = .completed
                     if let activeRunID {
                         recordExtensionHook(.runFinished, runID: activeRunID, projectID: runProjectID)
                     }
@@ -158,9 +165,11 @@ final class NativeAgentController {
             streamedText = ""
         } catch is CancellationError {
             status = "Run stopped on this phone"
+            klineMood = .idle
         } catch {
             show(error)
             status = "Run failed"
+            klineMood = .failed
             if let activeRunID {
                 recordExtensionHook(.runFailed, runID: activeRunID, projectID: runProjectID)
             }
@@ -180,6 +189,7 @@ final class NativeAgentController {
         messages = try await store.messages(in: id)
         await refreshRunEvidence(conversationID: id, store: store)
         status = "Conversation restored from this phone"
+        klineMood = .idle
     }
 
     private func refreshRunEvidence(conversationID: UUID, store: LocalRunStore) async {

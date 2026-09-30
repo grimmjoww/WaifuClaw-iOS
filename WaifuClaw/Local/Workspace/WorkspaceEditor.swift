@@ -45,7 +45,7 @@ struct WorkspaceTextDocument: Sendable {
 /// It is deliberately in-memory only: undo is never performed autonomously
 /// after a relaunch.
 struct WorkspaceUndoRecord: Sendable {
-    fileprivate let relativePath: String
+    let relativePath: String
     fileprivate let originalData: Data
     fileprivate let originalSHA256: String
     fileprivate let savedSHA256: String

@@ -248,7 +248,7 @@ struct JevDecisionClient {
             return (data, httpResponse)
         } catch is CancellationError {
             throw CancellationError()
-        } catch let error as URLError where error.code == .cancelled, Task.isCancelled {
+        } catch let error as URLError where error.code == .cancelled && Task.isCancelled {
             throw CancellationError()
         } catch {
             if redirectBlocker.didBlockRedirect {

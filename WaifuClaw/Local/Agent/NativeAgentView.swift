@@ -31,11 +31,13 @@ struct NativeAgentView: View {
                         }
                         if controller.messages.isEmpty && controller.streamedText.isEmpty {
                             VStack(alignment: .leading, spacing: 12) {
-                                KlineAvatar(diameter: 88)
+                                KlineSpriteView(mood: controller.klineMood)
+                                    .frame(height: 175)
+                                    .frame(maxWidth: .infinity)
                                 Text("Work with a project on this iPhone")
                                     .font(.title2.bold())
                                     .foregroundStyle(Theme.textPrimary)
-                                Text("Choose a folder in Files, add your model key in Settings, then ask WaifuClaw to inspect your code. These first native tools can read files only; edits and Git arrive when they are verified.")
+                                Text("Choose a folder in Files, add your model key in Settings, then ask WaifuClaw to inspect your code. Agent tools read files only; edit your own files in Workspace. Git is not connected yet.")
                                     .foregroundStyle(Theme.textSecondary)
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -66,7 +68,8 @@ struct NativeAgentView: View {
                 }
             }
             HStack(spacing: 8) {
-                Image(systemName: controller.isRunning ? "circle.dotted.circle" : "checkmark.circle")
+                KlineSpriteView(mood: controller.klineMood)
+                    .frame(width: 58, height: 58)
                 Text(controller.status)
                     .lineLimit(2)
                 Spacer()

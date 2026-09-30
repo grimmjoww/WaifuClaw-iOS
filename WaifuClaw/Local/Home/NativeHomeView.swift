@@ -14,16 +14,17 @@ struct NativeHomeView: View {
                 Text("Good \(greeting), \(displayName.isEmpty ? "there" : displayName)")
                     .font(.largeTitle.bold())
                     .foregroundStyle(Theme.textPrimary)
-                HStack(alignment: .center, spacing: 14) {
-                    KlineAvatar(diameter: 76)
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("Kline")
-                            .font(.headline)
-                            .foregroundStyle(Theme.textPrimary)
-                        Text("Your coding workspace runs on this iPhone—not on a paired computer.")
-                            .font(.subheadline)
-                            .foregroundStyle(Theme.textSecondary)
-                    }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Kline · Your operator")
+                        .font(.headline)
+                        .foregroundStyle(Theme.textPrimary)
+                    Text("Your coding workspace runs on this iPhone—not on a paired computer.")
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.textSecondary)
+                    KlineSpriteView(mood: .idle)
+                        .frame(height: 230)
+                        .frame(maxWidth: .infinity)
+                        .accessibilityHint("Wing and blink animation pauses when Reduce Motion is enabled")
                 }
                 .themeCard()
 
