@@ -21,9 +21,21 @@ targets:
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - path: WaifuClaw
-        excludes:
-          - "Info.plist"
+      # The old paired-desktop leaves remain in the repository as migration
+      # references, but are not reachable or compiled into the native app.
+      # In particular, production must not contain Mock* dashboard/run/team data.
+      - path: WaifuClaw/App/WaifuClawApp.swift
+      - path: WaifuClaw/Theme/Theme.swift
+      - path: WaifuClaw/Core/Security/KeychainStore.swift
+      - path: WaifuClaw/Features/DesignSystem/Components/ProgressBar.swift
+      - path: WaifuClaw/Features/DesignSystem/Kline/KlineAvatar.swift
+      - path: WaifuClaw/Features/DesignSystem/Kline/kline-operator.png
+      - path: WaifuClaw/Features/Onboarding/OnboardingKeys.swift
+      - path: WaifuClaw/Features/Onboarding/OnboardingStep.swift
+      - path: WaifuClaw/Features/Onboarding/OnboardingView.swift
+      - path: WaifuClaw/Features/Onboarding/IntroPagesView.swift
+      - path: WaifuClaw/Features/Onboarding/DisplayNameView.swift
+      - path: WaifuClaw/Local
     info:
       path: WaifuClaw/Info.plist
     settings:

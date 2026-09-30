@@ -1,0 +1,91 @@
+import SwiftUI
+
+struct NativeHomeView: View {
+    @AppStorage(OnboardingKeys.displayName) private var displayName = ""
+    @State private var conversations: [LocalConversation] = []
+    @State private var loadError: String?
+    let openAgent: () -> Void
+    let openSettings: () -> Void
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                Text("Good \(greeting), \(displayName.isEmpty ? "there" : displayName)")
+                    .font(.largeTitle.bold())
+                    .foregroundStyle(Theme.textPrimary)
+                HStack(alignment: .center, spacing: 14) {
+                    KlineAvatar(diameter: 76)
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Kline")
+                            .font(.headline)
+                            .foregroundStyle(Theme.textPrimary)
+                        Text("Your coding workspace runs on this iPhone—not on a paired computer.")
+                            .font(.subheadline)
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                }
+                .themeCard()
+
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Continue building")
+                        .font(.title3.bold())
+                        .foregroundStyle(Theme.textPrimary)
+                    Text("Inspect a project and talk with your model using your own key. This first local agent can list and read files; it cannot edit, execute code or claim tests passed.")
+                        .foregroundStyle(Theme.textSecondary)
+                    Button("Open agent", action: openAgent)
+                        .themePrimaryButton()
+                    Button("Configure model & API key", action: openSettings)
+                        .font(.subheadline.bold())
+                }
+                .themeCard()
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Recent conversations")
+                        .font(.title3.bold())
+                        .foregroundStyle(Theme.textPrimary)
+                    if let loadError {
+                        Text(loadError)
+                            .foregroundStyle(Theme.danger)
+                        Button("Retry") { Task { await reload() } }
+                    } else if conversations.isEmpty {
+                        Text("No local conversations yet. Start in Agent.")
+                            .foregroundStyle(Theme.textSecondary)
+                    } else {
+                        ForEach(conversations.prefix(5)) { conversation in
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(conversation.title)
+                                    .foregroundStyle(Theme.textPrimary)
+                                    .lineLimit(2)
+                                Text(conversation.updatedAt, style: .relative)
+                                    .font(.caption)
+                                    .foregroundStyle(Theme.textSecondary)
+                            }
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .themeCard()
+            }
+            .padding()
+        }
+        .background(Theme.background)
+        .navigationTitle("WaifuClaw")
+        .task { await reload() }
+    }
+
+    private var greeting: String {
+        let hour = Calendar.current.component(.hour, from: .now)
+        if hour < 12 { return "morning" }
+        if hour < 18 { return "afternoon" }
+        return "evening"
+    }
+
+    private func reload() async {
+        do {
+            conversations = try await LocalRunStore().listConversations()
+            loadError = nil
+        } catch {
+            loadError = "Couldn't open this phone's conversation history: \(error.localizedDescription)"
+        }
+    }
+}

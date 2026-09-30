@@ -1,6 +1,6 @@
 # WaifuClaw Source → iPhone parity ledger
 
-**Specification references:** [`WaifuClaw-Source/README.md`](https://github.com/grimmjoww/WaifuClaw-Source/blob/main/README.md), its [capability registry](https://github.com/grimmjoww/WaifuClaw-Source/blob/main/frontend/src/core/capabilities/registry.ts), the [iOS audit](/home/ubuntu/waifuclaw-audit-notes/WAIFUCLAW-IOS-AUDIT.md), and the approved [native plan](/home/ubuntu/plan.md). The desktop README's M1–M7 are mostly **planned/in progress**, not pre-existing features that the iOS app may call complete. This document lists required **iPhone-adapted outcomes**, not permission to ship fake telemetry. Update each row with a code path and verification evidence before changing its status.
+**Specification references:** [`WaifuClaw-Source/README.md`](https://github.com/grimmjoww/WaifuClaw-Source/blob/main/README.md), its [capability registry](https://github.com/grimmjoww/WaifuClaw-Source/blob/main/frontend/src/core/capabilities/registry.ts), and the audited iOS main baseline `5536f1d`. The desktop README's M1–M7 are mostly **planned/in progress**, not pre-existing features that the iOS app may call complete. This document lists required **iPhone-adapted outcomes**, not permission to ship fake telemetry. Update each row with a code path and verification evidence before changing its status.
 
 | Source milestone / capability | iPhone adaptation and user-visible location | Stage | Verified production status |
 |---|---|---|---|

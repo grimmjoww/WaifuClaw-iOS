@@ -2,111 +2,66 @@ import SwiftUI
 
 @main
 struct WaifuClawApp: App {
-    @StateObject private var appState = AppState()
-
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environmentObject(appState)
                 .preferredColorScheme(.dark)
-                .task {
-                    appState.restore()
-                    appState.startWakePolling()
-                }
-                // Blocking TOFU-mismatch warning (audit §4) — full screen, no dismiss-by-tap.
-                .fullScreenCover(item: $appState.securityAlert) { alert in
-                    FingerprintMismatchView(alert: alert)
-                        .environmentObject(appState)
-                }
-                // Revoked device (audit §2) — never a dead app, always a way back.
-                .fullScreenCover(isPresented: $appState.showRevokedNotice) {
-                    RevokedDeviceView()
-                        .environmentObject(appState)
-                }
         }
     }
 }
 
-/// Routes to pairing or the main tabs based on pairing state.
+/// Existing desktop credentials remain stored for an explicit migration path,
+/// but they are not needed to open or operate the native iPhone agent.
 struct RootView: View {
-    @EnvironmentObject var appState: AppState
+    @AppStorage(OnboardingKeys.hasCompletedOnboarding) private var hasCompletedOnboarding = false
 
     var body: some View {
         ZStack {
             Theme.background.ignoresSafeArea()
-            switch appState.pairing {
-            case .unpaired:
-                PairingFlowView()
-            case .paired:
+            if hasCompletedOnboarding {
                 MainTabView()
+            } else {
+                OnboardingView()
             }
         }
         .tint(Theme.magenta)
     }
 }
 
-struct MainTabView: View {
-    @EnvironmentObject var appState: AppState
-
-    var body: some View {
-        TabView(selection: $appState.tabSelection) {
-            NavigationStack {
-                ThreadListView()
-            }
-            .tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right.fill") }
-            .tag(0)
-
-            NavigationStack {
-                MemoryBrowserView()
-            }
-            .tabItem { Label("Memory", systemImage: "brain.head.profile") }
-            .tag(1)
-
-            NavigationStack {
-                LicenseView()
-            }
-            .tabItem { Label("Pro", systemImage: "sparkles") }
-            .tag(2)
-
-            NavigationStack {
-                SettingsView()
-            }
-            .tabItem { Label("Settings", systemImage: "gearshape.fill") }
-            .tag(3)
-        }
-        .safeAreaInset(edge: .top) {
-            ConnectionStatusBanner()
-        }
-    }
+private enum NativeTab: Hashable {
+    case home
+    case agent
+    case settings
 }
 
-/// "This phone was unpaired from your computer" + Pair again (audit §2).
-struct RevokedDeviceView: View {
-    @EnvironmentObject var appState: AppState
+/// Mount a feature only when its real phone-local data and controls exist.
+/// Runs, Team, Memory, Plugins and Pro join this shell as their native stores
+/// and working actions are delivered, not as preview fixtures.
+struct MainTabView: View {
+    @State private var selectedTab: NativeTab = .home
 
     var body: some View {
-        ZStack {
-            Theme.background.ignoresSafeArea()
-            VStack(spacing: 20) {
-                Image(systemName: "iphone.slash")
-                    .font(.system(size: 64))
-                    .foregroundStyle(Theme.warning)
-                Text("Phone unpaired")
-                    .font(.title.bold())
-                    .foregroundStyle(Theme.textPrimary)
-                Text("This phone was unpaired from your computer. Pair again to reconnect.")
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(Theme.textSecondary)
-                    .padding(.horizontal)
-                Button("Pair again") {
-                    Task {
-                        appState.showRevokedNotice = false
-                        await appState.unpair()
-                    }
-                }
-                .themePrimaryButton()
-                .padding(.horizontal, 32)
+        TabView(selection: $selectedTab) {
+            NavigationStack {
+                NativeHomeView(
+                    openAgent: { selectedTab = .agent },
+                    openSettings: { selectedTab = .settings }
+                )
             }
+            .tabItem { Label("Home", systemImage: "house.fill") }
+            .tag(NativeTab.home)
+
+            NavigationStack {
+                NativeAgentView()
+            }
+            .tabItem { Label("Agent", systemImage: "bubble.left.and.text.bubble.right.fill") }
+            .tag(NativeTab.agent)
+
+            NavigationStack {
+                NativeSettingsView()
+            }
+            .tabItem { Label("Settings", systemImage: "gearshape.fill") }
+            .tag(NativeTab.settings)
         }
     }
 }
