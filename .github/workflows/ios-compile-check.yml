@@ -94,7 +94,7 @@ jobs:
           python3 - "$SIMULATOR_ID" <<'PY'
           import os, signal, subprocess, sys, time
           time.sleep(2)
-          with open('visual-qa/companion-home-recording.log', 'w') as diagnostics:
+          with open('visual-qa/companion-home.recording.log', 'w') as diagnostics:
               recorder = subprocess.Popen(
                   ['xcrun', 'simctl', 'io', sys.argv[1], 'recordVideo', '--codec=h264', '--force', 'visual-qa/companion-home.mp4'],
                   stdout=diagnostics, stderr=subprocess.STDOUT, start_new_session=True,

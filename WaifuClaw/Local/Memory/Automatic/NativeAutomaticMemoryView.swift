@@ -267,7 +267,7 @@ struct NativeAutomaticMemoryView: View {
             Text(record.candidate.statement)
                 .foregroundStyle(Theme.textPrimary)
                 .textSelection(.enabled)
-            Text("Run \(record.candidate.provenance.runID.uuidString.prefix(8)) · \(record.enqueuedAt, style: .date)")
+            Text("Run \(String(record.candidate.provenance.runID.uuidString.prefix(8))) · \(record.enqueuedAt.formatted(date: .abbreviated, time: .omitted))")
                 .font(.caption)
                 .foregroundStyle(Theme.textSecondary)
             HStack(spacing: 12) {
