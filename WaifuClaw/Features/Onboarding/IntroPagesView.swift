@@ -7,7 +7,7 @@ struct IntroPagesView: View {
 
     private enum Page: Int, CaseIterable {
         case meetWaifuClaw
-        case remote
+        case workspace
         case meetKline
     }
 
@@ -81,7 +81,7 @@ struct IntroPagesView: View {
     private func pageIcon(for page: Page) -> String {
         switch page {
         case .meetWaifuClaw: "sparkles"
-        case .remote: "apps.iphone"
+        case .workspace: "folder.badge.gearshape"
         case .meetKline: "" // Kline art instead
         }
     }
@@ -89,7 +89,7 @@ struct IntroPagesView: View {
     private func pageTitle(for page: Page) -> String {
         switch page {
         case .meetWaifuClaw: "Meet WaifuClaw"
-        case .remote: "Your computer, in your pocket"
+        case .workspace: "Your workspace, on your iPhone"
         case .meetKline: "Meet Kline"
         }
     }
@@ -97,14 +97,14 @@ struct IntroPagesView: View {
     private func pageBody(for page: Page) -> String {
         switch page {
         case .meetWaifuClaw:
-            "Your own agent system — a team of AI specialists that build, run, "
-                + "and verify real work on your computer."
-        case .remote:
-            "This app is the remote. Watch runs live, check on your team, and "
-                + "talk to your agents — from anywhere."
+            "A coding agent that runs in this app. Bring your own model key to "
+                + "work with projects on your iPhone; no desktop pairing required."
+        case .workspace:
+            "Choose a project, inspect its files and review the agent's work. "
+                + "Your conversations and run history stay on this phone."
         case .meetKline:
-            "Your operator and guide. She keeps an eye on everything and tells "
-                + "you straight when something needs you."
+            "Your operator and guide. Kline shows what the agent is actually doing "
+                + "and tells you when a decision needs your attention."
         }
     }
 }

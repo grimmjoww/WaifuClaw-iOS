@@ -32,7 +32,7 @@ enum KeychainStore {
     // MARK: BYOK provider key (free tier)
 
     /// The user's own LLM provider key. Keychain only — same accessibility
-    /// as the device token. Wiped on unpair via `wipeAll()`.
+    /// as the device token. Legacy desktop unpairing must not erase it.
     static var byokAPIKey: String? {
         get { read(account: byokKeyAccount) }
         set {
@@ -41,9 +41,14 @@ enum KeychainStore {
         }
     }
 
-    static func wipeAll() {
+    static func wipePairingCredentials() {
         delete(account: tokenAccount)
         delete(account: fingerprintAccount)
+    }
+
+    /// Only an explicit full credential reset should also remove BYOK.
+    static func wipeAll() {
+        wipePairingCredentials()
         delete(account: byokKeyAccount)
     }
 

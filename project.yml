@@ -40,5 +40,19 @@ targets:
     scheme:
       # Attach WaifuClaw.storekit here once created in Xcode
       # (File → New → StoreKit Configuration File) for simulator IAP testing.
-      testTargets: []
+      testTargets:
+        - WaifuClawTests
     dependencies: []
+
+  WaifuClawTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: WaifuClawTests
+    dependencies:
+      - target: WaifuClaw
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: studio.phantomhorizons.waifuclaw.ios.tests
+      GENERATE_INFOPLIST_FILE: YES
+      SWIFT_VERSION: "5.9"

@@ -7,14 +7,14 @@ name: iOS compile check
 on:
   push:
     branches: ['main', 'feat/*', 'fix/*']
-    paths: ['WaifuClaw/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
+    paths: ['WaifuClaw/**', 'WaifuClawTests/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
   pull_request:
-    paths: ['WaifuClaw/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
+    paths: ['WaifuClaw/**', 'WaifuClawTests/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
   workflow_dispatch:
 
 jobs:
   compile:
-    name: Compile SwiftUI (unsigned)
+    name: Compile and test SwiftUI (unsigned)
     runs-on: macos-15
     timeout-minutes: 30
     steps:
@@ -33,6 +33,19 @@ jobs:
             -project WaifuClaw.xcodeproj \
             -scheme WaifuClaw \
             -destination 'generic/platform=iOS' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Test WaifuClaw on iPhone simulator
+        run: |
+          SIMULATOR_ID=$(xcrun simctl list devices available --json | python3 -c 'import json,sys; groups=json.load(sys.stdin)["devices"].values(); print(next((d["udid"] for devices in groups for d in devices if d.get("isAvailable") and d.get("name", "").startswith("iPhone")), ""))')
+          test -n "$SIMULATOR_ID" || { echo 'No available iPhone simulator'; exit 1; }
+          xcodebuild test \
+            -project WaifuClaw.xcodeproj \
+            -scheme WaifuClaw \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+            -parallel-testing-enabled NO \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
