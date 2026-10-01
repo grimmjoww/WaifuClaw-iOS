@@ -18,14 +18,21 @@ final class NativeAutomaticMemoryController {
     var errorMessage: String?
 
     init() {
+        let openedQueue: NativeMemoryPendingCandidateQueue?
+        let openedGraph: LocalNeuralMemoryStore?
+        let startupError: String?
         do {
-            queue = try NativeMemoryPendingCandidateQueue.shared()
-            graph = try LocalNeuralMemoryStore()
+            openedQueue = try NativeMemoryPendingCandidateQueue.shared()
+            openedGraph = try LocalNeuralMemoryStore()
+            startupError = nil
         } catch {
-            queue = nil
-            graph = nil
-            errorMessage = "The on-device memory review queue could not be opened: \(error.localizedDescription)"
+            openedQueue = nil
+            openedGraph = nil
+            startupError = "The on-device memory review queue could not be opened: \(error.localizedDescription)"
         }
+        queue = openedQueue
+        graph = openedGraph
+        errorMessage = startupError
     }
 
     func load(projectID: String, projectName: String) async {
