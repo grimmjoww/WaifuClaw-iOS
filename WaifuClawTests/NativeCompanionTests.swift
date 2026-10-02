@@ -46,16 +46,18 @@ final class NativeCompanionTests: XCTestCase {
     }
 
     func testStudioDisplayTypefacesAreRegisteredOnDevice() throws {
-        _ = try XCTUnwrap(Bundle.main.url(forResource: "CinzelDecorative-Regular", withExtension: "ttf"))
-        _ = try XCTUnwrap(Bundle.main.url(forResource: "CinzelDecorative-Bold", withExtension: "ttf"))
+        let appBundle = WaifuClawAppBundleMarker.bundle
+        _ = try XCTUnwrap(appBundle.url(forResource: "CinzelDecorative-Regular", withExtension: "ttf"))
+        _ = try XCTUnwrap(appBundle.url(forResource: "CinzelDecorative-Bold", withExtension: "ttf"))
         StudioFontRegistration.registerIfNeeded()
         XCTAssertNotNil(UIFont(name: "CinzelDecorative-Regular", size: 22))
         XCTAssertNotNil(UIFont(name: "CinzelDecorative-Bold", size: 26))
     }
 
     func testCompiledLaunchStoryboardIsInInstalledApp() throws {
-        XCTAssertEqual(Bundle.main.object(forInfoDictionaryKey: "UILaunchStoryboardName") as? String, "LaunchScreen")
-        _ = try XCTUnwrap(Bundle.main.url(forResource: "LaunchScreen", withExtension: "storyboardc"))
+        let appBundle = WaifuClawAppBundleMarker.bundle
+        XCTAssertEqual(appBundle.object(forInfoDictionaryKey: "UILaunchStoryboardName") as? String, "LaunchScreen")
+        _ = try XCTUnwrap(appBundle.url(forResource: "LaunchScreen", withExtension: "storyboardc"))
     }
 
     @MainActor

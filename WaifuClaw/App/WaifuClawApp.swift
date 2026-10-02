@@ -1,4 +1,12 @@
+import Foundation
 import SwiftUI
+
+/// Resolves resources from the installed WaifuClaw application bundle even
+/// while XCTest runs in a separate test bundle. Kept deliberately small so
+/// resource validation never depends on `Bundle.main` host behavior.
+final class WaifuClawAppBundleMarker: NSObject {
+    static var bundle: Bundle { Bundle(for: WaifuClawAppBundleMarker.self) }
+}
 
 @main
 struct WaifuClawApp: App {

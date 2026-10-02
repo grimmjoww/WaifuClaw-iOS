@@ -7,7 +7,10 @@ import SwiftUI
 enum StudioFontRegistration {
     static func registerIfNeeded() {
         for fileName in ["CinzelDecorative-Regular", "CinzelDecorative-Bold"] {
-            guard let fontURL = Bundle.main.url(forResource: fileName, withExtension: "ttf") else { continue }
+            guard let fontURL = WaifuClawAppBundleMarker.bundle.url(
+                forResource: fileName,
+                withExtension: "ttf"
+            ) else { continue }
             CTFontManagerRegisterFontsForURL(fontURL as CFURL, .process, nil)
         }
     }
