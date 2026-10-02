@@ -14,28 +14,20 @@
     <string>1</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
-    <key>UILaunchScreen</key>
-    <dict/>
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
     <array>
         <string>arm64</string>
+    </array>
+    <key>UIAppFonts</key>
+    <array>
+        <string>CinzelDecorative-Regular.ttf</string>
+        <string>CinzelDecorative-Bold.ttf</string>
     </array>
     <key>UISupportedInterfaceOrientations</key>
     <array>
         <string>UIInterfaceOrientationPortrait</string>
     </array>
-    <!-- Camera: QR pairing scan -->
-    <key>NSCameraUsageDescription</key>
-    <string>WaifuClaw uses the camera to scan the pairing QR code shown on your computer.</string>
-    <!-- Local network: Bonjour discovery + talking to the desktop on LAN -->
-    <key>NSLocalNetworkUsageDescription</key>
-    <string>WaifuClaw looks for your computer on the local network so you can pair and chat with it.</string>
-    <key>NSBonjourServices</key>
-    <array>
-        <string>_waifuclaw._tcp</string>
-    </array>
-    <!-- Face ID: app lock -->
-    <key>NSFaceIDUsageDescription</key>
-    <string>WaifuClaw uses Face ID to lock the app and keep your agent access private.</string>
 </dict>
 </plist>

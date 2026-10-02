@@ -122,7 +122,7 @@ final class AppState: ObservableObject {
             // Best effort: even if this fails, we still wipe locally below.
             _ = try? await api.delete(Endpoints.Remote.pairingDevice(deviceID)) as EmptyResponse
         }
-        KeychainStore.wipeAll()
+        KeychainStore.wipePairingCredentials()
         for key in [Keys.host, Keys.port, Keys.deviceName, Keys.userID, Keys.deviceID] {
             UserDefaults.standard.removeObject(forKey: key)
         }

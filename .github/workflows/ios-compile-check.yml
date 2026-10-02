@@ -1,20 +1,25 @@
 # iOS compile check — runs on GitHub's own Mac machines.
 # No extra accounts, no extra apps to install: it just runs on this repo.
-# Unsigned build proves the SwiftUI compiles; signing/TestFlight still
-# needs the $99 Apple Developer membership (separate step, later).
+# Unsigned build checks SwiftUI compilation and simulator behavior; signing and
+# TestFlight still need configured distribution credentials and an app record.
 name: iOS compile check
 
 on:
   push:
     branches: ['main', 'feat/*', 'fix/*']
-    paths: ['WaifuClaw/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
+    paths: ['WaifuClaw/**', 'WaifuClawTests/**', 'WaifuClawUITests/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
   pull_request:
-    paths: ['WaifuClaw/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
+    paths: ['WaifuClaw/**', 'WaifuClawTests/**', 'WaifuClawUITests/**', 'project.yml', '.github/workflows/ios-compile-check.yml', 'codemagic.yaml']
   workflow_dispatch:
+    inputs:
+      live_mcp:
+        description: 'Also test public, read-only DeepWiki MCP discovery over HTTPS'
+        type: boolean
+        default: false
 
 jobs:
   compile:
-    name: Compile SwiftUI (unsigned)
+    name: Compile and test SwiftUI (unsigned)
     runs-on: macos-15
     timeout-minutes: 30
     steps:
@@ -28,6 +33,7 @@ jobs:
         run: xcodegen generate
 
       - name: Build WaifuClaw (unsigned compile check)
+        id: build
         run: |
           xcodebuild build \
             -project WaifuClaw.xcodeproj \
@@ -36,3 +42,99 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Verify packaged launch and font resources
+        run: |
+          set -euo pipefail
+          APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -maxdepth 5 -type d -path '*/Build/Products/Debug-iphoneos/WaifuClaw.app' -print -quit)
+          test -n "$APP_PATH" || { echo 'Unsigned iPhone app product was not found'; exit 1; }
+          test "$(plutil -extract UILaunchStoryboardName raw "$APP_PATH/Info.plist")" = 'LaunchScreen'
+          test -d "$APP_PATH/LaunchScreen.storyboardc"
+          test -s "$APP_PATH/CinzelDecorative-Regular.ttf"
+          test -s "$APP_PATH/CinzelDecorative-Bold.ttf"
+
+      - name: Test WaifuClaw on iPhone simulator
+        id: simulator_tests
+        env:
+          WAIFUCLAW_LIVE_MCP: ${{ github.event_name == 'workflow_dispatch' && inputs.live_mcp && '1' || '0' }}
+        run: |
+          SIMULATOR_ID=$(xcrun simctl list devices available --json | python3 -c 'import json,sys; groups=json.load(sys.stdin)["devices"].values(); print(next((d["udid"] for devices in groups for d in devices if d.get("isAvailable") and d.get("name", "").startswith("iPhone")), ""))')
+          test -n "$SIMULATOR_ID" || { echo 'No available iPhone simulator'; exit 1; }
+          xcodebuild test \
+            -project WaifuClaw.xcodeproj \
+            -scheme WaifuClaw \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+            -resultBundlePath "$RUNNER_TEMP/WaifuClaw-TestResults.xcresult" \
+            -parallel-testing-enabled NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload failed simulator test evidence
+        if: ${{ always() && steps.simulator_tests.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-iphone-simulator-tests
+          path: ${{ runner.temp }}/WaifuClaw-TestResults.xcresult
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Capture real companion frames on iPhone simulator
+        if: always() && steps.build.outcome == 'success'
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          SIMULATOR_ID=$(xcrun simctl list devices available --json | python3 -c 'import json,sys; groups=json.load(sys.stdin)["devices"].values(); print(next((d["udid"] for devices in groups for d in devices if d.get("isAvailable") and d.get("name", "").startswith("iPhone")), ""))')
+          test -n "$SIMULATOR_ID"
+          xcrun simctl boot "$SIMULATOR_ID" || true
+          python3 - "$SIMULATOR_ID" <<'PY'
+          import subprocess, sys
+          subprocess.run(['xcrun', 'simctl', 'bootstatus', sys.argv[1], '-b'], check=True, timeout=90)
+          PY
+          APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -maxdepth 5 -type d -path '*/Build/Products/Debug-iphonesimulator/WaifuClaw.app' -print -quit)
+          test -n "$APP_PATH" || { echo 'Simulator app not built'; exit 1; }
+          # Earlier UI tests may have selected Rei or cached an older launch
+          # screen. Capture a fresh install of the actual default Kline UI.
+          xcrun simctl uninstall "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios || true
+          xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
+          xcrun simctl launch "$SIMULATOR_ID" studio.phantomhorizons.waifuclaw.ios -hasCompletedOnboarding YES
+          mkdir -p visual-qa
+          sleep 2
+          xcrun simctl io "$SIMULATOR_ID" screenshot visual-qa/companion-home.png
+          python3 - "$SIMULATOR_ID" <<'PY'
+          import os, signal, subprocess, sys, time
+          time.sleep(2)
+          with open('visual-qa/companion-home.recording.log', 'w') as diagnostics:
+              recorder = subprocess.Popen(
+                  ['xcrun', 'simctl', 'io', sys.argv[1], 'recordVideo', '--codec=h264', '--force', 'visual-qa/companion-home.mp4'],
+                  stdout=diagnostics, stderr=subprocess.STDOUT, start_new_session=True,
+              )
+              time.sleep(5)
+              if recorder.poll() is None:
+                  os.killpg(recorder.pid, signal.SIGINT)
+              try:
+                  recorder.wait(timeout=20)
+              except subprocess.TimeoutExpired:
+                  try:
+                      os.killpg(recorder.pid, signal.SIGKILL)
+                  except ProcessLookupError:
+                      pass
+                  recorder.wait(timeout=5)
+          video_path = 'visual-qa/companion-home.mp4'
+          video_ok = recorder.returncode == 0 and os.path.isfile(video_path) and os.path.getsize(video_path) > 0
+          if not video_ok:
+              print('Video unavailable on this simulator; saving three separate real frames for manual motion inspection. See recording log.')
+              for number in range(1, 4):
+                  subprocess.run(['xcrun', 'simctl', 'io', sys.argv[1], 'screenshot', f'visual-qa/companion-frame-{number}.png'], check=True, timeout=30)
+                  time.sleep(1.2)
+          PY
+          test -s visual-qa/companion-home.mp4 || test -s visual-qa/companion-frame-3.png
+
+      - name: Upload simulator companion motion proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: companion-motion-simulator
+          path: visual-qa/companion-home.*
+          if-no-files-found: warn
+          retention-days: 7

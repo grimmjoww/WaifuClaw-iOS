@@ -126,23 +126,23 @@ enum DashboardError: LocalizedError, Equatable {
         }
         switch api {
         case .notPaired:
-            .notPaired
+            return .notPaired
         case .deviceRevoked:
-            .sessionExpired
+            return .sessionExpired
         case .unreachable, .desktopNotResponding, .network:
-            .offline
+            return .offline
         case .tlsMismatch:
-            .server(message: "Security warning: your computer's identity changed.")
+            return .server(message: "Security warning: your computer's identity changed.")
         case .http(let status, let message):
             if status == 401 {
-                .sessionExpired
+                return .sessionExpired
             } else {
-                .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
+                return .server(message: message ?? "The desktop returned an error (HTTP \(status)).")
             }
         case .paymentRequired:
-            .server(message: "This needs a Pro license — see the License tab.")
-        case .pairingCodeExpired, .decoding:
-            .server(message: api.errorDescription ?? "Something went wrong loading the dashboard.")
+            return .server(message: "This needs a Pro license — see the License tab.")
+        case .pairingCodeExpired, .decoding, .byokKeyInvalid:
+            return .server(message: api.errorDescription ?? "Something went wrong loading the dashboard.")
         }
     }
 }
@@ -230,7 +230,7 @@ struct MockDashboardData: DashboardData {
                 ),
             ]
         case .empty:
-            []
+            return []
         case .offline:
             throw DashboardError.offline
         case .unpaired:

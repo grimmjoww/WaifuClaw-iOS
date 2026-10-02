@@ -42,8 +42,9 @@ final class HomeViewModel {
         loadTask = Task { await loadSections(generation: current) }
     }
 
-    deinit {
+    func cancelLoads() {
         loadTask?.cancel()
+        loadTask = nil
     }
 
     // MARK: - Private

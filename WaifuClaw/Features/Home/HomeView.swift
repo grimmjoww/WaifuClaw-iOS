@@ -95,6 +95,7 @@ struct HomeView: View {
         }
         .background(Theme.background)
         .task { viewModel.refresh() }
+        .onDisappear { viewModel.cancelLoads() }
     }
 
     /// Button actions are @MainActor, so this hop lets section Retry buttons

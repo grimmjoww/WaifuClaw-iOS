@@ -1,14 +1,8 @@
 import SwiftUI
 
-/// First-launch onboarding — the standard iOS startup flow.
-///
-/// Order (the spec: like every app in history):
-/// welcome/intro pages → display-name entry → the three iOS permission
-/// prompts (notifications, Face ID, local network) → the main screen.
-///
-/// Entry point for the App-integration leaf (1.6.1):
-/// mount `OnboardingView(onComplete:)` when `hasCompletedOnboarding` is false,
-/// and transition to the main tab screen inside `onComplete`.
+/// First launch explains the phone-local agent and asks for a display name.
+/// Notification and biometric prompts are intentionally absent until the
+/// app has real notification delivery and an enforced app-lock feature.
 struct OnboardingView: View {
     var onComplete: () -> Void
 
@@ -64,12 +58,6 @@ struct OnboardingView: View {
             IntroPagesView(onContinue: advance)
         case .displayName:
             DisplayNameView(onContinue: advance)
-        case .notifications:
-            PermissionStepView(kind: .notifications, onContinue: advance)
-        case .faceID:
-            PermissionStepView(kind: .faceID, onContinue: advance)
-        case .localNetwork:
-            PermissionStepView(kind: .localNetwork, onContinue: advance)
         }
     }
 
