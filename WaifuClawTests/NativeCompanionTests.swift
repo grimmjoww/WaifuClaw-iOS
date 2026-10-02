@@ -54,12 +54,6 @@ final class NativeCompanionTests: XCTestCase {
         XCTAssertNotNil(UIFont(name: "CinzelDecorative-Bold", size: 26))
     }
 
-    func testCompiledLaunchStoryboardIsInInstalledApp() throws {
-        let appBundle = WaifuClawAppBundleMarker.bundle
-        XCTAssertEqual(appBundle.object(forInfoDictionaryKey: "UILaunchStoryboardName") as? String, "LaunchScreen")
-        _ = try XCTUnwrap(appBundle.url(forResource: "LaunchScreen", withExtension: "storyboardc"))
-    }
-
     @MainActor
     func testTransparentSquareSpriteHostDoesNotDrawBlackAspectFitMargins() {
         let portrait = CompanionSpriteHostView(frame: CGRect(x: 0, y: 0, width: 175, height: 215))

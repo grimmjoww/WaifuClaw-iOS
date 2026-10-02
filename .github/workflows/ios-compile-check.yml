@@ -43,6 +43,16 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
 
+      - name: Verify packaged launch and font resources
+        run: |
+          set -euo pipefail
+          APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -maxdepth 5 -type d -path '*/Build/Products/Debug-iphoneos/WaifuClaw.app' -print -quit)
+          test -n "$APP_PATH" || { echo 'Unsigned iPhone app product was not found'; exit 1; }
+          test "$(plutil -extract UILaunchStoryboardName raw "$APP_PATH/Info.plist")" = 'LaunchScreen'
+          test -d "$APP_PATH/LaunchScreen.storyboardc"
+          test -s "$APP_PATH/CinzelDecorative-Regular.ttf"
+          test -s "$APP_PATH/CinzelDecorative-Bold.ttf"
+
       - name: Test WaifuClaw on iPhone simulator
         id: simulator_tests
         env:
